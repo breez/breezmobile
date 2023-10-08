@@ -33,7 +33,7 @@ class _NostrConnectDialogState extends State<NostrConnectDialog> {
           child: Text(
             widget.connect
                 ? 'Do you want to connect to ${widget.metadata['name']} using your Nostr credentials?'
-                : 'Do you want to disconnect from ${widget.metadata['name']}',
+                : 'Do you want to disconnect from ${widget.metadata['name']}?',
             style: themeData.primaryTextTheme.displaySmall.copyWith(
               fontSize: 16,
             ),

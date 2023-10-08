@@ -5,12 +5,11 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/utils/nostrConnect.dart';
 import 'package:nostr_tools/nostr_tools.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../services/injector.dart';
-import '../../utils/nostrConnect.dart';
 
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
@@ -38,8 +37,8 @@ class NostrBloc with AsyncActionsHandler {
       StoreImportedPrivateKey: _handleStoreImportedPrivateKey,
       DeleteKey: _handleDeleteKey,
       PublishRelays: _handlePublishRelays,
-      Nip47Connect: _handleNip47Connect,
-      Nip47Disconnect: _handleNip47Disconnect,
+      Nip46Connect: _handleNip46Connect,
+      Nip46Disconnect: _handleNip47Disconnect,
     });
     listenActions();
   }
@@ -52,6 +51,7 @@ class NostrBloc with AsyncActionsHandler {
 
   void _initNostr() async {
     pref = await SharedPreferences.getInstance();
+    _fetchPublicKey();
 
     var nostrSettings =
         pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
@@ -72,15 +72,15 @@ class NostrBloc with AsyncActionsHandler {
 
   String get nostrPrivateKey => _nostrPrivateKey;
 
-  final StreamController<String> nip47ConnectController =
+  final StreamController<String> nip46ConnectController =
       StreamController<String>.broadcast();
 
-  final StreamController<String> nip47DisconnectController =
+  final StreamController<String> nip46DisconnectController =
       StreamController<String>.broadcast();
 
-  Stream<String> get nip47ConnectStream => nip47ConnectController.stream;
+  Stream<String> get nip46ConnectStream => nip46ConnectController.stream;
 
-  Stream<String> get nip47DisconnectStream => nip47DisconnectController.stream;
+  Stream<String> get nip46DisconnectStream => nip46DisconnectController.stream;
 
   final StreamController<String> _encryptDataController =
       StreamController<String>.broadcast();
@@ -295,30 +295,73 @@ class NostrBloc with AsyncActionsHandler {
     return Nip04().decrypt(_nostrPrivateKey, publicKey, encryptedData);
   }
 
-  Future<void> _handleNip47Connect(Nip47Connect action) async {
-    final rpc = NostrRpc(
-      relay: action.connectUri.relay,
-      nostrBloc: action.nostrBloc,
-    );
-    await rpc.call(
-      action.connectUri.target,
-      method: 'connect',
-      params: [action.nostrBloc.nostrPublicKey],
-    );
+  Future<void> _handleNip46Connect(Nip46Connect action) async {
+    try {
+      final rpc = NostrRpc(
+        relay: action.connectUri.relay,
+        nostrBloc: action.nostrBloc,
+      );
+      await rpc.call(
+        action.connectUri.target,
+        method: 'connect',
+        params: [action.nostrBloc.nostrPublicKey],
+      );
+    } catch (e) {
+      throw Exception(e);
+    }
+    // adding app to the list of connectedApps
+    await _addNip46App(action.connectUri);
+    action.resolve(true);
   }
 
-  Future<void> _handleNip47Disconnect(Nip47Disconnect action) async {
-    final rpc = NostrRpc(
-      relay: action.connectUri.relay,
-      nostrBloc: action.nostrBloc,
-    );
-    await rpc.call(
-      action.connectUri.target,
-      method: 'disconnect',
-      params: [],
-    );
+  Future<void> _addNip46App(ConnectUri connectUri) async {
+    String connectAppId = await nip46ConnectStream.first;
+    // get the list of connectedApps
+    NostrSettings settings = await nostrSettingsStream.first;
+
+    List<ConnectUri> connectedApps = settings.connectedAppsList;
+    if (connectAppId == connectUri.target &&
+        !connectedApps.contains(connectUri)) {
+      connectedApps.add(connectUri);
+      nostrSettingsSettingsSink.add(settings.copyWith(
+        connectedAppsList: connectedApps,
+      ));
+    }
   }
 
+  Future<void> _handleNip47Disconnect(Nip46Disconnect action) async {
+    try {
+      final rpc = NostrRpc(
+        relay: action.connectUri.relay,
+        nostrBloc: action.nostrBloc,
+      );
+      await rpc.call(
+        action.connectUri.target,
+        method: 'disconnect',
+        params: [],
+      );
+    } catch (e) {
+      throw Exception(e);
+    }
+    await _removeNip46App(action.connectUri);
+    action.resolve(true);
+  }
+
+  Future<void> _removeNip46App(ConnectUri connectUri) async {
+    String connectAppId = await nip46DisconnectStream.first;
+
+    NostrSettings settings = await nostrSettingsStream.first;
+    List<ConnectUri> connectedApps = settings.connectedAppsList;
+    if (connectAppId == connectUri.target &&
+        connectedApps.contains(connectUri)) {
+      connectedApps.remove(connectUri);
+      nostrSettingsSettingsSink.add(settings.copyWith(
+        connectedAppsList: connectedApps,
+      ));
+    }
+  }
+
+  // check for other controllers to be added in dispose
   @override
   Future dispose() {
     _publicKeyController.close();

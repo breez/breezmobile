@@ -4,6 +4,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_actions.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
 import 'package:breez/logger.dart';
@@ -16,6 +18,7 @@ import 'package:breez/utils/btc_address.dart';
 import 'package:breez/utils/external_browser.dart';
 import 'package:breez/utils/lnurl.dart';
 import 'package:breez/utils/node_id.dart';
+import 'package:breez/utils/nostrConnect.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/loader.dart';
@@ -44,6 +47,7 @@ class _QrActionButtonState extends State<QrActionButton> {
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     final profileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+    final nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
 
     return Padding(
       padding: const EdgeInsets.only(top: 32.0),
@@ -68,11 +72,16 @@ class _QrActionButtonState extends State<QrActionButton> {
                   String lower = scannedString.toLowerCase();
 
                   // nostr connect
-                  // if (isNostrConnect(lower)) {
-                  //   log.finest("Scanned string is a nostr connect request");
-                  //   await _handleNostrConnect();
-                  //   return;
-                  // }
+                  if (isStartWithNostrConnect(lower)) {
+                    try {
+                      ConnectUri nostrConnect = fromConnectUri(lower);
+                      log.finest("Scanned string is a nostr connect request");
+                      await _handleNostrConnect(nostrConnect, nostrBloc);
+                    } catch (e) {
+                      throw Exception(e);
+                    }
+                    return;
+                  }
 
                   // lnurl string
                   if (isLNURL(lower)) {
@@ -197,9 +206,17 @@ class _QrActionButtonState extends State<QrActionButton> {
         .catchError((err) => false);
   }
 
-  // Future _handleNostrConnect() async {
-  //   // fetch the details from the uri like pubkey and construct a dialog to connect
-  // }
+  Future _handleNostrConnect(
+      ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
+    bool connect = await approveConnectDialog(context, nostrConnectUri);
+
+    if (!connect) return;
+
+    nostrBloc.actionsSink.add(Nip46Connect(
+      connectUri: nostrConnectUri,
+      nostrBloc: nostrBloc,
+    ));
+  }
 
   Future _handleLNUrl(
     LNUrlBloc lnurlBloc,

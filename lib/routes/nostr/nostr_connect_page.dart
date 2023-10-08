@@ -28,76 +28,79 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
   @override
   void initState() {
     super.initState();
-    // calling a method via nostr Bloc to listen to requests (NIP47)
-    // _setNip47Listener();
     _fetchConnectedApps();
   }
 
   void _fetchConnectedApps() {
-    setState(() {
-      connectedApps = widget.settings.connectedAppsList;
+    // this will rebuild the screen for every time there is a
+    // change in the connectedApps list
+    // to listen for disconnection from the app
+    widget.nostrBloc.nostrSettingsStream.listen((settings) {
+      // if (settings.connectedAppsList != connectedApps) {
+      setState(() {
+        connectedApps = widget.settings.connectedAppsList;
+      });
+      // return;
+      // }
     });
+    // setState(() {
+    //   connectedApps = widget.settings.connectedAppsList;
+    // });
   }
-
-  void _saveConnectedAppsList() {
-    widget.nostrBloc.nostrSettingsSettingsSink.add(widget.settings.copyWith(
-      connectedAppsList: connectedApps,
-    ));
-  }
-
-  // Future<void> _setNip47Listener() async {
-  //   final rpc = NostrRpc(nostrBloc: widget.nostrBloc);
-  //   await rpc.listenToRequest(widget.nostrBloc);
-  // }
 
   Future<void> _connectApp(String connectUrl, NostrBloc nostrBloc) async {
-    // app to be added
     ConnectUri nostrConnectUri = fromConnectUri(connectUrl);
-
-    // check if connectedApps Already has this app
-
-    // add a nostr bloc method here
 
     bool connect = await approveConnectDialog(context, nostrConnectUri);
 
     if (!connect) return;
 
-    nostrBloc.actionsSink.add(Nip47Connect(
+    final nip46ConnectAction = Nip46Connect(
       connectUri: nostrConnectUri,
       nostrBloc: nostrBloc,
-    ));
+    );
+    // Add the Nip46Connect action to the sink.
+    nostrBloc.actionsSink.add(nip46ConnectAction);
 
-    String connectAppId = await nostrBloc.nip47ConnectStream.first;
+    // Attach a listener to the Completer's future in the action.
 
-    // adding the app into shared preferences from here
-    // add the new list in the pref as done for relays
-    if (connectAppId == nostrConnectUri.target &&
-        !connectedApps.contains(nostrConnectUri)) {
-      setState(() {
-        connectedApps.add(nostrConnectUri);
-        _saveConnectedAppsList();
-      });
-    }
+    // nip46ConnectAction.future.then((_) {
+    //   _fetchConnectedApps();
+    // });
+
+    // nostrBloc.actionsSink.add(Nip46Connect(
+    //   connectUri: nostrConnectUri,
+    //   nostrBloc: nostrBloc,
+    // ));
+
+    // _fetchConnectedApps();
   }
 
   Future<void> _disconnectApp(
       ConnectUri nostrConnectUri, NostrBloc nostrBloc) async {
     bool disconnect = await approveDisconnectDialog(context, nostrConnectUri);
+
     if (!disconnect) return;
-    nostrBloc.actionsSink.add(Nip47Disconnect(
+
+    // nostrBloc.actionsSink.add(Nip46Disconnect(
+    //   connectUri: nostrConnectUri,
+    //   nostrBloc: nostrBloc,
+    // ));
+
+    final nip46DisconnectAction = Nip46Disconnect(
       connectUri: nostrConnectUri,
       nostrBloc: nostrBloc,
-    ));
+    );
 
-    String connectAppId = await nostrBloc.nip47DisconnectStream.first;
+    // Add the Nip46Connect action to the sink.
+    nostrBloc.actionsSink.add(nip46DisconnectAction);
 
-    if (connectAppId == nostrConnectUri.target &&
-        connectedApps.contains(nostrConnectUri)) {
-      setState(() {
-        connectedApps.remove(nostrConnectUri);
-        _saveConnectedAppsList();
-      });
-    }
+    // Attach a listener to the Completer's future in the action.
+    // nip46DisconnectAction.future.then((_) {
+    //   _fetchConnectedApps();
+    // });
+
+    // _fetchConnectedApps();
   }
 
   @override
@@ -115,7 +118,7 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
                 padding: const EdgeInsets.only(top: 8.0),
                 child: TextFormField(
                   decoration: const InputDecoration(
-                      labelText: "Connect to a new Nostr app (NIP-47)"),
+                      labelText: "Connect to a new Nostr App (NIP-47)"),
                   style: theme.FieldTextStyle.textStyle,
                   controller: _textEditingController,
                   focusNode: _focusNode,

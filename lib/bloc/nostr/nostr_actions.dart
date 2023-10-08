@@ -55,19 +55,19 @@ class PublishRelays extends AsyncAction {
   });
 }
 
-class Nip47Connect extends AsyncAction {
+class Nip46Connect extends AsyncAction {
   final ConnectUri connectUri;
   final NostrBloc nostrBloc;
-  Nip47Connect({
+  Nip46Connect({
     this.connectUri,
     this.nostrBloc,
   });
 }
 
-class Nip47Disconnect extends AsyncAction {
+class Nip46Disconnect extends AsyncAction {
   final ConnectUri connectUri;
   final NostrBloc nostrBloc;
-  Nip47Disconnect({
+  Nip46Disconnect({
     this.connectUri,
     this.nostrBloc,
   });

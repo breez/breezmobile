@@ -30,17 +30,15 @@ class ConnectUri {
   }
 }
 
-// bool isNostrConnect(String url) {
-//   var lower = url.toLowerCase();
-//   if (lower.startsWith(_nostrConnectProtocolPrefix)) {
-//     ConnectUri nostrConnectUri = fromConnectUri(lower);
-//     return true;
-//   } else {
-//     false;
-//   }
-// }
+bool isStartWithNostrConnect(String url) {
+  if (url.startsWith(_nostrConnectProtocolPrefix)) {
+    return true;
+  }
+  return false;
+}
 
 ConnectUri fromConnectUri(String url) {
+  url = url.substring(_nostrConnectProtocolPrefix.length);
   Uri connectUrl = Uri.parse(url);
   final target = connectUrl.host ?? connectUrl.path.substring(2);
   if (target == null) {
@@ -218,6 +216,20 @@ Future<Map<String, dynamic>> _signEvent(
   return signedEvent;
 }
 
+Future<void> _disconnect(NostrBloc nostrBloc, String target) async {
+  NostrSettings settings = await nostrBloc.nostrSettingsStream.first;
+  List<ConnectUri> connectedApps = settings.connectedAppsList;
+  for (int i = 0; i < connectedApps.length; i++) {
+    ConnectUri app = connectedApps[i];
+    if (app.target == target) {
+      connectedApps.remove(app);
+      nostrBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+        connectedAppsList: connectedApps,
+      ));
+    }
+  }
+}
+
 Future<Map<String, dynamic>> _handleRequest(
   Map<String, dynamic> payload,
   Event event,
@@ -226,7 +238,7 @@ Future<Map<String, dynamic>> _handleRequest(
   // now handle the request according to the method called and return a response
 
   // handle describe method , get_public_key , sign_event
-  var result;
+  dynamic result;
   switch (payload['method']) {
     case "describe":
       result = _describe();
@@ -237,9 +249,12 @@ Future<Map<String, dynamic>> _handleRequest(
     case "sign_event":
       result = await _signEvent(payload['params'], nostrBloc);
       break;
-    // case "disconnect":
-    //   result = _disconnect();
-    //   break;
+    case "disconnect":
+      _disconnect(
+        nostrBloc,
+        event.pubkey,
+      );
+      break;
     // case "connnect":
     //   result = _connect();
     //   break;
@@ -269,11 +284,9 @@ class NostrRpc {
     List<dynamic> params = const [],
   }) async {
     id ??= getRandomId();
-    // id = '1';
 
     // connect to relay
     relayConnect = RelayApi(relayUrl: relay);
-    // final relay = RelayApi(relayUrl: "wss://relay.damus.io");
     final stream = await relayConnect.connect();
     relayConnect.on((event) {
       if (event == RelayEvent.connect) {
@@ -386,6 +399,7 @@ class NostrRpc {
       try {
         if (message.type == 'EVENT') {
           Event event = message.message as Event;
+          // we can check if the tag has the pubkey of the user
           getPayload(event.content, nostrBloc, target).then((payload) async {
             // ignore all the events that are not NostrRPCResponse events
             if (isValidResponse(payload)) {
@@ -393,18 +407,18 @@ class NostrRpc {
               if (payload['id'] != id) return false;
 
               // if the response is an error, reject the promise
-              if (payload['error'] != null) {
-                if (payload['error'] == "this[method] is not a function" &&
-                    payload['result'] == null) {
-                  // its a connect request
-                  if (method == 'connect') {
-                    nostrBloc.nip47ConnectController.add(target);
-                  } else if (method == 'disconnect') {
-                    nostrBloc.nip47DisconnectController.add(target);
-                  }
-                }
-                return false;
+              // if (payload['error'] != null) {
+              //   if (payload['error'] == "this[method] is not a function" &&
+              //       payload['result'] == null) {
+              // its a connect request
+              if (method == 'connect') {
+                nostrBloc.nip46ConnectController.add(target);
+              } else if (method == 'disconnect') {
+                nostrBloc.nip46DisconnectController.add(target);
               }
+              // }
+              // return false;
+              // }
             } else if (isValidRequest(payload)) {
               Map<String, dynamic> response =
                   await _handleRequest(payload, event, nostrBloc);
@@ -419,6 +433,7 @@ class NostrRpc {
 
               try {
                 relayConnect.publish(mapToEvent(responseEvent));
+                // after this need to handle the method called
               } catch (e) {
                 throw Exception(e);
               }
