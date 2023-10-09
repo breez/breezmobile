@@ -66,9 +66,10 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           vsync: this,
           duration: const Duration(milliseconds: 500),
         );
+        final themeData = Theme.of(context);
         colorAnimation = ColorTween(
-          begin: Theme.of(context).canvasColor,
-          end: Theme.of(context).colorScheme.background,
+          begin: themeData.canvasColor,
+          end: themeData.colorScheme.background,
         ).animate(controller)
           ..addListener(() {
             setState(() {});

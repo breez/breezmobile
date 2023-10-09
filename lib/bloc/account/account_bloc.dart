@@ -182,7 +182,7 @@ class AccountBloc {
     _accountController.add(AccountModel.initial());
     _paymentsController.add(PaymentsModel.initial());
     _paymentFilterController.add(PaymentFilterModel.initial());
-    _accountSettingsController.add(AccountSettings.start());
+    _accountSettingsController.add(AccountSettings.initial());
 
     _start();
   }

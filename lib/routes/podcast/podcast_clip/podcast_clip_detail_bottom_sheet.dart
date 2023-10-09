@@ -32,7 +32,7 @@ class _PodcastClipDetailBottomSheetState
   Widget build(BuildContext context) {
     final podcastClipBloc = AppBlocsProvider.of<PodcastClipBloc>(context);
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final displaySmall = Theme.of(context).primaryTextTheme.displaySmall;
 
     return StreamBuilder<PodcastClipDetailsModel>(
       stream: podcastClipBloc.clipDetails,
@@ -54,8 +54,7 @@ class _PodcastClipDetailBottomSheetState
                           alignment: Alignment.center,
                           child: Text(
                             '${_formatDuration(clipDetailSnapshot.data.startTimeStamp)} - ${_formatDuration(clipDetailSnapshot.data.endTimeStamp)}',
-                            style: themeData.primaryTextTheme.displaySmall
-                                .copyWith(
+                            style: displaySmall.copyWith(
                               fontSize: 20,
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
@@ -107,8 +106,7 @@ class _PodcastClipDetailBottomSheetState
                           },
                           child: Text(
                             texts.podcast_clips_cancel_button,
-                            style: themeData.primaryTextTheme.displaySmall
-                                .copyWith(
+                            style: displaySmall.copyWith(
                               fontSize: 16,
                               color: Colors.white.withOpacity(0.5),
                               fontWeight: FontWeight.w500,
@@ -160,14 +158,11 @@ class _PodcastClipDetailBottomSheetState
                                 },
                                 child: Text(
                                   texts.podcast_clips_clip_button,
-                                  style: Theme.of(context)
-                                      .primaryTextTheme
-                                      .displaySmall
-                                      .copyWith(
-                                        fontSize: 16,
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                  style: displaySmall.copyWith(
+                                    fontSize: 16,
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               )
                             : const Center(
@@ -217,6 +212,8 @@ class _PodcastClipDetailBottomSheetState
   Widget _numberPanel(int durationInSeconds) {
     final minFontSize = 9.0 / MediaQuery.of(context).textScaleFactor;
     var texts = context.texts();
+    final displaySmall = Theme.of(context).primaryTextTheme.displaySmall;
+
     return GestureDetector(
       onTap: () => showDialog(
         useRootNavigator: true,
@@ -235,12 +232,12 @@ class _PodcastClipDetailBottomSheetState
               child: AutoSizeText(
                 durationInSeconds.toString(),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                      fontSize: 16,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                      height: 1.2,
-                    ),
+                style: displaySmall.copyWith(
+                  fontSize: 16,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                  height: 1.2,
+                ),
                 minFontSize: minFontSize,
                 stepGranularity: 0.1,
                 maxLines: 1,
@@ -249,11 +246,11 @@ class _PodcastClipDetailBottomSheetState
             AutoSizeText(
               texts.podcast_clips_seconds,
               textAlign: TextAlign.center,
-              style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                    fontSize: 16,
-                    color: Colors.white.withOpacity(0.7),
-                    fontWeight: FontWeight.w500,
-                  ),
+              style: displaySmall.copyWith(
+                fontSize: 16,
+                color: Colors.white.withOpacity(0.7),
+                fontWeight: FontWeight.w500,
+              ),
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
               maxLines: 1,
@@ -265,6 +262,8 @@ class _PodcastClipDetailBottomSheetState
   }
 
   _imageWidget({Episode episodeDetails, Image image}) {
+    final displaySmall = Theme.of(context).primaryTextTheme.displaySmall;
+
     return Container(
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -284,11 +283,11 @@ class _PodcastClipDetailBottomSheetState
             episodeDetails.author,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 12,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+            style: displaySmall.copyWith(
+              fontSize: 12,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 8),
           ClipRRect(
@@ -304,22 +303,22 @@ class _PodcastClipDetailBottomSheetState
             episodeDetails.podcast,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 12,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w500,
-                ),
+            style: displaySmall.copyWith(
+              fontSize: 12,
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             episodeDetails.title,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 16,
-                  color: Colors.white,
-                  fontWeight: FontWeight.w600,
-                ),
+            style: displaySmall.copyWith(
+              fontSize: 16,
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
           const SizedBox(height: 60),
           Row(
@@ -327,11 +326,11 @@ class _PodcastClipDetailBottomSheetState
             children: [
               Text(
                 "Clipped by ",
-                style: Theme.of(context).primaryTextTheme.displaySmall.copyWith(
-                      fontSize: 12,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w500,
-                    ),
+                style: displaySmall.copyWith(
+                  fontSize: 12,
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
               ),
               SvgPicture.asset(
                 "src/images/logo-color.svg",

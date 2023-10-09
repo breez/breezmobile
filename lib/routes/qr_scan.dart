@@ -62,20 +62,26 @@ class QRScanState extends State<QRScan> {
               ],
             ),
           ),
-          Positioned(
-            right: 10,
-            top: 5,
-            child: ImagePickerButton(cameraController),
-          ),
-          Positioned(
-            bottom: 30.0,
-            right: 0,
-            left: 0,
-            child: defaultTargetPlatform == TargetPlatform.iOS
-                ? const QRScanCancelButton()
-                : const SizedBox(),
-          ),
           const ScanOverlay(),
+          SafeArea(
+            child: Stack(
+              children: [
+                Positioned(
+                  right: 10,
+                  top: 5,
+                  child: ImagePickerButton(cameraController),
+                ),
+                Positioned(
+                  bottom: 30.0,
+                  right: 0,
+                  left: 0,
+                  child: defaultTargetPlatform == TargetPlatform.iOS
+                      ? const QRScanCancelButton()
+                      : const SizedBox(),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

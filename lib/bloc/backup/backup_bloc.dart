@@ -66,7 +66,7 @@ class BackupBloc with AsyncActionsHandler {
       _promptBackupDismissedController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
-      BehaviorSubject<BackupSettings>.seeded(BackupSettings.start());
+      BehaviorSubject<BackupSettings>.seeded(BackupSettings.initial());
   Stream<BackupSettings> get backupSettingsStream =>
       _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
@@ -240,7 +240,7 @@ class BackupBloc with AsyncActionsHandler {
     //last backup time persistency
     String backupStateJson =
         _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
-    BackupState backupState = BackupState.start();
+    BackupState backupState = BackupState.initial();
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
     }
@@ -538,7 +538,7 @@ class BackupBloc with AsyncActionsHandler {
       },
     );
 
-    backupServiceNeedLoginSink.add(true);
+    backupServiceNeedLoginSink.add(action.promptOnError);
     action.resolve(null);
   }
 
@@ -789,7 +789,6 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
       if (event.type == NotificationEvent_NotificationType.BACKUP_FAILED) {
-        backupServiceNeedLoginSink.add(true);
         _backupStateController.addError(
           BackupFailedException(
             _backupSettingsController.value.backupProvider,
@@ -814,7 +813,6 @@ class BackupBloc with AsyncActionsHandler {
         });
       }
       if (backupOperations.contains(event.type)) {
-        log.info("no backup provider set.");
         _enableBackupPrompt = true;
         _pushPromptIfNeeded();
       }
@@ -823,7 +821,7 @@ class BackupBloc with AsyncActionsHandler {
 
   void _pushPromptIfNeeded() {
     log.info(
-      "push prompt if needed: {$_enableBackupPrompt, ${_backupServiceNeedLoginController.value}}",
+      "push prompt if needed: {_enableBackupPrompt: $_enableBackupPrompt, signInNeeded: ${_backupServiceNeedLoginController.value}}",
     );
     if (_enableBackupPrompt) {
       _enableBackupPrompt = false;
