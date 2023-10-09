@@ -36,9 +36,11 @@ packages:
   anytime:
     dependency: "direct main"
     description:
-      path: "/Users/sarthakgupta/Documents/breez/breez_anytime/anytime/anytime_podcast_player"
-      relative: false
-    source: path
+      path: "."
+      ref: "89be27a95763bfb7878f4143784d17db54799641"
+      resolved-ref: "89be27a95763bfb7878f4143784d17db54799641"
+      url: "https://github.com/sarthak13gupta/anytime_podcast_player"
+    source: git
     version: "1.2.1+74-breez"
   app_settings:
     dependency: "direct main"
