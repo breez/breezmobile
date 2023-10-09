@@ -32,20 +32,11 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
   }
 
   void _fetchConnectedApps() {
-    // this will rebuild the screen for every time there is a
-    // change in the connectedApps list
-    // to listen for disconnection from the app
     widget.nostrBloc.nostrSettingsStream.listen((settings) {
-      // if (settings.connectedAppsList != connectedApps) {
       setState(() {
         connectedApps = widget.settings.connectedAppsList;
       });
-      // return;
-      // }
     });
-    // setState(() {
-    //   connectedApps = widget.settings.connectedAppsList;
-    // });
   }
 
   Future<void> _connectApp(String connectUrl, NostrBloc nostrBloc) async {
@@ -61,19 +52,6 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
     );
     // Add the Nip46Connect action to the sink.
     nostrBloc.actionsSink.add(nip46ConnectAction);
-
-    // Attach a listener to the Completer's future in the action.
-
-    // nip46ConnectAction.future.then((_) {
-    //   _fetchConnectedApps();
-    // });
-
-    // nostrBloc.actionsSink.add(Nip46Connect(
-    //   connectUri: nostrConnectUri,
-    //   nostrBloc: nostrBloc,
-    // ));
-
-    // _fetchConnectedApps();
   }
 
   Future<void> _disconnectApp(
@@ -82,25 +60,13 @@ class _NostrConnectPageState extends State<NostrConnectPage> {
 
     if (!disconnect) return;
 
-    // nostrBloc.actionsSink.add(Nip46Disconnect(
-    //   connectUri: nostrConnectUri,
-    //   nostrBloc: nostrBloc,
-    // ));
-
     final nip46DisconnectAction = Nip46Disconnect(
       connectUri: nostrConnectUri,
       nostrBloc: nostrBloc,
     );
 
-    // Add the Nip46Connect action to the sink.
+    // Add the Nip46Disconnect action to the sink.
     nostrBloc.actionsSink.add(nip46DisconnectAction);
-
-    // Attach a listener to the Completer's future in the action.
-    // nip46DisconnectAction.future.then((_) {
-    //   _fetchConnectedApps();
-    // });
-
-    // _fetchConnectedApps();
   }
 
   @override
