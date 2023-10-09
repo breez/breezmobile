@@ -34,7 +34,7 @@ android {
         targetSdkVersion 33
         multiDexEnabled true
         versionCode 1
-        versionName "0.15-beta"
+        versionName "0.16.4-beta"
     }
 
     signingConfigs {
@@ -49,10 +49,22 @@ android {
                 println("No storeFile provided, release builds are not possible")
             }
         }
+        debug {
+            String filePath = keystoreProperties['storeFileDebug']
+            if (filePath != null) {
+                keyAlias keystoreProperties['aliasDebug']
+                keyPassword keystoreProperties['passwordDebug']
+                storeFile file(filePath)
+                storePassword keystoreProperties['passwordDebug']
+            } else {
+                println("No storeFile provided, debug builds are using your local debug keystore")
+            }
+        }
     }
 
     buildTypes {
         debug {
+            signingConfig signingConfigs.debug
             applicationIdSuffix '.debug'
             versionNameSuffix '-DEBUG'
             resValue "string", "app_name", "Breez Debug"

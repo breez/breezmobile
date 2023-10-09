@@ -11,10 +11,10 @@ import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/dynamic_fees.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enter_payment_info_dialog.dart';
 import 'package:breez/widgets/escher_dialog.dart';
@@ -24,12 +24,18 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-class BottomActionsBar extends StatelessWidget {
+class BottomActionsBar extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
 
   const BottomActionsBar(this.firstPaymentItemKey);
 
+  @override
+  State<BottomActionsBar> createState() => _BottomActionsBarState();
+}
+
+class _BottomActionsBarState extends State<BottomActionsBar> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
@@ -44,7 +50,7 @@ class BottomActionsBar extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
             _Action(
-              onPress: () => _showSendOptions(context),
+              onPress: () => _showSendOptions(),
               group: actionsGroup,
               text: texts.bottom_action_bar_send,
               iconAssetPath: "src/icon/send-action.png",
@@ -70,7 +76,7 @@ class BottomActionsBar extends StatelessWidget {
     );
   }
 
-  Future _showSendOptions(BuildContext context) async {
+  Future _showSendOptions() async {
     final texts = context.texts();
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final accBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -80,162 +86,162 @@ class BottomActionsBar extends StatelessWidget {
     await showModalBottomSheet(
       context: context,
       builder: (ctx) {
-        return StreamBuilder2<Future<DecodedClipboardData>, AccountModel>(
-          streamA: invoiceBloc.decodedClipboardStream,
-          streamB: accountBloc.accountStream,
-          builder: (context, clipBoardSnapshot, accountSnapshot) {
-            final account = accountSnapshot.data;
-            return Column(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                const SizedBox(height: 8.0),
-                ListTile(
-                  enabled: account.connected,
-                  leading: _ActionImage(
-                    iconAssetPath: "src/icon/paste.png",
+        final themeData = Theme.of(ctx);
+
+        return AnnotatedRegion<SystemUiOverlayStyle>(
+          value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+            systemNavigationBarColor: themeData.canvasColor,
+          ),
+          child: StreamBuilder2<Future<DecodedClipboardData>, AccountModel>(
+            streamA: invoiceBloc.decodedClipboardStream,
+            streamB: accountBloc.accountStream,
+            builder: (context, clipBoardSnapshot, accountSnapshot) {
+              final account = accountSnapshot.data;
+              if (!accountSnapshot.hasData) {
+                return const SizedBox();
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  const SizedBox(height: 8.0),
+                  ListTile(
                     enabled: account.connected,
-                  ),
-                  title: Text(
-                    texts.bottom_action_bar_paste_invoice,
-                    style: theme.bottomSheetTextStyle,
-                  ),
-                  onTap: () async {
-                    final navigator = Navigator.of(context);
-                    navigator.pop();
-                    if (clipBoardSnapshot.hasData) {
-                      await clipBoardSnapshot.data.then((clipboardData) {
-                        if (clipboardData != null) {
-                          if (clipboardData.type == "lnurl" ||
-                              clipboardData.type == "lightning-address") {
-                            lnurlBloc.lnurlInputSink.add(clipboardData.data);
-                          } else if (clipboardData.type == "invoice") {
-                            invoiceBloc.decodeInvoiceSink.add(
-                              clipboardData.data,
-                            );
-                          } else if (clipboardData.type == "nodeID") {
-                            navigator.push(
-                              FadeInRoute(
-                                builder: (_) => SpontaneousPaymentPage(
-                                  clipboardData.data,
-                                  firstPaymentItemKey,
-                                ),
-                              ),
-                            );
-                          }
-                        } else {
-                          _showEnterPaymentInfoDialog(
-                            context,
-                            invoiceBloc,
-                            lnurlBloc,
-                          );
-                        }
-                      });
-                    } else {
-                      _showEnterPaymentInfoDialog(
-                        context,
-                        invoiceBloc,
-                        lnurlBloc,
-                      );
-                    }
-                  },
-                ),
-                Divider(
-                  height: 0.0,
-                  color: Colors.white.withOpacity(0.2),
-                  indent: 72.0,
-                ),
-                ListTile(
-                  enabled: account.connected,
-                  leading: _ActionImage(
-                    iconAssetPath: "src/icon/connect_to_pay.png",
-                    enabled: account.connected,
-                  ),
-                  title: Text(
-                    texts.bottom_action_bar_connect_to_pay,
-                    style: theme.bottomSheetTextStyle,
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed("/connect_to_pay");
-                  },
-                ),
-                Divider(
-                  height: 0.0,
-                  color: Colors.white.withOpacity(0.2),
-                  indent: 72.0,
-                ),
-                ListTile(
-                  enabled: account.connected,
-                  leading: _ActionImage(
-                      iconAssetPath: "src/icon/bitcoin.png",
-                      enabled: account.connected),
-                  title: Text(
-                    texts.bottom_action_bar_send_btc_address,
-                    style: theme.bottomSheetTextStyle,
-                  ),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).pushNamed("/withdraw_funds");
-                  },
-                ),
-                StreamBuilder(
-                  stream: accBloc.accountSettingsStream,
-                  builder: (context, settingsSnapshot) {
-                    if (!settingsSnapshot.hasData) {
-                      return const SizedBox();
-                    }
-                    AccountSettings settings = settingsSnapshot.data;
-                    if (settings.isEscherEnabled) {
-                      return Column(
-                        children: [
-                          Divider(
-                            height: 0.0,
-                            color: Colors.white.withOpacity(0.2),
-                            indent: 72.0,
-                          ),
-                          ListTile(
-                            enabled: account.connected,
-                            leading: _ActionImage(
-                                iconAssetPath: "src/icon/escher.png",
-                                enabled: account.connected),
-                            title: Text(
-                              texts.bottom_action_bar_escher,
-                              style: theme.bottomSheetTextStyle,
-                            ),
-                            onTap: () {
-                              Navigator.pop(context);
-                              showDialog(
-                                useRootNavigator: false,
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (_) => EscherDialog(
-                                  context,
-                                  accBloc,
+                    leading: _ActionImage(
+                      iconAssetPath: "src/icon/paste.png",
+                      enabled: account.connected,
+                    ),
+                    title: Text(
+                      texts.bottom_action_bar_paste_invoice,
+                      style: theme.bottomSheetTextStyle,
+                    ),
+                    onTap: () async {
+                      final navigator = Navigator.of(context);
+                      navigator.pop();
+                      if (clipBoardSnapshot.hasData) {
+                        await clipBoardSnapshot.data.then((clipboardData) {
+                          if (clipboardData != null) {
+                            if (clipboardData.type == "lnurl" ||
+                                clipboardData.type == "lightning-address") {
+                              lnurlBloc.lnurlInputSink.add(clipboardData.data);
+                            } else if (clipboardData.type == "invoice") {
+                              invoiceBloc.decodeInvoiceSink.add(
+                                clipboardData.data,
+                              );
+                            } else if (clipboardData.type == "nodeID") {
+                              navigator.push(
+                                FadeInRoute(
+                                  builder: (_) => SpontaneousPaymentPage(
+                                    clipboardData.data,
+                                    widget.firstPaymentItemKey,
+                                  ),
                                 ),
                               );
-                            },
-                          ),
-                        ],
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-                const SizedBox(height: 8.0)
-              ],
-            );
-          },
+                            }
+                          } else {
+                            _showEnterPaymentInfoDialog();
+                          }
+                        });
+                      } else {
+                        _showEnterPaymentInfoDialog();
+                      }
+                    },
+                  ),
+                  Divider(
+                    height: 0.0,
+                    color: Colors.white.withOpacity(0.2),
+                    indent: 72.0,
+                  ),
+                  ListTile(
+                    enabled: account.connected,
+                    leading: _ActionImage(
+                      iconAssetPath: "src/icon/connect_to_pay.png",
+                      enabled: account.connected,
+                    ),
+                    title: Text(
+                      texts.bottom_action_bar_connect_to_pay,
+                      style: theme.bottomSheetTextStyle,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed("/connect_to_pay");
+                    },
+                  ),
+                  Divider(
+                    height: 0.0,
+                    color: Colors.white.withOpacity(0.2),
+                    indent: 72.0,
+                  ),
+                  ListTile(
+                    enabled: account.connected,
+                    leading: _ActionImage(
+                        iconAssetPath: "src/icon/bitcoin.png",
+                        enabled: account.connected),
+                    title: Text(
+                      texts.bottom_action_bar_send_btc_address,
+                      style: theme.bottomSheetTextStyle,
+                    ),
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pushNamed("/withdraw_funds");
+                    },
+                  ),
+                  StreamBuilder(
+                    stream: accBloc.accountSettingsStream,
+                    builder: (context, settingsSnapshot) {
+                      if (!settingsSnapshot.hasData) {
+                        return const SizedBox();
+                      }
+                      AccountSettings settings = settingsSnapshot.data;
+                      if (settings.isEscherEnabled) {
+                        return Column(
+                          children: [
+                            Divider(
+                              height: 0.0,
+                              color: Colors.white.withOpacity(0.2),
+                              indent: 72.0,
+                            ),
+                            ListTile(
+                              enabled: account.connected,
+                              leading: _ActionImage(
+                                  iconAssetPath: "src/icon/escher.png",
+                                  enabled: account.connected),
+                              title: Text(
+                                texts.bottom_action_bar_escher,
+                                style: theme.bottomSheetTextStyle,
+                              ),
+                              onTap: () {
+                                Navigator.pop(context);
+                                showDialog(
+                                  useRootNavigator: false,
+                                  context: context,
+                                  barrierDismissible: false,
+                                  builder: (_) => EscherDialog(
+                                    context,
+                                    accBloc,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                  const SizedBox(height: 8.0)
+                ],
+              );
+            },
+          ),
         );
       },
     );
   }
 
-  Future<dynamic> _showEnterPaymentInfoDialog(
-    BuildContext context,
-    InvoiceBloc invoiceBloc,
-    LNUrlBloc lnurlBloc,
-  ) {
+  Future<dynamic> _showEnterPaymentInfoDialog() {
+    final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
+    final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     return showDialog(
       useRootNavigator: false,
       context: context,
@@ -244,7 +250,7 @@ class BottomActionsBar extends StatelessWidget {
         context,
         invoiceBloc,
         lnurlBloc,
-        firstPaymentItemKey,
+        widget.firstPaymentItemKey,
       ),
     );
   }
@@ -318,14 +324,20 @@ Future showReceiveOptions(
   return showModalBottomSheet(
     context: parentContext,
     builder: (ctx) {
-      return withBreezTheme(
-        parentContext,
-        StreamBuilder<LSPStatus>(
+      final themeData = Theme.of(ctx);
+
+      return AnnotatedRegion<SystemUiOverlayStyle>(
+        value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+          systemNavigationBarColor: themeData.canvasColor,
+        ),
+        child: StreamBuilder<LSPStatus>(
           stream: lspBloc.lspStatusStream,
           builder: (context, lspSnapshot) {
             return StreamBuilder<List<AddFundVendorModel>>(
               stream: addFundsBloc.availableVendorsStream,
               builder: (context, snapshot) {
+                final themeData = Theme.of(context);
+
                 if (snapshot.data == null) {
                   return const SizedBox();
                 }
@@ -337,8 +349,7 @@ Future showReceiveOptions(
                       children: [
                         Divider(
                           height: 0.0,
-                          color:
-                              Theme.of(context).dividerColor.withOpacity(0.2),
+                          color: themeData.dividerColor.withOpacity(0.2),
                           indent: 72.0,
                         ),
                         ListTile(
@@ -361,14 +372,15 @@ Future showReceiveOptions(
                               try {
                                 navigator.push(loaderRoute);
 
-                                final currentLSP = lspSnapshot.data.currentLSP;
                                 fetchLSPList(lspBloc).then(
                                   (lspList) {
                                     if (loaderRoute.isActive) {
                                       navigator.removeRoute(loaderRoute);
                                     }
                                     var refreshedLSP = lspList.firstWhere(
-                                      (lsp) => lsp.lspID == currentLSP.lspID,
+                                      (lsp) =>
+                                          lsp.lspID ==
+                                          lspSnapshot.data.selectedLSP,
                                     );
                                     (v.showLSPFee)
                                         ? promptLSPFeeAndNavigate(
@@ -378,19 +390,20 @@ Future showReceiveOptions(
                                                 .longestValidOpeningFeeParams,
                                             v.route,
                                           )
-                                        : Navigator.of(context)
-                                            .pushNamed(v.route);
+                                        : navigator.pushNamed(v.route);
                                   },
-                                  onError: (_) {
+                                  onError: (e) {
                                     if (loaderRoute.isActive) {
                                       navigator.removeRoute(loaderRoute);
                                     }
+                                    _showError(parentContext, e);
                                   },
                                 );
                               } catch (e) {
                                 if (loaderRoute.isActive) {
                                   navigator.removeRoute(loaderRoute);
                                 }
+                                _showError(parentContext, e);
                               }
                             } else {
                               Navigator.of(context).pushNamed(v.route);
@@ -433,11 +446,9 @@ Future showReceiveOptions(
                                   account.warningMaxChanReserveAmount,
                                 ),
                               ),
-                              maxFontSize: Theme.of(context)
-                                  .textTheme
-                                  .titleMedium
-                                  .fontSize,
-                              style: Theme.of(context).textTheme.titleLarge,
+                              maxFontSize:
+                                  themeData.textTheme.titleMedium.fontSize,
+                              style: themeData.textTheme.titleLarge,
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -449,5 +460,27 @@ Future showReceiveOptions(
         ),
       );
     },
+  );
+}
+
+void _showError(BuildContext context, Object e) {
+  final texts = context.texts();
+  final themeData = Theme.of(context);
+  showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      content: Text(extractExceptionMessage(e, texts: texts)),
+      actions: [
+        TextButton(
+          child: Text(
+            texts.flushbar_default_action,
+            style: themeData.primaryTextTheme.labelLarge,
+          ),
+          onPressed: () {
+            Navigator.of(context).pop();
+          },
+        ),
+      ],
+    ),
   );
 }

@@ -42,6 +42,7 @@ import 'package:breez/widgets/view_switch.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class POSInvoice extends StatefulWidget {
   const POSInvoice();
@@ -150,75 +151,79 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final lnUrlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final themeData = Theme.of(context);
 
-    return Scaffold(
-      body: StreamBuilder<Sale>(
-        stream: posCatalogBloc.currentSaleStream,
-        builder: (context, saleSnapshot) {
-          var currentSale = saleSnapshot.data;
-          return GestureDetector(
-            onTap: () {
-              // call this method here to hide soft keyboard
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: Builder(
-              builder: (BuildContext context) {
-                return StreamBuilder<BreezUserModel>(
-                  stream: userProfileBloc.userStream,
-                  builder: (context, snapshot) {
-                    final userProfile = snapshot.data;
-                    if (userProfile == null) {
-                      return const Center(child: Loader());
-                    }
-
-                    return StreamBuilder<AccountModel>(
-                      stream: accountBloc.accountStream,
-                      builder: (context, snapshot) {
-                        final accountModel = snapshot.data;
-                        if (accountModel == null) {
-                          return Container();
-                        }
-
-                        return FutureBuilder(
-                          initialData: const [],
-                          future: _fetchRatesActionFuture,
-                          builder: (context, snapshot) {
-                            List<FiatConversion> rates = [];
-                            if (snapshot.hasData) {
-                              final data = snapshot.data;
-                              if (data is List<FiatConversion>) {
-                                rates.addAll(data);
-                              }
-                            }
-
-                            return _body(
-                              context,
-                              accountBloc,
-                              userProfileBloc,
-                              posCatalogBloc,
-                              invoiceBloc,
-                              lnUrlBloc,
-                              userProfile,
-                              accountModel,
-                              currentSale,
-                              rates,
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor: themeData.colorScheme.background,
+      ),
+      child: Scaffold(
+        body: StreamBuilder<Sale>(
+          stream: posCatalogBloc.currentSaleStream,
+          builder: (context, saleSnapshot) {
+            var currentSale = saleSnapshot.data;
+            return GestureDetector(
+              onTap: () {
+                // call this method here to hide soft keyboard
+                FocusScope.of(context).requestFocus(FocusNode());
               },
-            ),
-          );
-        },
+              child: Builder(
+                builder: (BuildContext context) {
+                  return StreamBuilder<BreezUserModel>(
+                    stream: userProfileBloc.userStream,
+                    builder: (context, snapshot) {
+                      final userProfile = snapshot.data;
+                      if (userProfile == null) {
+                        return const Center(child: Loader());
+                      }
+
+                      return StreamBuilder<AccountModel>(
+                        stream: accountBloc.accountStream,
+                        builder: (context, snapshot) {
+                          final accountModel = snapshot.data;
+                          if (accountModel == null) {
+                            return Container();
+                          }
+
+                          return FutureBuilder(
+                            initialData: const [],
+                            future: _fetchRatesActionFuture,
+                            builder: (context, snapshot) {
+                              List<FiatConversion> rates = [];
+                              if (snapshot.hasData) {
+                                final data = snapshot.data;
+                                if (data is List<FiatConversion>) {
+                                  rates.addAll(data);
+                                }
+                              }
+
+                              return _body(
+                                accountBloc,
+                                userProfileBloc,
+                                posCatalogBloc,
+                                invoiceBloc,
+                                lnUrlBloc,
+                                userProfile,
+                                accountModel,
+                                currentSale,
+                                rates,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }
 
   Widget _body(
-    BuildContext context,
     AccountBloc accountBloc,
     UserProfileBloc userProfileBloc,
     PosCatalogBloc posCatalogBloc,
@@ -253,7 +258,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                 children: <Widget>[
                   Container(
                     color: themeData.colorScheme.background,
-                    child: _buildViewSwitch(context),
+                    child: _buildViewSwitch(),
                   ),
                   Container(
                     color: themeData.colorScheme.background,
@@ -289,7 +294,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                                   refreshedLSP.cheapestOpeningFeeParams,
                                 ),
                                 () => _onInvoiceSubmitted(
-                                  context,
                                   currentSale,
                                   invoiceBloc,
                                   lnUrlBloc,
@@ -311,10 +315,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                           }
                         }
                       },
-                      approveClear: () => _approveClear(
-                        context,
-                        currentSale,
-                      ),
+                      approveClear: () => _approveClear(currentSale),
                       changeCurrency: (currency) => _changeCurrency(
                         currentSale,
                         currency,
@@ -324,7 +325,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                     ),
                   ),
                   _tabBody(
-                    context,
                     posCatalogBloc,
                     accountModel,
                     currentSale,
@@ -332,7 +332,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                   Container(
                     color: themeData.colorScheme.background,
                     child: _chargeButton(
-                      context,
                       invoiceBloc,
                       lnUrlBloc,
                       userProfile,
@@ -366,7 +365,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _chargeButton(
-    BuildContext context,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
     BreezUserModel userProfile,
@@ -423,7 +421,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                         refreshedLSP.cheapestOpeningFeeParams,
                       ),
                       () => _onInvoiceSubmitted(
-                        context,
                         currentSale,
                         invoiceBloc,
                         lnUrlBloc,
@@ -451,7 +448,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     );
   }
 
-  Widget _buildViewSwitch(BuildContext context) {
+  Widget _buildViewSwitch() {
     final themeData = Theme.of(context);
     final texts = context.texts();
     return ViewSwitch(
@@ -478,7 +475,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   Widget _tabBody(
-    BuildContext context,
     PosCatalogBloc posCatalogBloc,
     AccountModel accountModel,
     Sale currentSale,
@@ -493,7 +489,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
             child: _isKeypadView
                 ? PosInvoiceNumPad(
                     currentSale: currentSale,
-                    approveClear: () => _approveClear(context, currentSale),
+                    approveClear: () => _approveClear(currentSale),
                     clearAmounts: () => _clearAmounts(currentSale),
                     onAddition: () => setState(() {
                       currentPendingItem = null;
@@ -530,7 +526,6 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
   }
 
   _onInvoiceSubmitted(
-    BuildContext context,
     Sale currentSale,
     InvoiceBloc invoiceBloc,
     LNUrlBloc lnUrlBloc,
@@ -638,7 +633,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
       final lockSale = SetCurrentSale(currentSale.copyWith(priceLocked: true));
       posCatalogBloc.actionsSink.add(lockSale);
-      waitForSync(context).then((value) {
+      waitForSync().then((value) {
         if (!value) {
           return;
         }
@@ -688,7 +683,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     }
   }
 
-  Future<bool> waitForSync(BuildContext context) {
+  Future<bool> waitForSync() {
     final texts = context.texts();
     return showDialog(
       useRootNavigator: false,
@@ -946,7 +941,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _approveClear(BuildContext context, Sale currentSale) {
+  void _approveClear(Sale currentSale) {
     final texts = context.texts();
     final themeData = Theme.of(context);
 

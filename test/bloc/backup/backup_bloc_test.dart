@@ -58,20 +58,20 @@ void main() {
     test('same setting should skip', () async {
       BackupBloc bloc = await make();
 
-      final startSettings = BackupSettings.start();
-      final action = UpdateBackupSettings(startSettings);
+      final initialSettings = BackupSettings.initial();
+      final action = UpdateBackupSettings(initialSettings);
       bloc.backupActionsSink.add(action);
       final newSettings = await action.future;
 
-      expect(newSettings, startSettings);
+      expect(newSettings, initialSettings);
     });
 
     test('change to google drive should trigger backup', () async {
       BackupBloc bloc = await make();
 
-      final startSettings = BackupSettings.start();
-      final googleSettings = startSettings.copyWith(
-        backupProvider: BackupSettings.googleBackupProvider(),
+      final initialSettings = BackupSettings.initial();
+      final googleSettings = initialSettings.copyWith(
+        backupProvider: BackupProvider.googleDrive(),
       );
       final action = UpdateBackupSettings(googleSettings);
       bloc.backupActionsSink.add(action);

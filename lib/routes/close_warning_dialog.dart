@@ -1,15 +1,19 @@
+import 'package:breez/widgets/link_text_span.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher_string.dart';
 
-class CloseWarningDialog extends StatelessWidget {
+class CloseWarningDialog extends StatefulWidget {
   final int inactiveDuration;
 
   const CloseWarningDialog(
     this.inactiveDuration,
   );
 
+  @override
+  State<CloseWarningDialog> createState() => _CloseWarningDialogState();
+}
+
+class _CloseWarningDialogState extends State<CloseWarningDialog> {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
@@ -29,7 +33,39 @@ class CloseWarningDialog extends StatelessWidget {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _getContent(context),
+          children: [
+            Padding(
+              padding: const EdgeInsets.only(left: 15.0, right: 12.0),
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    TextSpan(
+                      text: texts.close_warning_dialog_message_begin(
+                        widget.inactiveDuration ~/ 86400,
+                      ),
+                      style: themeData.primaryTextTheme.displaySmall.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
+                    LinkTextSpan(
+                      text: texts.close_warning_dialog_message_middle,
+                      url: texts.close_warning_dialog_url,
+                      style: themeData.primaryTextTheme.displaySmall.copyWith(
+                        fontSize: 16,
+                        decoration: TextDecoration.underline,
+                      ),
+                    ),
+                    TextSpan(
+                      text: texts.close_warning_dialog_message_end,
+                      style: themeData.primaryTextTheme.displaySmall.copyWith(
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
         ),
         actions: [
           TextButton(
@@ -43,60 +79,4 @@ class CloseWarningDialog extends StatelessWidget {
       ),
     );
   }
-
-  List<Widget> _getContent(
-    BuildContext context,
-  ) {
-    final themeData = Theme.of(context);
-    final texts = context.texts();
-
-    return [
-      Padding(
-        padding: const EdgeInsets.only(left: 15.0, right: 12.0),
-        child: RichText(
-          text: TextSpan(
-            children: [
-              TextSpan(
-                text: texts.close_warning_dialog_message_begin(
-                  inactiveDuration ~/ 86400,
-                ),
-                style: themeData.primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 16,
-                ),
-              ),
-              _LinkTextSpan(
-                text: texts.close_warning_dialog_message_middle,
-                url: texts.close_warning_dialog_url,
-                style: themeData.primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 16,
-                  decoration: TextDecoration.underline,
-                ),
-              ),
-              TextSpan(
-                text: texts.close_warning_dialog_message_end,
-                style: themeData.primaryTextTheme.displaySmall.copyWith(
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    ];
-  }
-}
-
-class _LinkTextSpan extends TextSpan {
-  _LinkTextSpan({
-    TextStyle style,
-    String url,
-    String text,
-  }) : super(
-          style: style,
-          text: text ?? url,
-          recognizer: TapGestureRecognizer()
-            ..onTap = () {
-              launchUrlString(url);
-            },
-        );
 }

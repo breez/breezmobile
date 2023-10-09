@@ -1,3 +1,4 @@
+import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
@@ -10,6 +11,12 @@ class WithdrawFetchResponse {
   Int64 get minAmount => response.minAmount;
   Int64 get maxAmount => response.maxAmount;
   bool get isFixedAmount => response.minAmount == response.maxAmount;
+
+  @override
+  String toString() {
+    return 'WithdrawFetchResponse{defaultDescription: $defaultDescription, '
+        'minAmount: $minAmount, maxAmount: $maxAmount, isFixedAmount: $isFixedAmount}';
+  }
 }
 
 class ChannelFetchResponse {

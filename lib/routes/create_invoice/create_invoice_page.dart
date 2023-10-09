@@ -154,7 +154,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             var loaderRoute = createLoaderRoute(context);
                             try {
                               navigator.push(loaderRoute);
-
+                              log.info(
+                                "lsp status ${lspStatus.lastConnectionError}",
+                              );
                               final tempFees =
                                   lspStatus.currentLSP.cheapestOpeningFeeParams;
                               fetchLSPList(lspBloc).then(
@@ -187,8 +189,9 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                   }
                                   showFlushbar(
                                     context,
-                                    message: texts
-                                        .qr_code_dialog_error(e.toString()),
+                                    message: texts.qr_code_dialog_error(
+                                      extractExceptionMessage(e, texts: texts),
+                                    ),
                                   );
                                 },
                               );
@@ -223,12 +226,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                   height: 24.0,
                 ),
                 tooltip: texts.invoice_action_scan_barcode,
-                onPressed: () => account != null
-                    ? _scanBarcode(
-                        context,
-                        account,
-                      )
-                    : null,
+                onPressed: () => account != null ? _scanBarcode(account) : null,
               );
             },
           )
@@ -504,7 +502,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     });
   }
 
-  Future _scanBarcode(BuildContext context, AccountModel account) async {
+  Future _scanBarcode(AccountModel account) async {
     final texts = context.texts();
     final navigator = Navigator.of(context);
     final themeData = Theme.of(context);
@@ -589,7 +587,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
     if (response.isFixedAmount) {
-      _amountController.text = "${response.minAmount}";
+      _amountController.text = account.currency.format(
+        response.minAmount,
+        includeDisplayName: false,
+      );
     }
   }
 
@@ -601,7 +602,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
   ) {
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
-
     invoiceBloc.newInvoiceRequestSink.add(
       InvoiceRequestModel(
         null,

@@ -8,7 +8,7 @@ import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/sleep_selector.dart';
-import 'package:breez/routes/podcast/podcast_clip.dart';
+import 'package:breez/routes/podcast/podcast_clip/podcast_clip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -201,15 +201,18 @@ class _PlayButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeData = Theme.of(context);
+
     final playing = audioState == AudioState.playing;
     final buffering = audioState == null || audioState == AudioState.buffering;
 
     // in case we are buffering show progress indicator.
+    final translations = L.of(context);
     if (buffering) {
       return Tooltip(
           message: playing
-              ? L.of(context).pause_button_label
-              : L.of(context).play_button_label,
+              ? translations.pause_button_label
+              : translations.play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
               shape: const CircleBorder(),
@@ -217,7 +220,7 @@ class _PlayButton extends StatelessWidget {
             onPressed: null,
             child: SpinKitRing(
               lineWidth: 2.0,
-              color: Theme.of(context).colorScheme.secondary,
+              color: themeData.colorScheme.secondary,
               size: 60,
             ),
           ));
@@ -225,14 +228,14 @@ class _PlayButton extends StatelessWidget {
 
     return Tooltip(
       message: playing
-          ? L.of(context).pause_button_label
-          : L.of(context).play_button_label,
+          ? translations.pause_button_label
+          : translations.play_button_label,
       child: TextButton(
         style: TextButton.styleFrom(
           shape: CircleBorder(
-              side: BorderSide(
-                  color: Theme.of(context).highlightColor, width: 0.0)),
-          backgroundColor: Theme.of(context).primaryColor,
+            side: BorderSide(color: themeData.highlightColor, width: 0.0),
+          ),
+          backgroundColor: themeData.primaryColor,
           padding: const EdgeInsets.all(8.0),
         ),
         onPressed: () {

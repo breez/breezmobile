@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/theme_data.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SplashPage extends StatefulWidget {
@@ -46,20 +47,23 @@ class SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Theme(
-      data: blueTheme,
-      child: Scaffold(
-        body: Stack(
-          children: <Widget>[
-            Center(
-              child: Image.asset(
-                'src/images/splash-animation.gif',
-                fit: BoxFit.contain,
-                gaplessPlayback: true,
-                width: MediaQuery.of(context).size.width / 3,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: blueTheme.appBarTheme.systemOverlayStyle,
+      child: Theme(
+        data: blueTheme,
+        child: Scaffold(
+          body: Stack(
+            children: <Widget>[
+              Center(
+                child: Image.asset(
+                  'src/images/splash-animation.gif',
+                  fit: BoxFit.contain,
+                  gaplessPlayback: true,
+                  width: MediaQuery.of(context).size.width / 3,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
