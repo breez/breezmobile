@@ -97,10 +97,9 @@ dependencies:
   webview_flutter_android: ^3.9.3
 
   anytime:
-    # git:
-    #   url: https://github.com/breez/anytime_podcast_player.git
-    #   ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
-    path: /Users/sarthakgupta/Documents/breez/breez_anytime/anytime/anytime_podcast_player
+    git:
+      url: https://github.com/breez/anytime_podcast_player.git
+      ref: c5a46d8195b88e614bfeaa4f5d2ce78976ad7f29
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
