@@ -48,7 +48,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           }
 
           final backupSettings = snapshot.data;
-          bool isRemoteServer = backupSettings.backupProvider?.isRemoteServer;
+          bool isRemoteServer = (backupSettings != null &&
+              backupSettings.backupProvider.isRemoteServer);
 
           return AlertDialog(
             titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
