@@ -20,6 +20,7 @@ class SwapRefundDialog extends StatefulWidget {
 }
 
 class SwapRefundDialogState extends State<SwapRefundDialog> {
+  Future _fetchFuture;
   @override
   void initState() {
     super.initState();
@@ -34,6 +35,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   void _fetchSwapFundStatus() {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     var fetchAction = FetchSwapFundStatus();
+    _fetchFuture = fetchAction.future;
     accountBloc.userActionsSink.add(fetchAction);
   }
 
@@ -52,15 +54,24 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
         maxLines: 1,
       ),
       contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-      content: StreamBuilder<AccountModel>(
-        stream: accountBloc.accountStream,
-        builder: (ctx, snapshot) {
-          final swapStatus = snapshot?.data?.swapFundsStatus;
-          if (swapStatus == null) {
+      content: FutureBuilder(
+        future: _fetchFuture,
+        initialData: texts.add_funds_moonpay_loading,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return const Loader();
           }
+          return StreamBuilder<AccountModel>(
+            stream: accountBloc.accountStream,
+            builder: (ctx, snapshot) {
+              final swapStatus = snapshot?.data?.swapFundsStatus;
+              if (swapStatus == null) {
+                return const Loader();
+              }
 
-          return _build(swapStatus);
+              return _build(swapStatus);
+            },
+          );
         },
       ),
       actions: [
