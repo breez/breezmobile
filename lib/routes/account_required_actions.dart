@@ -266,12 +266,14 @@ class AccountRequiredActionsIndicatorState
     if (swapStatus != null && swapStatus.waitingRefundAddresses.isNotEmpty) {
       warnings.add(
         WarningAction(
-          () => showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (_) => const SwapRefundDialog(),
-          ),
+          () async {
+            showDialog(
+              useRootNavigator: false,
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => const SwapRefundDialog(),
+            );
+          },
         ),
       );
     }
