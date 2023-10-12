@@ -23,9 +23,12 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchSwapFundStatus();
-    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchSwapFundStatus();
   }
 
   void _fetchSwapFundStatus() {
