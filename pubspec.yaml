@@ -98,8 +98,8 @@ dependencies:
 
   anytime:
     git:
-      url: https://github.com/sarthak13gupta/anytime_podcast_player
-      ref: 89be27a95763bfb7878f4143784d17db54799641
+      url: https://github.com/breez/anytime_podcast_player.git
+      ref: c5a46d8195b88e614bfeaa4f5d2ce78976ad7f29
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
