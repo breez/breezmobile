@@ -3,7 +3,7 @@ class AddFundsSettings {
 
   AddFundsSettings({this.moonpayIpCheck});
 
-  AddFundsSettings.start() : this(moonpayIpCheck: true);
+  AddFundsSettings.initial() : this(moonpayIpCheck: true);
 
   AddFundsSettings copyWith({
     bool moonpayIpCheck,

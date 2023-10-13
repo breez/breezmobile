@@ -28,7 +28,7 @@ class MarketplaceBloc {
   }
 
   _initNostrSettings() async {
-    _nostrSettingsController.add(NostrSettings.start());
+    _nostrSettingsController.add(NostrSettings.initial());
   }
 
   _listenNostrSettings() async {

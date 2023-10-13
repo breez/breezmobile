@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -22,13 +21,15 @@ class SwapRefundDialog extends StatefulWidget {
 
 class SwapRefundDialogState extends State<SwapRefundDialog> {
   Future _fetchFuture;
-
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _fetchSwapFundStatus();
-    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _fetchSwapFundStatus();
   }
 
   void _fetchSwapFundStatus() {
@@ -47,7 +48,7 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
 
     return AlertDialog(
       titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 24.0, 16.0),
-      title: AutoSizeText(
+      title: Text(
         texts.funds_over_limit_dialog_on_chain_transaction,
         style: themeData.dialogTheme.titleTextStyle,
         maxLines: 1,
@@ -55,12 +56,11 @@ class SwapRefundDialogState extends State<SwapRefundDialog> {
       contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
       content: FutureBuilder(
         future: _fetchFuture,
-        initialData: "loading",
-        builder: (ctx, loadingSnapshot) {
-          if (loadingSnapshot.data == "loading") {
+        initialData: texts.add_funds_moonpay_loading,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
             return const Loader();
           }
-
           return StreamBuilder<AccountModel>(
             stream: accountBloc.accountStream,
             builder: (ctx, snapshot) {

@@ -42,6 +42,7 @@ import 'package:breez/widgets/view_switch.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class POSInvoice extends StatefulWidget {
   const POSInvoice();
@@ -150,68 +151,74 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     final lnUrlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    final themeData = Theme.of(context);
 
-    return Scaffold(
-      body: StreamBuilder<Sale>(
-        stream: posCatalogBloc.currentSaleStream,
-        builder: (context, saleSnapshot) {
-          var currentSale = saleSnapshot.data;
-          return GestureDetector(
-            onTap: () {
-              // call this method here to hide soft keyboard
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: Builder(
-              builder: (BuildContext context) {
-                return StreamBuilder<BreezUserModel>(
-                  stream: userProfileBloc.userStream,
-                  builder: (context, snapshot) {
-                    final userProfile = snapshot.data;
-                    if (userProfile == null) {
-                      return const Center(child: Loader());
-                    }
-
-                    return StreamBuilder<AccountModel>(
-                      stream: accountBloc.accountStream,
-                      builder: (context, snapshot) {
-                        final accountModel = snapshot.data;
-                        if (accountModel == null) {
-                          return Container();
-                        }
-
-                        return FutureBuilder(
-                          initialData: const [],
-                          future: _fetchRatesActionFuture,
-                          builder: (context, snapshot) {
-                            List<FiatConversion> rates = [];
-                            if (snapshot.hasData) {
-                              final data = snapshot.data;
-                              if (data is List<FiatConversion>) {
-                                rates.addAll(data);
-                              }
-                            }
-
-                            return _body(
-                              accountBloc,
-                              userProfileBloc,
-                              posCatalogBloc,
-                              invoiceBloc,
-                              lnUrlBloc,
-                              userProfile,
-                              accountModel,
-                              currentSale,
-                              rates,
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
-                );
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor: themeData.colorScheme.background,
+      ),
+      child: Scaffold(
+        body: StreamBuilder<Sale>(
+          stream: posCatalogBloc.currentSaleStream,
+          builder: (context, saleSnapshot) {
+            var currentSale = saleSnapshot.data;
+            return GestureDetector(
+              onTap: () {
+                // call this method here to hide soft keyboard
+                FocusScope.of(context).requestFocus(FocusNode());
               },
-            ),
-          );
-        },
+              child: Builder(
+                builder: (BuildContext context) {
+                  return StreamBuilder<BreezUserModel>(
+                    stream: userProfileBloc.userStream,
+                    builder: (context, snapshot) {
+                      final userProfile = snapshot.data;
+                      if (userProfile == null) {
+                        return const Center(child: Loader());
+                      }
+
+                      return StreamBuilder<AccountModel>(
+                        stream: accountBloc.accountStream,
+                        builder: (context, snapshot) {
+                          final accountModel = snapshot.data;
+                          if (accountModel == null) {
+                            return Container();
+                          }
+
+                          return FutureBuilder(
+                            initialData: const [],
+                            future: _fetchRatesActionFuture,
+                            builder: (context, snapshot) {
+                              List<FiatConversion> rates = [];
+                              if (snapshot.hasData) {
+                                final data = snapshot.data;
+                                if (data is List<FiatConversion>) {
+                                  rates.addAll(data);
+                                }
+                              }
+
+                              return _body(
+                                accountBloc,
+                                userProfileBloc,
+                                posCatalogBloc,
+                                invoiceBloc,
+                                lnUrlBloc,
+                                userProfile,
+                                accountModel,
+                                currentSale,
+                                rates,
+                              );
+                            },
+                          );
+                        },
+                      );
+                    },
+                  );
+                },
+              ),
+            );
+          },
+        ),
       ),
     );
   }

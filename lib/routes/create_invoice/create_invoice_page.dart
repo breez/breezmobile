@@ -15,7 +15,6 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
-import 'package:breez/routes/connect_to_pay/connection_status.dart';
 import 'package:breez/routes/create_invoice/lnurl_withdraw_dialog.dart';
 import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -588,7 +587,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
     if (response.isFixedAmount) {
-      _amountController.text = "${response.minAmount}";
+      _amountController.text = account.currency.format(
+        response.minAmount,
+        includeDisplayName: false,
+      );
     }
   }
 

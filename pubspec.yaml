@@ -9,7 +9,7 @@ dependencies:
 
   another_flushbar: ^1.12.30
   app_settings: ^5.0.0
-  archive: ^3.3.7
+  archive: ^3.3.9
   audio_service: ^0.18.10
   auto_size_text: ^3.0.0
   badges: ^3.1.1
@@ -17,7 +17,7 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: 53262f5517217f095acc47b221d25a7002672d9a
+      ref: 5acdc444d8d1715c224ac6be2d266468e22e2658
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0

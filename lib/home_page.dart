@@ -54,6 +54,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
 final GlobalKey firstPaymentItemKey =
@@ -188,40 +189,46 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _initListens();
     final userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
     final mediaSize = MediaQuery.of(context).size;
+    final themeData = Theme.of(context);
 
-    return WillPopScope(
-      onWillPop: willPopCallback(
-        context,
-        canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+    return AnnotatedRegion<SystemUiOverlayStyle>(
+      value: themeData.appBarTheme.systemOverlayStyle.copyWith(
+        systemNavigationBarColor: themeData.bottomAppBarTheme.color,
       ),
-      child: StreamBuilder<BreezUserModel>(
-        stream: userProfileBloc.userStream,
-        builder: (context, userSnapshot) {
-          final appMode = userSnapshot.data?.appMode;
-          return Scaffold(
-            resizeToAvoidBottomInset: false,
-            key: _scaffoldKey,
-            appBar: HomeAppBar(_scaffoldKey),
-            drawerEnableOpenDragGesture: true,
-            drawerDragStartBehavior: DragStartBehavior.down,
-            drawerEdgeDragWidth: mediaSize.width,
-            drawer: HomeNavigationDrawer(
-              _onNavigationItemSelected,
-              _filterItems,
-            ),
-            bottomNavigationBar: appMode == AppMode.balance
-                ? BottomActionsBar(firstPaymentItemKey)
-                : null,
-            floatingActionButton: appMode == AppMode.balance
-                ? QrActionButton(firstPaymentItemKey)
-                : null,
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
 
-            body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
+      child: WillPopScope(
+        onWillPop: willPopCallback(
+          context,
+          canCancel: () => _scaffoldKey.currentState?.isDrawerOpen ?? false,
+        ),
+        child: StreamBuilder<BreezUserModel>(
+          stream: userProfileBloc.userStream,
+          builder: (context, userSnapshot) {
+            final appMode = userSnapshot.data?.appMode;
 
-          );
-        },
+            return Scaffold(
+              resizeToAvoidBottomInset: false,
+              key: _scaffoldKey,
+              appBar: HomeAppBar(_scaffoldKey),
+              drawerEnableOpenDragGesture: true,
+              drawerDragStartBehavior: DragStartBehavior.down,
+              drawerEdgeDragWidth: mediaSize.width,
+              drawer: HomeNavigationDrawer(
+                _onNavigationItemSelected,
+                _filterItems,
+              ),
+              bottomNavigationBar: appMode == AppMode.balance
+                  ? BottomActionsBar(firstPaymentItemKey)
+                  : null,
+              floatingActionButton: appMode == AppMode.balance
+                  ? QrActionButton(firstPaymentItemKey)
+                  : null,
+              floatingActionButtonLocation:
+                  FloatingActionButtonLocation.centerDocked,
+              body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
+            );
+          },
+        ),
       ),
     );
   }
