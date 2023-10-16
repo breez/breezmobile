@@ -205,14 +205,9 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
 
     return GestureDetector(
       behavior: HitTestBehavior.translucent,
-      onLongPressStart: (_) {
+      onTap: () {
         setState(() {
-          _showFiatCurrency = true;
-        });
-      },
-      onLongPressEnd: (_) {
-        setState(() {
-          _showFiatCurrency = false;
+          _showFiatCurrency = !_showFiatCurrency;
         });
       },
       child: ConstrainedBox(
