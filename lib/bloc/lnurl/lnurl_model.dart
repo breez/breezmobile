@@ -1,4 +1,3 @@
-import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:fixnum/fixnum.dart';
 
