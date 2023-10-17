@@ -6,7 +6,6 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
@@ -97,7 +96,9 @@ class _QrActionButtonState extends State<QrActionButton> {
                   // regular lightning invoice.
                   if (lower.startsWith("lightning:") ||
                       lower.startsWith("ln")) {
-                    _log.finest("Scanned string is a regular lightning invoice");
+                    _log.finest(
+                      "Scanned string is a regular lightning invoice",
+                    );
                     invoiceBloc.decodeInvoiceSink.add(scannedString);
                     return;
                   }

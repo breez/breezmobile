@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:breez/widgets/scan_overlay.dart';
@@ -118,9 +117,12 @@ class ImagePickerButton extends StatelessWidget {
       onPressed: () async {
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         final picker = ImagePicker();
-        XFile pickedFile = await picker.pickImage(source: ImageSource.gallery).catchError((err) {
-          _log.warning("Failed to pick image", err);
-        });
+        XFile pickedFile =
+            await picker.pickImage(source: ImageSource.gallery).catchError(
+          (err) {
+            _log.warning("Failed to pick image", err);
+          },
+        );
         _log.info("Picked image: ${pickedFile.path}");
         final File file = File(pickedFile.path);
         try {
