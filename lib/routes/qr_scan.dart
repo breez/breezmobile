@@ -1,13 +1,15 @@
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/widgets/scan_overlay.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:logging/logging.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+
+final _log = Logger("QRScan");
 
 class QRScan extends StatefulWidget {
   @override
@@ -17,10 +19,8 @@ class QRScan extends StatefulWidget {
 }
 
 class QRScanState extends State<QRScan> {
-  final GlobalKey qrKey = GlobalKey(debugLabel: 'QR');
   var popped = false;
   MobileScannerController cameraController = MobileScannerController(
-    detectionSpeed: DetectionSpeed.noDuplicates,
     facing: CameraFacing.back,
     torchEnabled: false,
   );
@@ -40,19 +40,22 @@ class QRScanState extends State<QRScan> {
                 Expanded(
                   flex: 5,
                   child: MobileScanner(
-                    key: qrKey,
                     controller: cameraController,
                     onDetect: (capture) {
+                      _log.info("Detected QR code: $capture");
                       final List<Barcode> barcodes = capture.barcodes;
                       for (final barcode in barcodes) {
-                        log.info("Barcode detected: $barcode");
-                        if (popped || !mounted) return;
+                        _log.info("Barcode detected: $barcode");
+                        if (popped || !mounted) {
+                          _log.fine("QR code detected after pop");
+                          return;
+                        }
                         if (barcode.rawValue == null) {
-                          log.warning("Failed to scan QR code.");
+                          _log.warning("Failed to scan QR code.");
                         } else {
                           popped = true;
                           final String code = barcode.rawValue;
-                          log.info("Popping read QR code $code");
+                          _log.info("Popping read QR code $code");
                           Navigator.of(context).pop(code);
                         }
                       }
@@ -114,27 +117,28 @@ class ImagePickerButton extends StatelessWidget {
       onPressed: () async {
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         final picker = ImagePicker();
-        XFile pickedFile = await picker
-            .pickImage(source: ImageSource.gallery)
-            .catchError((err) {
-          log.warning("Failed to pick image", err);
-        });
-        log.info("Picked image: ${pickedFile.path}");
+        XFile pickedFile =
+            await picker.pickImage(source: ImageSource.gallery).catchError(
+          (err) {
+            _log.warning("Failed to pick image", err);
+          },
+        );
+        _log.info("Picked image: ${pickedFile.path}");
         final File file = File(pickedFile.path);
         try {
           final found = await cameraController.analyzeImage(file.path);
           if (!found) {
-            log.info("No QR code found in image");
+            _log.info("No QR code found in image");
             scaffoldMessenger.showSnackBar(
               SnackBar(
                 content: Text(texts.qr_scan_gallery_failed),
               ),
             );
           } else {
-            log.info("QR code found in image");
+            _log.info("QR code found in image");
           }
         } catch (err) {
-          log.warning("Failed to analyze image", err);
+          _log.warning("Failed to analyze image", err);
         }
       },
     );
