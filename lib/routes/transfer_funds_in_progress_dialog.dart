@@ -29,15 +29,26 @@ class _TransferFundsInProgressDialog extends StatefulWidget {
 class _TransferFundsInProgressDialogState
     extends State<_TransferFundsInProgressDialog> {
   StreamSubscription<AccountModel> _stateSubscription;
+  ModalRoute _currentRoute;
 
   @override
   void initState() {
     super.initState();
     _stateSubscription = widget.accountStream.listen((state) {
-      if (state.transferringOnChainDeposit != true) {
-        _pop();
+      if (state.transferringOnChainDeposit != true && _currentRoute.isActive) {
+        Navigator.of(context).removeRoute(_currentRoute);
       }
-    }, onError: (err) => _pop());
+    }, onError: (err) {
+      if (_currentRoute.isActive) {
+        Navigator.of(context).removeRoute(_currentRoute);
+      }
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _currentRoute ??= ModalRoute.of(context);
   }
 
   @override
@@ -46,13 +57,10 @@ class _TransferFundsInProgressDialogState
     super.dispose();
   }
 
-  _pop() {
-    Navigator.of(context).pop();
-  }
-
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
+
     return createAnimatedLoaderDialog(
       context,
       texts.transferring_funds_title,

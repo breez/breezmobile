@@ -1,5 +1,5 @@
 PODS:
-  - app_settings (4.3.0):
+  - app_settings (5.1.1):
     - Flutter
   - AppAuth (1.6.2):
     - AppAuth/Core (= 1.6.2)
@@ -70,18 +70,18 @@ PODS:
   - Firebase/Messaging (10.15.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.15.0)
-  - firebase_core (2.16.0):
+  - firebase_core (2.17.0):
     - Firebase/CoreOnly (= 10.15.0)
     - Flutter
-  - firebase_database (10.2.6):
+  - firebase_database (10.2.7):
     - Firebase/Database (= 10.15.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (5.3.6):
+  - firebase_dynamic_links (5.3.7):
     - Firebase/DynamicLinks (= 10.15.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.6.8):
+  - firebase_messaging (14.6.9):
     - Firebase/Messaging (= 10.15.0)
     - firebase_core
     - Flutter
@@ -89,14 +89,14 @@ PODS:
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/Logger (~> 7.8)
-  - FirebaseCoreInternal (10.15.0):
+  - FirebaseCoreInternal (10.16.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseDatabase (10.15.0):
     - FirebaseCore (~> 10.0)
     - leveldb-library (~> 1.22)
   - FirebaseDynamicLinks (10.15.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseInstallations (10.15.0):
+  - FirebaseInstallations (10.16.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -223,9 +223,9 @@ PODS:
     - Flutter
   - PromisesObjC (2.3.1)
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.18.1):
-    - SDWebImage/Core (= 5.18.1)
-  - SDWebImage/Core (5.18.1)
+  - SDWebImage (5.18.3):
+    - SDWebImage/Core (= 5.18.3)
+  - SDWebImage/Core (5.18.3)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -392,28 +392,28 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  app_settings: ee4ae4d1c9a907a23b81c40e5c56a5ca8a20a62b
+  app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: 07c49e96d7fc92bc9920617b83238c4d178b446a
-  device_info_plus: 7545d84d8d1b896cb16a4ff98c19f07ec4b298ea
+  device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: b512c28220a2b8ac7419f21c491fc8534b7601ac
   DKPhotoGallery: fdfad5125a9fdda9cc57df834d49df790dbb4179
   ffmpeg-kit-ios-https-gpl: e43266620f2b601959b473be4a09ea190d7d9c40
   ffmpeg_kit_flutter_https_gpl: 6434a09be0b21b6ee399e855935684f5e81cb5b7
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: 66043bd4579e5b73811f96829c694c7af8d67435
-  firebase_core: 77172d0a9d8d19d07606e24406e4c2fc14d3265b
-  firebase_database: 99bb3411da9863a065d38ef645bf160a2410762a
-  firebase_dynamic_links: 27625ac999a9353d6e323c07db85c3b55c5c6839
-  firebase_messaging: 6aff54d420b7ce7080c26dd131b08bc632666852
+  firebase_core: 28e84c2a4fcf6a50ef83f47b145ded8c1fa331e4
+  firebase_database: 1af9fdbaef52dd3be040be031db086cd2b450133
+  firebase_dynamic_links: 52f5d054c676061cf17f4390f3bad9cc964cfdeb
+  firebase_messaging: 91ec967913a5d144f951b3c3ac17a57796d38735
   FirebaseCore: 2cec518b43635f96afe7ac3a9c513e47558abd2e
-  FirebaseCoreInternal: 2f4bee5ed00301b5e56da0849268797a2dd31fb4
+  FirebaseCoreInternal: 26233f705cc4531236818a07ac84d20c333e505a
   FirebaseDatabase: f93f1481c7e9e3d77af960cdff82a408d37693e6
   FirebaseDynamicLinks: 206d4ed3efd2b722822598017f3980d9fda89815
-  FirebaseInstallations: cae95cab0f965ce05b805189de1d4c70b11c76fb
+  FirebaseInstallations: b822f91a61f7d1ba763e5ccc9d4f2e6f2ed3b3ee
   FirebaseMessaging: 0c0ae1eb722ef0c07f7801e5ded8dccd1357d6d4
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
@@ -443,14 +443,14 @@ SPEC CHECKSUMS:
   nanopb: b552cce312b6c8484180ef47159bc0f65a1f0431
   nfc_in_flutter: c656fbfb1ec5b9d021da87b0c87629d62fd5264d
   nfc_manager: d7da7cb781f7744b94df5fe9dbca904ac4a0939e
-  package_info_plus: fd030dabf36271f146f1f3beacd48f564b0f17f7
+  package_info_plus: 115f4ad11e0698c8c1c5d8a689390df880f47e85
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   permission_handler_apple: e76247795d700c14ea09e3a2d8855d41ee80a2e6
   printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: ebdbcebc7933a45226d9313bd0118bc052ad458b
-  share_plus: 599aa54e4ea31d4b4c0e9c911bcc26c55e791028
+  SDWebImage: 96e0c18ef14010b7485210e92fac888587ebb958
+  share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
   SwiftyGif: 93a1cc87bf3a51916001cf8f3d63835fb64c819f
@@ -462,4 +462,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ef7fa92d8242f8f58d9aa60a4928be7b473f69a9
 
-COCOAPODS: 1.12.1
+COCOAPODS: 1.13.0
