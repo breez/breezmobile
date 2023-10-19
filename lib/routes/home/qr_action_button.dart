@@ -8,7 +8,6 @@ import 'package:breez/bloc/nostr/nostr_actions.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/lnurl_handler.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
 import 'package:breez/routes/withdraw_funds/reverse_swap_page.dart';
 import 'package:breez/services/injector.dart';
@@ -26,8 +25,11 @@ import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:logging/logging.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 import 'package:validators/validators.dart';
+
+final _log = Logger("QrActionButton");
 
 class QrActionButton extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
@@ -56,11 +58,11 @@ class _QrActionButtonState extends State<QrActionButton> {
         height: 64,
         child: FloatingActionButton(
           onPressed: () async {
-            log.finest("Start qr code scan");
+            _log.finest("Start qr code scan");
             final navigator = Navigator.of(context);
             navigator.pushNamed<String>("/qr_scan").then(
               (scannedString) async {
-                log.finest("Scanned string: '$scannedString'");
+                _log.finest("Scanned string: '$scannedString'");
                 if (scannedString != null) {
                   if (scannedString.isEmpty) {
                     showFlushbar(
@@ -85,7 +87,7 @@ class _QrActionButtonState extends State<QrActionButton> {
 
                   // lnurl string
                   if (isLNURL(lower)) {
-                    log.finest("Scanned string is a lnurl");
+                    _log.finest("Scanned string is a lnurl");
                     await _handleLNUrl(lnurlBloc, scannedString);
                     return;
                   }
@@ -93,7 +95,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                   // lightning address
                   final v = parseLightningAddress(scannedString);
                   if (v != null) {
-                    log.finest("Scanned string is a lightning address");
+                    _log.finest("Scanned string is a lightning address");
                     lnurlBloc.lnurlInputSink.add(v);
                     return;
                   }
@@ -101,7 +103,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                   // bip 21
                   String lnInvoice = extractBolt11FromBip21(lower);
                   if (lnInvoice != null) {
-                    log.finest(
+                    _log.finest(
                       "Scanned string is a bolt11 extract from bip 21",
                     );
                     lower = lnInvoice;
@@ -110,7 +112,9 @@ class _QrActionButtonState extends State<QrActionButton> {
                   // regular lightning invoice.
                   if (lower.startsWith("lightning:") ||
                       lower.startsWith("ln")) {
-                    log.finest("Scanned string is a regular lightning invoice");
+                    _log.finest(
+                      "Scanned string is a regular lightning invoice",
+                    );
                     invoiceBloc.decodeInvoiceSink.add(scannedString);
                     return;
                   }
@@ -119,7 +123,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                   BTCAddressInfo btcInvoice = parseBTCAddress(scannedString);
 
                   if (await _isBTCAddress(btcInvoice.address)) {
-                    log.finest("Scanned string is a bitcoin address");
+                    _log.finest("Scanned string is a bitcoin address");
                     String requestAmount;
                     if (btcInvoice.satAmount != null) {
                       final account =
@@ -143,7 +147,7 @@ class _QrActionButtonState extends State<QrActionButton> {
 
                   var nodeID = parseNodeId(scannedString);
                   if (nodeID != null) {
-                    log.finest("Scanned string is a node id");
+                    _log.finest("Scanned string is a node id");
                     navigator.push(
                       FadeInRoute(
                         builder: (_) => SpontaneousPaymentPage(
@@ -157,7 +161,7 @@ class _QrActionButtonState extends State<QrActionButton> {
 
                   // Open on whenever app the system links to
                   if (await canLaunchUrlString(scannedString)) {
-                    log.finest("Scanned string is a launchable url");
+                    _log.finest("Scanned string is a launchable url");
                     _handleWebAddress(scannedString);
                     return;
                   }
@@ -169,12 +173,12 @@ class _QrActionButtonState extends State<QrActionButton> {
                     allowUnderscore: true,
                   );
                   if (validUrl) {
-                    log.finest("Scanned string is a valid url");
+                    _log.finest("Scanned string is a valid url");
                     _handleWebAddress(scannedString);
                     return;
                   }
 
-                  log.finest("Scanned string is unrecognized");
+                  _log.finest("Scanned string is unrecognized");
                   showFlushbar(
                     context,
                     message: texts.qr_action_button_error_code_not_processed,

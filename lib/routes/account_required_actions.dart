@@ -82,8 +82,10 @@ class AccountRequiredActionsIndicatorState
   Widget _buildLoader(BackupState backupState, AccountModel account) {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+    final texts = context.texts();
 
     Widget Function(BuildContext) dialogBuilder;
+    String tooltip = "";
 
     if (backupState?.inProgress == true) {
       dialogBuilder = (_) => buildBackupInProgressDialog(
@@ -91,11 +93,13 @@ class AccountRequiredActionsIndicatorState
             backupBloc.backupStateStream,
             onFinished: () {},
           );
+      tooltip = texts.account_required_actions_backup;
     } else if (account?.transferringOnChainDeposit == true) {
       dialogBuilder = (_) => buildTransferFundsInProgressDialog(
             context,
             accountBloc.accountStream,
           );
+      tooltip = texts.transferring_funds_title;
     }
 
     if (dialogBuilder != null) {
@@ -103,6 +107,7 @@ class AccountRequiredActionsIndicatorState
         () {
           showDialog(context: context, builder: dialogBuilder);
         },
+        tooltip: tooltip,
         iconWidget: Rotator(
           child: Image(
             image: const AssetImage("src/icon/sync.png"),
@@ -207,6 +212,7 @@ class AccountRequiredActionsIndicatorState
     bool hasError,
     Object backupError,
   ) {
+    final texts = context.texts();
     final themeData = Theme.of(context);
     final navigatorState = Navigator.of(context);
 
@@ -215,7 +221,10 @@ class AccountRequiredActionsIndicatorState
 
     if (walletBalance > 0 && !accountSettings.ignoreWalletBalance) {
       warnings.add(
-        WarningAction(() => navigatorState.pushNamed("/send_coins")),
+        WarningAction(
+          () => navigatorState.pushNamed("/send_coins"),
+          tooltip: texts.unexpected_funds_title,
+        ),
       );
     }
 
@@ -230,6 +239,7 @@ class AccountRequiredActionsIndicatorState
               builder: (_) => const EnableBackupDialog(),
             );
           },
+          tooltip: texts.account_required_actions_backup,
         ),
       );
     }
@@ -251,6 +261,7 @@ class AccountRequiredActionsIndicatorState
                 builder: (_) => CloseWarningDialog(inactiveWarningDuration),
               );
             },
+            tooltip: texts.close_warning_dialog_title,
           ),
         );
       }
@@ -266,12 +277,15 @@ class AccountRequiredActionsIndicatorState
     if (swapStatus != null && swapStatus.waitingRefundAddresses.isNotEmpty) {
       warnings.add(
         WarningAction(
-          () => showDialog(
-            useRootNavigator: false,
-            barrierDismissible: false,
-            context: context,
-            builder: (_) => const SwapRefundDialog(),
-          ),
+          () async {
+            showDialog(
+              useRootNavigator: false,
+              barrierDismissible: false,
+              context: context,
+              builder: (_) => const SwapRefundDialog(),
+            );
+          },
+          tooltip: texts.funds_over_limit_dialog_on_chain_transaction,
         ),
       );
     }
@@ -283,6 +297,7 @@ class AccountRequiredActionsIndicatorState
           () => accountBloc.userActionsSink.add(
             ChangeSyncUIState(SyncUIState.BLOCKING),
           ),
+          tooltip: texts.handler_sync_ui_message,
           iconWidget: Rotator(
             child: Image(
               image: const AssetImage("src/icon/sync.png"),
@@ -310,6 +325,7 @@ class AccountRequiredActionsIndicatorState
               navigatorState.pushNamed("/select_lsp");
             }
           },
+          tooltip: texts.account_page_activation_provider_label,
         ),
       );
     }
@@ -329,10 +345,12 @@ class AccountRequiredActionsIndicatorState
 class WarningAction extends StatefulWidget {
   final void Function() onTap;
   final Widget iconWidget;
+  final String tooltip;
 
   const WarningAction(
     this.onTap, {
     this.iconWidget,
+    this.tooltip = "",
   });
 
   @override
@@ -374,7 +392,6 @@ class WarningActionState extends State<WarningAction>
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final texts = context.texts();
 
     return IconButton(
       iconSize: 45.0,
@@ -390,7 +407,7 @@ class WarningActionState extends State<WarningAction>
               ),
             ),
       ),
-      tooltip: texts.account_required_actions_backup,
+      tooltip: widget.tooltip,
       onPressed: widget.onTap,
     );
   }
