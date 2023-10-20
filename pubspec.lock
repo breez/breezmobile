@@ -190,8 +190,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5acdc444d8d1715c224ac6be2d266468e22e2658"
-      resolved-ref: "5acdc444d8d1715c224ac6be2d266468e22e2658"
+      ref: db1ed37860d4378316e23ab52c5c21d32b4e7831
+      resolved-ref: db1ed37860d4378316e23ab52c5c21d32b4e7831
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
@@ -1819,6 +1819,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.11.0"
+  store_checker:
+    dependency: "direct main"
+    description:
+      name: store_checker
+      sha256: c9c1a93f11fa756fea23a2a08d7e54e84626a8d3c759cf49fc694a3a5afdc705
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.4.0"
   stream_channel:
     dependency: transitive
     description:
