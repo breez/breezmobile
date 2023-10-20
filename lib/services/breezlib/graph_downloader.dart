@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
+import 'package:breez/services/download_manager.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../download_manager.dart';
+final _log = Logger("GraphDownloader");
 
 class GraphDownloader {
   final DownloadTaskManager downloadManager;
@@ -24,9 +25,9 @@ class GraphDownloader {
 
   Future init() async {
     downloadManager.downloadProgress.listen((event) async {
-      log.info("GraphDownloader event: ${event.id}");
-      log.info("GraphDownloader event: ${event.status}");
-      log.info("GraphDownloader event: ${event.percentage}");
+      _log.info("GraphDownloader event: ${event.id}");
+      _log.info("GraphDownloader event: ${event.status}");
+      _log.info("GraphDownloader event: ${event.percentage}");
       var tasks = await downloadManager.loadTasks();
       var downloadURL = (await preferences).getString("graph_url");
       var currentTask = tasks.firstWhere(
@@ -34,7 +35,7 @@ class GraphDownloader {
           orElse: () => null);
       if (currentTask != null &&
           finalTaskStatuses.contains(currentTask.status)) {
-        log.info("GraphDownloader task status = ${currentTask.status}");
+        _log.info("GraphDownloader task status = ${currentTask.status}");
         await _onTaskFinished(currentTask);
       }
     });
@@ -67,27 +68,27 @@ class GraphDownloader {
         }
 
         if (tasks[i].status == DownloadTaskStatus.enqueued) {
-          log.info("removing enqueued download graph task");
+          _log.info("removing enqueued download graph task");
           downloadManager.removeTask(tasks[i].taskId);
           continue;
         }
 
         if (tasks[i].status == DownloadTaskStatus.complete) {
-          log.info(
+          _log.info(
               "Already has a recently completed graph download task, using it");
           _onTaskFinished(tasks[i]);
           return _downloadCompleter.future;
         }
 
         if (tasks[i].status == DownloadTaskStatus.running) {
-          log.info(
+          _log.info(
               "Already has graph download task running, not starting another one");
           return _downloadCompleter.future;
         }
       }
     }
 
-    log.info("Graph download started");
+    _log.info("Graph download started");
     var appDir = await getApplicationDocumentsDirectory();
     var downloadDirPath = '${appDir.path}${Platform.pathSeparator}Download';
     var downloadDir = Directory(downloadDirPath);

@@ -6,7 +6,6 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/restore_pin_code.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/snapshot_info_tile.dart';
 import 'package:breez/routes/initial_walkthrough/mnemonics/enter_mnemonics.dart';
@@ -17,6 +16,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/material.dart';
 import 'package:hex/hex.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("RestoreDialog");
 
 class RestoreDialog extends StatefulWidget {
   final List<SnapshotInfo> snapshots;
@@ -115,13 +117,13 @@ class RestoreDialogState extends State<RestoreDialog> {
     }
     if (_selectedSnapshot.encrypted) {
       if (_selectedSnapshot.encryptionType.startsWith("Mnemonics")) {
-        log.info(
+        _log.info(
           'restoring backup with mnemonic of type ${_selectedSnapshot.encryptionType}',
         );
         _restoreNodeFromMnemonicSeed();
         return;
       } else {
-        log.info('restoring backup with pin"');
+        _log.info('restoring backup with pin"');
         _restoreNodeUsingPIN();
         return;
       }
@@ -176,7 +178,7 @@ class RestoreDialogState extends State<RestoreDialog> {
   void _restoreNodeUsingPIN() async {
     String pin = await _getPIN();
     if (pin != null) {
-      log.info("Restore Node using PIN: $pin");
+      _log.info("Restore Node using PIN: $pin");
       final key = sha256.convert(utf8.encode(pin));
       _restore(_selectedSnapshot, key.bytes);
     }

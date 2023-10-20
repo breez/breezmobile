@@ -9,7 +9,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/beta_warning_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/restore_dialog.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
@@ -23,6 +22,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("InitialWalkthroughPage");
 
 class InitialWalkthroughPage extends StatefulWidget {
   final BackupBloc backupBloc;
@@ -195,7 +197,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   /* Let's Breez */
 
   void _letsBreez() async {
-    log.info("Registering new node");
+    _log.info("Registering new node");
     await showDialog(
       useRootNavigator: false,
       context: context,
@@ -208,7 +210,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
 
           await _signOut().timeout(
             const Duration(seconds: 8),
-            onTimeout: () => log.info("sign out timed out"),
+            onTimeout: () => _log.info("sign out timed out"),
           );
           await _resetBackupSettings();
           await _resetSecurityModel();
@@ -260,11 +262,11 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
   /* Restore From Backup */
 
   void _restoreFromBackup() async {
-    log.info("Restore from Backup");
+    _log.info("Restore from Backup");
     // Timeout is added for Graphene/CalyxOS devices
     await _signOut().timeout(
       const Duration(seconds: 8),
-      onTimeout: () => log.info("sign out timed out"),
+      onTimeout: () => _log.info("sign out timed out"),
     );
     _showSelectProviderDialog().then((snapshots) {
       _showRestoreDialog(snapshots).then((restoreRequest) {
