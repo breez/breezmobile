@@ -17,7 +17,7 @@ dependencies:
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: 5acdc444d8d1715c224ac6be2d266468e22e2658
+      ref: db1ed37860d4378316e23ab52c5c21d32b4e7831
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0
@@ -85,6 +85,7 @@ dependencies:
   shimmer: ^3.0.0
   simple_animations: ^5.0.2
   sqflite: <2.3.0 # Requires Flutter 3.10
+  store_checker: ^1.4.0
   timeago: ^3.5.0
   tutorial_coach_mark: ^1.2.9
   uni_links: ^0.5.1
