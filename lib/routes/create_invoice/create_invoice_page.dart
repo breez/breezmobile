@@ -13,10 +13,10 @@ import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/charge/successful_payment.dart';
 import 'package:breez/routes/create_invoice/lnurl_withdraw_dialog.dart';
 import 'package:breez/routes/create_invoice/qr_code_dialog.dart';
+import 'package:breez/routes/create_invoice/setup_fees_dialog.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -40,8 +40,9 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 
-import 'setup_fees_dialog.dart';
+final _log = Logger("CreateInvoicePage");
 
 class CreateInvoicePage extends StatefulWidget {
   final WithdrawFetchResponse lnurlWithdraw;
@@ -154,7 +155,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             var loaderRoute = createLoaderRoute(context);
                             try {
                               navigator.push(loaderRoute);
-                              log.info(
+                              _log.info(
                                 "lsp status ${lspStatus.lastConnectionError}",
                               );
                               final tempFees =
@@ -633,7 +634,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
           barrierDismissible: false,
           builder: (_) => dialog,
         ), () {
-      log.info("waiting for payment background task finished");
+      _log.info("waiting for payment background task finished");
     });
   }
 

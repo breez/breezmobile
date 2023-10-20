@@ -1,8 +1,10 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = Logger("Notifications");
 
 abstract class Notifications {
   Future<String> getToken();
@@ -26,7 +28,7 @@ class FirebaseNotifications implements Notifications {
   }
 
   Future<dynamic> _onMessage(RemoteMessage message) {
-    log.info("_onMessage = ${message.data}");
+    _log.info("_onMessage = ${message.data}");
     var data = message.data["data"] ?? message.data["aps"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);
@@ -35,7 +37,7 @@ class FirebaseNotifications implements Notifications {
   }
 
   Future<dynamic> _onResume(RemoteMessage message) {
-    log.info("_onResume = ${message.data}");
+    _log.info("_onResume = ${message.data}");
     var data = message.data["data"] ?? message.data;
     if (data != null) {
       _notificationController.add(data);

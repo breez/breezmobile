@@ -1,13 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/services/device.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/services/supported_schemes.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
 import 'package:nfc_manager/nfc_manager.dart';
 
-import 'injector.dart';
+final _log = Logger("NFC");
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
@@ -52,9 +53,9 @@ class NFCService {
 
   _listenLnLinks() async {
     // Check availability
-    log.info("check if nfc available");
+    _log.info("check if nfc available");
     bool isAvailable = await NfcManager.instance.isAvailable();
-    log.info("nfc available $isAvailable");
+    _log.info("nfc available $isAvailable");
     if (isAvailable && Platform.isAndroid) {
       _startNFCSession();
       ServiceInjector().device.eventStream.distinct().listen((event) {
@@ -63,7 +64,7 @@ class NFCService {
             _startNFCSession();
             break;
           case NotificationType.PAUSE:
-            log.info("nfc stop session");
+            _log.info("nfc stop session");
             NfcManager.instance.stopSession();
             break;
         }
@@ -76,19 +77,19 @@ class NFCService {
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
         var ndef = Ndef.from(tag);
-        log.info("tag data: ${tag.data.toString()}");
+        _log.info("tag data: ${tag.data.toString()}");
         if (ndef != null) {
           for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
             final link = extractPayloadLink(payload);
             if (link != null) {
-              log.info("nfc broadcasting link: $link");
+              _log.info("nfc broadcasting link: $link");
               _lnLinkController.add(link);
               if (autoClose) {
                 NfcManager.instance.stopSession();
               }
             } else {
-              log.info("nfc skip payload: $payload");
+              _log.info("nfc skip payload: $payload");
             }
           }
         }

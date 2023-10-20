@@ -10,7 +10,6 @@ import 'package:breez/bloc/lnurl/lnurl_actions.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/lnurl_metadata_extension.dart';
 import 'package:breez/utils/min_font_size.dart';
@@ -26,6 +25,9 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("LNURLFetchInvoicePage");
 
 class LNURLFetchInvoicePage extends StatefulWidget {
   final PayFetchResponse payFetchResponse;
@@ -87,7 +89,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
   @override
   void dispose() {
-    log.info('LNURLFetchInvoicePage disposed.');
+    _log.info('LNURLFetchInvoicePage disposed.');
     _doneAction.dispose();
     super.dispose();
   }
@@ -355,7 +357,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
   ) async {
     final invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
     final lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
-    log.info('_getInvoice.');
+    _log.info('_getInvoice.');
     /*
          5. LN WALLET makes a GET request using callback with the following query parameters:
          amount (input) - user specified sum in MilliSatoshi
@@ -391,7 +393,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
       );
     }).then((payinfo) {
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
-      log.info(
+      _log.info(
           '_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');
       _removeLoader();
 

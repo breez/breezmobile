@@ -5,7 +5,6 @@ import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/circular_progress.dart';
@@ -14,7 +13,10 @@ import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:share_plus/share_plus.dart';
+
+final _log = Logger("QrCodeDialog");
 
 class QrCodeDialog extends StatefulWidget {
   final BuildContext context;
@@ -346,7 +348,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
         if (accSnapshot.data.fiatCurrency != null) {
           fiatCurrencyString = accSnapshot.data.fiatCurrency.format(lspFee);
         } else {
-          log.info("Failed to format LSP fee as a fiat currency");
+          _log.info("Failed to format LSP fee as a fiat currency");
         }
         return texts.qr_code_dialog_warning_message_with_lsp(
           Currency.SAT.format(lspFee),

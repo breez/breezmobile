@@ -5,7 +5,6 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/select_backup_provider_dialog.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
@@ -14,6 +13,9 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("EnableBackupDialog");
 
 class EnableBackupDialog extends StatefulWidget {
   const EnableBackupDialog();
@@ -228,7 +230,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
                                 backupBloc.backupServiceNeedLoginSink.add(true);
                               } catch (e) {
-                                log.warning("Failed to re-login & backup.", e);
+                                _log.warning("Failed to re-login & backup.", e);
                                 _handleError(e);
                               } finally {
                                 EasyLoading.dismiss();
@@ -326,7 +328,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         Navigator.pop(context);
       });
     } catch (error) {
-      log.warning("Failed to update backup provider.", error);
+      _log.warning("Failed to update backup provider.", error);
       _handleError(error, dismissOnError: dismissOnError);
       rethrow;
     }

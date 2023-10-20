@@ -8,7 +8,6 @@ import 'package:breez/bloc/connect_pay/connect_pay_model.dart';
 import 'package:breez/bloc/connect_pay/payee_session.dart';
 import 'package:breez/bloc/connect_pay/payer_session.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
@@ -17,7 +16,10 @@ import 'package:breez/services/injector.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:grpc/grpc.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = Logger("ConnectPayBloc");
 
 /*
 Bloc that responsible for creating online payments session.
@@ -55,7 +57,7 @@ class ConnectPayBloc {
   }
 
   Future startSession(PayerRemoteSession currentSession) {
-    log.info("starting a remote payment session as payer...");
+    _log.info("starting a remote payment session as payer...");
     //clean current session on terminate
     currentSession.terminationStream.first.then((_) {
       if (_currentSession == currentSession) {
@@ -66,10 +68,10 @@ class ConnectPayBloc {
     return _breezServer
         .joinSession(true, _currentUser.name, _currentUser.token)
         .then((newSessionReply) async {
-      log.info("successfullly joined to a remote session");
+      _log.info("successfullly joined to a remote session");
       CreateRatchetSessionReply session = await _breezLib.createRatchetSession(
           newSessionReply.sessionID, newSessionReply.expiry);
-      log.info("successfully created an encrypted session");
+      _log.info("successfully created an encrypted session");
       SessionLinkModel payerLink =
           SessionLinkModel(session.sessionID, session.secret, session.pubKey);
       currentSession.start(payerLink);
@@ -77,17 +79,17 @@ class ConnectPayBloc {
   }
 
   Future<RemoteSession> joinSessionByLink(SessionLinkModel sessionLink) async {
-    log.info(
+    _log.info(
         'joinSessionByLink - sessionID = ${sessionLink.sessionID} sessionSecret = ${sessionLink.sessionSecret} initiatorPubKey = ${sessionLink.initiatorPubKey}');
     RatchetSessionInfoReply sessionInfo =
         await _breezLib.ratchetSessionInfo(sessionLink.sessionID);
     bool existingSession = sessionInfo.sessionID.isNotEmpty;
-    log.info('joinSessionByLink - existing session = $existingSession');
+    _log.info('joinSessionByLink - existing session = $existingSession');
 
     if (!existingSession &&
         (sessionLink.sessionSecret == null ||
             sessionLink.initiatorPubKey == null)) {
-      log.info(
+      _log.info(
           'joinSessionByLink - SessionExpiredException because session does not exist on client');
       throw SessionExpiredException();
     }
@@ -119,7 +121,7 @@ class ConnectPayBloc {
         }
       });
     } catch (e) {
-      log.info(
+      _log.info(
           'joinSessionByLink - SessionExpiredException because session does not exist on server',
           e);
       if (e.runtimeType == GrpcError) {

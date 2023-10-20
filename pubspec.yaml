@@ -25,6 +25,7 @@ dependencies:
   convert: ^3.1.1
   crypto: ^3.0.3
   csv: ^5.0.2
+  device_info_plus: ^9.1.0
   dio: ^5.3.2
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.13
@@ -43,6 +44,7 @@ dependencies:
   flutter_spinkit: ^5.2.0
   flutter_svg: ^2.0.7
   flutter_web_browser: ^0.17.1
+  git_info: ^1.1.2
   google_api_availability: ^5.0.0
   grpc: <3.2.0 # Requires Flutter 3.10
   hex: ^0.2.0
@@ -164,6 +166,8 @@ flutter:
     - src/pos-icons/
     - assets/images/
     - assets/icons/
+    - .git/
+    - .git/refs/heads/
 
   fonts:
     - family: IBMPlexSans

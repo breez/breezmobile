@@ -5,14 +5,16 @@ import 'dart:typed_data';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_details_model.dart';
-import 'package:breez/logger.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_kit.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/ffmpeg_session.dart';
 import 'package:ffmpeg_kit_flutter_https_gpl/return_code.dart';
 import 'package:image/image.dart';
+import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:share_plus/share_plus.dart';
+
+final _log = Logger("PodcastClipBloc");
 
 const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
@@ -158,7 +160,7 @@ class PodcastClipBloc with AsyncActionsHandler {
         "[0:a]showwaves=$showWaveColor:$mode:$size:$scale,$format;$scaleValue;$overlay";
     final clippedVideoCommand =
         '-i  $audioClipPath -i $episodeImagePath -filter_complex $filterComplex -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
-    log.info("ffmpeg command: $clippedVideoCommand");
+    _log.info("ffmpeg command: $clippedVideoCommand");
 
     FFmpegSession ffpegSessionDetails =
         await FFmpegKit.execute(clippedVideoCommand);
@@ -224,7 +226,7 @@ class PodcastClipBloc with AsyncActionsHandler {
         Share.shareXFiles([XFile(videoClipPath)]);
       }
     } catch (e) {
-      log.warning(e);
+      _log.warning(e);
       throw "Failed to clip the episode. More details: ${e.toString()}";
     } finally {
       _clipDetailsBehaviourSubject
