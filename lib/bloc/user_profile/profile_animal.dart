@@ -1,12 +1,15 @@
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:breez_translations/generated/breez_translations_bg.dart';
+import 'package:breez_translations/generated/breez_translations_cs.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
-import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:breez_translations/generated/breez_translations_el.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:breez_translations/generated/breez_translations_es.dart';
 import 'package:breez_translations/generated/breez_translations_fi.dart';
 import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/material.dart';
 
@@ -178,6 +181,8 @@ extension ProfileAnimalExtension on ProfileAnimal {
 }
 
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
+  "bg": _buildAnimalsFromName(BreezTranslationsBg()),
+  "cs": _buildAnimalsFromName(BreezTranslationsCs()),
   "de": _buildAnimalsFromName(BreezTranslationsDe()),
   "el": _buildAnimalsFromName(BreezTranslationsEl()),
   "en": _buildAnimalsFromName(BreezTranslationsEn()),
@@ -186,6 +191,7 @@ Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "fr": _buildAnimalsFromName(BreezTranslationsFr()),
   "it": _buildAnimalsFromName(BreezTranslationsIt()),
   "pt": _buildAnimalsFromName(BreezTranslationsPt()),
+  "sk": _buildAnimalsFromName(BreezTranslationsSk()),
   "sv": _buildAnimalsFromName(BreezTranslationsSv()),
 };
 
