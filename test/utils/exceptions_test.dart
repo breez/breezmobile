@@ -1,4 +1,6 @@
 import 'package:breez/utils/exceptions.dart';
+import 'package:breez_translations/generated/breez_translations_bg.dart';
+import 'package:breez_translations/generated/breez_translations_cs.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
 import 'package:breez_translations/generated/breez_translations_el.dart';
 import 'package:breez_translations/generated/breez_translations_en.dart';
@@ -7,6 +9,7 @@ import 'package:breez_translations/generated/breez_translations_fi.dart';
 import 'package:breez_translations/generated/breez_translations_fr.dart';
 import 'package:breez_translations/generated/breez_translations_it.dart';
 import 'package:breez_translations/generated/breez_translations_pt.dart';
+import 'package:breez_translations/generated/breez_translations_sk.dart';
 import 'package:breez_translations/generated/breez_translations_sv.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -108,6 +111,8 @@ void main() {
   });
 
   final locales = {
+    "bg": BreezTranslationsBg(),
+    "cs": BreezTranslationsCs(),
     "de": BreezTranslationsDe(),
     "el": BreezTranslationsEl(),
     "en": BreezTranslationsEn(),
@@ -116,6 +121,7 @@ void main() {
     "fr": BreezTranslationsFr(),
     "it": BreezTranslationsIt(),
     "pt": BreezTranslationsPt(),
+    "sk": BreezTranslationsSk(),
     "sv": BreezTranslationsSv(),
   };
   group("localizedExceptionMessage", () {
