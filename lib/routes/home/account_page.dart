@@ -229,34 +229,34 @@ class _FilterChip extends StatelessWidget {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     if (filter.startDate != null && filter.endDate != null) {
-      return Container();
-    }
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(5),
-      child: Container(
-        color: theme.customData[theme.themeId].paymentListBgColor,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
-              child: Chip(
-                backgroundColor: Theme.of(context).bottomAppBarTheme.color,
-                label: Text(BreezDateUtils.formatFilterDateRange(
-                  filter.startDate,
-                  filter.endDate,
-                )),
-                onDeleted: () => accountBloc.paymentFilterSink.add(
-                  PaymentFilterModel(filter.paymentType, null, null),
+      return ClipRRect(
+        borderRadius: BorderRadius.circular(5),
+        child: Container(
+          color: theme.customData[theme.themeId].paymentListBgColor,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 8, left: 16.0, bottom: 8),
+                child: Chip(
+                  backgroundColor: Theme.of(context).bottomAppBarTheme.color,
+                  label: Text(BreezDateUtils.formatFilterDateRange(
+                    filter.startDate,
+                    filter.endDate,
+                  )),
+                  onDeleted: () => accountBloc.paymentFilterSink.add(
+                    PaymentFilterModel(filter.paymentType, null, null),
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
-      ),
-    );
+      );
+    } else {
+      return Container();
+    }
   }
 }
 
