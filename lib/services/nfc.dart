@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/supported_schemes.dart';
-import 'package:cktap_protocol/cktap_protocol.dart';
+import 'package:cktap_protocol/cktapcard.dart';
+import 'package:cktap_protocol/tap_protocol.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -13,10 +14,17 @@ final _log = Logger("NFC");
 
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
+  final StreamController<Satscard> _satscardController =
+      StreamController<Satscard>.broadcast();
+
   final StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
   Timer _checkNfcStartedWithTimer;
+
+  Stream<Satscard> receivedSatscards() {
+    return _satscardController.stream;
+  }
 
   Stream<String> receivedLnLinks() {
     return _lnLinkController.stream;
@@ -77,21 +85,13 @@ class NFCService {
     await NfcManager.instance.stopSession();
     NfcManager.instance.startSession(
       onDiscovered: (NfcTag tag) async {
-        if (!autoClose) {
-          var wasHandled = await _handleSatscard(tag);
-          if (wasHandled) {
-            return;
-          }
-        }
         var ndef = Ndef.from(tag);
         _log.info("tag data: ${tag.data.toString()}");
         if (ndef != null) {
           for (var rec in ndef.cachedMessage.records) {
             String payload = String.fromCharCodes(rec.payload);
-            final link = extractPayloadLink(payload);
-            if (link != null) {
-              _log.info("nfc broadcasting link: $link");
-              _lnLinkController.add(link);
+            if (!(await _handleSatscard(payload, tag)) ||
+                _handleLnLink(payload)) {
               if (autoClose) {
                 NfcManager.instance.stopSession();
               }
@@ -104,18 +104,40 @@ class NFCService {
     );
   }
 
-  Future<bool> _handleSatscard(NfcTag tag) async {
-    var card = await CKTapCardProtocol.instance.createCKTapCard(tag);
-    if (card.isTapsigner) {
-      // we don't care
-      var tapsigner = card.toTapsigner();
-      assert(tapsigner != null); // serious library error if this ever triggers
+  bool _handleLnLink(String payload) {
+    final link = extractPayloadLink(payload);
+    if (link != null) {
+      log.info("nfc broadcasting link: $link");
+      _lnLinkController.add(link);
+      return true;
+    }
+
+    return false;
+  }
+
+  Future<bool> _handleSatscard(String payload, NfcTag tag) async {
+    if (!CKTapCardProtocol.isSatscard(payload)) {
       return false;
     }
 
-    var satscard = card.toSatscard();
-    if (satscard != null) {
+    try {
+      var card = await CKTapCardProtocol.instance.createCKTapCard(tag);
+      if (card.isTapsigner) {
+        log.info("nfc Tapsigner found but ignoring: ${card.toTapsigner()}");
+        return false;
+      }
+
+      var satscard = card.toSatscard();
+      if (satscard == null) {
+        log.severe("nfc expected a Coinkite Satscard but received: $card");
+        return false;
+      }
+
+      log.info("nfc broadcasting satscard: $satscard");
+      _satscardController.add(satscard);
       return true;
+    } catch (e, s) {
+      log.severe("nfc error communicating with Coinkite NFC card", e, s);
     }
 
     return false;
