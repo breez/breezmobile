@@ -10,6 +10,7 @@ import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 
@@ -33,6 +34,7 @@ class AppBlocs {
   final PosCatalogBloc posCatalogBloc;
   final PaymentOptionsBloc paymentOptionsBloc;
   final ReverseSwapBloc reverseSwapBloc;
+  final SatscardBloc satscardBloc;
 
   final Map<Type, Object> _blocsByType;
   final PodcastHistoryBloc podCastHistoryBloc;
@@ -84,6 +86,7 @@ class AppBlocs {
           paymentOptionsBloc,
         ),
         blocsByType);
+    SatscardBloc satscardBloc = _registerBloc(SatscardBloc(), blocsByType);
     PosCatalogBloc posCatalogBloc = _registerBloc(
         PosCatalogBloc(
           accountBloc.accountStream,
@@ -114,6 +117,7 @@ class AppBlocs {
         fastbitcoinsBloc,
         lspBloc,
         reverseSwapBloc,
+        satscardBloc,
         lnurlBloc,
         posCatalogBloc,
         paymentOptionsBloc,
@@ -133,6 +137,7 @@ class AppBlocs {
       this.fastbitcoinsBloc,
       this.lspBloc,
       this.reverseSwapBloc,
+      this.satscardBloc,
       this.lnurlBloc,
       this.posCatalogBloc,
       this.paymentOptionsBloc,

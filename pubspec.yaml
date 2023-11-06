@@ -18,13 +18,13 @@ dependencies:
     git:
       url: https://github.com/breez/Breez-Translations.git
       ref: cab51c7c70339e5bfdc822df01dc0785498778f4
+  cktap_protocol:
+    path: ../cktap-protocol-flutter/
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0
   connectivity_plus: ^4.0.2
   convert: ^3.1.1
-  cktap_protocol:
-    path: ../cktap-protocol-flutter/
   crypto: ^3.0.3
   csv: ^5.0.2
   device_info_plus: ^9.1.0
