@@ -10,6 +10,7 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -76,6 +77,7 @@ class UserApp extends StatelessWidget {
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    var satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
@@ -205,6 +207,7 @@ class UserApp extends StatelessWidget {
                                   backupBloc,
                                   lspBloc,
                                   reverseSwapBloc,
+                                  satscardBloc,
                                   lnurlBloc,
                                 ),
                                 settings: settings,

@@ -116,12 +116,12 @@ class NFCService {
   }
 
   Future<bool> _handleSatscard(String payload, NfcTag tag) async {
-    if (!CKTapCardProtocol.isSatscard(payload)) {
+    if (!CKTapProtocol.isLikelySatscard(payload)) {
       return false;
     }
 
     try {
-      var card = await CKTapCardProtocol.instance.createCKTapCard(tag);
+      var card = await CKTapProtocol.readCard(tag);
       if (card.isTapsigner) {
         log.info("nfc Tapsigner found but ignoring: ${card.toTapsigner()}");
         return false;

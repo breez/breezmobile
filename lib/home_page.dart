@@ -15,6 +15,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/check_channel_connection_handler.dart';
@@ -69,6 +70,7 @@ class Home extends StatefulWidget {
   final BackupBloc backupBloc;
   final LSPBloc lspBloc;
   final ReverseSwapBloc reverseSwapBloc;
+  final SatscardBloc satscardBloc;
   final LNUrlBloc lnurlBloc;
 
   Home(
@@ -79,6 +81,7 @@ class Home extends StatefulWidget {
     this.backupBloc,
     this.lspBloc,
     this.reverseSwapBloc,
+    this.satscardBloc,
     this.lnurlBloc,
   );
 
@@ -170,6 +173,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
     _listenPaymentResults();
+    _listenSatscards();
   }
 
   @override
@@ -522,6 +526,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  void _listenSatscards() {
+    widget.satscardBloc.unusedSatscardStream.listen((card) {
+      //assert(card.activeSlot.status == SlotStatus.unused);
+
+      final texts = context.texts();
+      promptAreYouSure(context,
+        texts.satscard_unused_prompt_title,
+        Text(texts.satscard_unused_prompt_body),
+      ).then((value) {
+        var here = true;
+      });
+    });
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {
