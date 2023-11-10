@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/supported_schemes.dart';
-import 'package:cktap_protocol/cktapcard.dart';
 import 'package:cktap_protocol/tap_protocol.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
@@ -12,19 +11,21 @@ import 'package:nfc_manager/nfc_manager.dart';
 
 final _log = Logger("NFC");
 
+typedef SatscardTagCallback = Future<void> Function(NfcTag tag);
+
 class NFCService {
   static const _platform = MethodChannel('com.breez.client/nfc');
-  final StreamController<Satscard> _satscardController =
-      StreamController<Satscard>.broadcast();
+
+  /// Instead of using a stream controller we need a direct callback because
+  /// once the nfc_manager callback returns the given tag is erased and can't be
+  /// used for transmission anymore. The upcoming version 4.0 should avoid this
+  /// by re-architecting the entire plugin
+  SatscardTagCallback onSatscardTag;
 
   final StreamController<String> _lnLinkController =
       StreamController<String>.broadcast();
   StreamSubscription _lnLinkListener;
   Timer _checkNfcStartedWithTimer;
-
-  Stream<Satscard> receivedSatscards() {
-    return _satscardController.stream;
-  }
 
   Stream<String> receivedLnLinks() {
     return _lnLinkController.stream;
@@ -116,28 +117,15 @@ class NFCService {
   }
 
   Future<bool> _handleSatscard(String payload, NfcTag tag) async {
-    if (!CKTapProtocol.isLikelySatscard(payload)) {
-      return false;
-    }
-
-    try {
-      var card = await CKTapProtocol.readCard(tag);
-      if (card.isTapsigner) {
-        log.info("nfc Tapsigner found but ignoring: ${card.toTapsigner()}");
-        return false;
+    if (CKTapProtocol.isLikelySatscard(payload)) {
+      if (onSatscardTag != null) {
+        log.info("nfc broadcasting possible satscard: $payload");
+        await onSatscardTag(tag);
+      } else {
+        log.warning(
+            "nfc encountered Satscard but no callback was registered: $payload");
       }
-
-      var satscard = card.toSatscard();
-      if (satscard == null) {
-        log.severe("nfc expected a Coinkite Satscard but received: $card");
-        return false;
-      }
-
-      log.info("nfc broadcasting satscard: $satscard");
-      _satscardController.add(satscard);
       return true;
-    } catch (e, s) {
-      log.severe("nfc error communicating with Coinkite NFC card", e, s);
     }
 
     return false;

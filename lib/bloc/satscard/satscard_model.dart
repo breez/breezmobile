@@ -5,8 +5,7 @@ class InitializeSatscardModel {
   final String cvcCode;
   final String chainCode;
 
-  InitializeSatscardModel(
-      this.satscard, this.cvcCode, this.chainCode);
+  InitializeSatscardModel(this.satscard, this.cvcCode, this.chainCode);
 }
 
 class SweepSatscardModel {
