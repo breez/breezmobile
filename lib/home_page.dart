@@ -529,15 +529,18 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenSatscards() {
-    widget.satscardBloc.unusedSatscardStream.listen((card) {
+    widget.satscardBloc.unusedSatscardStream.listen((card) async {
       //assert(card.activeSlot.status == SlotStatus.unused);
 
+      Navigator.popUntil(context, (route) => route.settings.name == "/");
       final texts = context.texts();
       promptAreYouSure(context,
         texts.satscard_unused_prompt_title,
         Text(texts.satscard_unused_prompt_body),
-      ).then((value) {
-        var here = true;
+      ).then((result) {
+        if (result) {
+          Navigator.pushNamed(context, "/initialize_satscard", arguments: card);
+        }
       });
     });
   }

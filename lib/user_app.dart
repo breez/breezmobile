@@ -25,6 +25,7 @@ import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/get_refund/get_refund_page.dart';
 import 'package:breez/routes/initial_walkthrough/initial_walkthrough.dart';
+import 'package:breez/routes/initialize_satscard/initialize_satscard_page.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
@@ -44,6 +45,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -365,6 +367,12 @@ class UserApp extends StatelessWidget {
                               return MaterialPageRoute<String>(
                                 fullscreenDialog: true,
                                 builder: (_) => QRScan(),
+                                settings: settings,
+                              );
+                            case '/initialize_satscard':
+                              return FadeInRoute (
+                                builder: (_) =>
+                                    InitializeSatscardPage(settings.arguments as Satscard),
                                 settings: settings,
                               );
                           }
