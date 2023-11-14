@@ -37,7 +37,7 @@ class VendorRow extends StatelessWidget {
                         ? 100
                         : 48,
             width: _vendor.onlyShowLogo
-                ? (_vendor.id == 'Bitrefill' || _vendor.id == "Azteco")
+                ? (_vendor.id == 'Bitrefill')
                     ? 156
                     : 196
                 : null,

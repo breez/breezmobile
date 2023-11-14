@@ -383,7 +383,10 @@ final VendorTheme tbc = VendorTheme(
   iconFgColor: const Color(0xFFffffff),
   iconBgColor: const Color(0xFF000000),
 );
-
+final VendorTheme azteco = VendorTheme(
+  iconFgColor: const Color(0xFF000000),
+  iconBgColor: const Color(0xFFf3f1dc),
+);
 final VendorTheme snort = VendorTheme(
   iconBgColor: Colors.black,
   // iconFgColor: Colors.white,
@@ -406,6 +409,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "lightsats": lightsats,
   "snort": snort,
   "tbc": tbc,
+  "azteco": azteco,
 };
 
 const TextStyle drawerItemTextStyle =
