@@ -4,6 +4,7 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/satscard/chain_code_field.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -42,7 +43,14 @@ class InitializeSatscardPage extends StatelessWidget {
             stickToBottom: true,
             text: texts.satscard_initialize_button_label,
             onPressed: () {
-              if (_formKey.currentState.validate()) {}
+              if (_formKey.currentState.validate()) {
+                final navigator = Navigator.of(context);
+                var loaderRoute = createLoaderRoute(
+                  context,
+                  message: "Test message",
+                );
+                navigator.push(loaderRoute);
+              }
             },
           )),
       appBar: AppBar(

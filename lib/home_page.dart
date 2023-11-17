@@ -16,6 +16,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_detected_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/check_channel_connection_handler.dart';
@@ -529,19 +530,23 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenSatscards() {
-    widget.satscardBloc.unusedSatscardStream.listen((card) async {
-      //assert(card.activeSlot.status == SlotStatus.unused);
+    widget.satscardBloc.detectedStream.listen((status) async {
+      if (status is DetectedSweepableSatscardStatus) {
 
-      Navigator.popUntil(context, (route) => route.settings.name == "/");
-      final texts = context.texts();
-      promptAreYouSure(context,
-        texts.satscard_unused_prompt_title,
-        Text(texts.satscard_unused_prompt_body),
-      ).then((result) {
-        if (result) {
-          Navigator.pushNamed(context, "/initialize_satscard", arguments: card);
-        }
-      });
+      } else if (status is DetectedUnusedSatscardStatus) {
+        Navigator.popUntil(context, (route) => route.settings.name == "/");
+        final texts = context.texts();
+        promptAreYouSure(context,
+          texts.satscard_unused_prompt_title,
+          Text(texts.satscard_unused_prompt_body),
+        ).then((result) {
+          if (result) {
+            Navigator.pushNamed(context, "/initialize_satscard", arguments: status.card);
+          }
+        });
+      } else if (status is DetectedUsedUpSatscardStatus) {
+
+      }
     });
   }
 
