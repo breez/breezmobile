@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:breez/logger.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:crypto/crypto.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hex/hex.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("BackupModel");
 
 class RemoteServerAuthData {
   final String url;
@@ -283,7 +285,7 @@ class SnapshotInfo {
   ) {
     assert(nodeID != null);
     assert(modifiedTime != null);
-    log.info(
+    _log.info(
       "New Snapshot encrypted = $encrypted encryptionType = $encryptionType",
     );
   }

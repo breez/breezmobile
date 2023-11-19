@@ -37,7 +37,7 @@ class ShareablePaymentRow extends StatelessWidget {
         title: AutoSizeText(
           title,
           style: themeData.primaryTextTheme.headlineMedium,
-          maxLines: 1,
+          maxLines: 2,
           group: labelAutoSizeGroup,
         ),
         children: [

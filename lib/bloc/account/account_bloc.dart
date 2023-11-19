@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:breez/bloc/account/account_actions.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/account/account_permissions_handler.dart';
+import 'package:breez/bloc/account/account_synchronizer.dart';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/bloc/csv_exporter.dart';
@@ -12,7 +14,6 @@ import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/pos_catalog/repository.dart';
 import 'package:breez/bloc/tor/bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
@@ -26,10 +27,10 @@ import 'package:breez/utils/retry.dart';
 import 'package:collection/collection.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
 
-import 'account_model.dart';
-import 'account_synchronizer.dart';
+final _log = Logger("AccountBloc");
 
 class AccountBloc {
   static const FORCE_BOOTSTRAP_FILE_NAME = "FORCE_BOOTSTRAP";
@@ -151,7 +152,7 @@ class AccountBloc {
   }
 
   init() {
-    log.info("Account Bloc init");
+    _log.info("Account Bloc init");
     ServiceInjector injector = ServiceInjector();
     _breezServer = injector.breezServer;
     _breezLib = injector.breezBridge;
@@ -188,7 +189,7 @@ class AccountBloc {
   }
 
   void _start() {
-    log.info("Account bloc started");
+    _log.info("Account bloc started");
 
     ServiceInjector().sharedPreferences.then((preferences) async {
       _handleRegisterDeviceNode();
@@ -204,7 +205,7 @@ class AccountBloc {
       _listenRoutingConnectionChanges();
       _trackOnBoardingStatus();
       _listenEnableAccount();
-      log.info("Account finished registration of listeners");
+      _log.info("Account finished registration of listeners");
     });
   }
 
@@ -240,7 +241,7 @@ class AccountBloc {
         try {
           await _breezServer.registerDevice(user.token, acc.id);
         } catch (e) {
-          log.severe("failed to register device ", e);
+          _log.severe("failed to register device ", e);
         }
       }
     });
@@ -272,7 +273,7 @@ class AccountBloc {
       var handler = _actionHandlers[action.runtimeType];
       if (handler != null) {
         handler(action).catchError((e) {
-          log.severe(
+          _log.severe(
               "AccountAction: ${action.runtimeType.toString()} - Error: ${e.toString()}");
           action.resolveError(e);
         });
@@ -399,14 +400,14 @@ class AccountBloc {
     });
 
     _backgroundService.runAsTask(sendRequest, () {
-      log.info("sendPayment background task finished");
+      _log.info("sendPayment background task finished");
     });
     action.resolve(await sendRequest);
   }
 
   Future _sendPayment(SendPayment action) async {
     var payRequest = action.paymentRequest;
-    log.info('_sendPayment: paymentRequest = ${payRequest.paymentRequest}');
+    _log.info('_sendPayment: paymentRequest = ${payRequest.paymentRequest}');
 
     if (action.ignoreGlobalFeedback) {
       _ignoredFeedbackPayments[payRequest.paymentRequest] = true;
@@ -432,7 +433,7 @@ class AccountBloc {
 
       final paymentHash =
           await _breezLib.getPaymentRequestHash(payRequest.paymentRequest);
-      log.info(
+      _log.info(
           '_sendPayment: getPaymentRequestHash found paymentHash  $paymentHash for paymentRequest ${payRequest.paymentRequest}');
 
       PaymentInfo currentPayment;
@@ -450,7 +451,7 @@ class AccountBloc {
     });
 
     _backgroundService.runAsTask(sendRequest, () {
-      log.info("sendPayment background task finished");
+      _log.info("sendPayment background task finished");
     });
     action.resolve(await sendRequest);
   }
@@ -503,7 +504,7 @@ class AccountBloc {
   void _listenConnectivityChanges() {
     var connectivity = Connectivity();
     connectivity.onConnectivityChanged.skip(1).listen((connectivityResult) {
-      log.info(
+      _log.info(
           "_listenConnectivityChanges: connection changed to: $connectivityResult");
       if (connectivityResult != ConnectivityResult.none) {
         _reconnectSink.add(null);
@@ -518,12 +519,12 @@ class AccountBloc {
         .listen((_) async {
       connectingFuture = connectingFuture.whenComplete(() async {
         var acc = _accountController.value;
-        log.info(
+        _log.info(
             "Checking if reconnect needed for account: connected=${acc.connected} readyForPayment=${acc.readyForPayments} processingConnection=${acc.processingConnection}");
 
         if (acc.connected && acc.readyForPayments == false ||
             acc.processingConnection) {
-          log.info("Reconnecting...");
+          _log.info("Reconnecting...");
           await _breezLib.connectAccount();
         }
       }).catchError((e) {});
@@ -536,7 +537,7 @@ class AccountBloc {
             message["msg"] == "Unconfirmed transaction" ||
             message["msg"] == "Confirmed transaction")
         .listen((message) {
-      log.severe(message.toString());
+      _log.severe(message.toString());
       if (message["msg"] == "Unconfirmed transaction" &&
           message["user_click"] == null) {
         _accountNotificationsController.add(message["body"].toString());
@@ -545,7 +546,7 @@ class AccountBloc {
     });
 
     _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) {
-      log.info("App Resumed - flutter resume called, adding reconnect request");
+      _log.info("App Resumed - flutter resume called, adding reconnect request");
       _reconnectSink.add(null);
     });
   }
@@ -554,9 +555,9 @@ class AccountBloc {
     if (Platform.isAndroid) {
       // Start tor
       final useTor = await _breezLib.getTorActive();
-      log.info('AccountBloc: useTor : $useTor.');
+      _log.info('AccountBloc: useTor : $useTor.');
       if (useTor) {
-        log.info('accountBloc.listenUserChanges: using Tor');
+        _log.info('accountBloc.listenUserChanges: using Tor');
         try {
           torBloc.torConfig ??= await torBloc.startTor();
         } catch (e) {
@@ -574,12 +575,12 @@ class AccountBloc {
   _listenUserChanges(Stream<BreezUserModel> userProfileStream) {
     userProfileStream.listen((user) async {
       if (user.token != null && user.token != _currentUser?.token) {
-        log.info(
+        _log.info(
             "user profile bloc registering for channel open notifications");
         _breezLib.registerChannelOpenedNotification(user.token);
       }
       _currentUser = user;
-      log.info("account: got new user $user");
+      _log.info("account: got new user $user");
       //convert currency.
       _accountController.add(_accountController.value.copyWith(
         currency: user.currency,
@@ -603,19 +604,19 @@ class AccountBloc {
       //start lightning
       if (user.registrationRequested) {
         if (!_startedLightning) {
-          log.info(
+          _log.info(
               "Account bloc got registered user, starting lightning daemon...");
           _startedLightning = true;
           _pollSyncStatus();
           _backgroundService.runAsTask(_onBoardingCompleter.future, () {
-            log.info("onboarding background task finished");
+            _log.info("onboarding background task finished");
           });
-          log.info("account: starting lightning...");
+          _log.info("account: starting lightning...");
           try {
             TorConfig c = torBloc.torConfig;
-            log.info("Starting lightning with $c");
+            _log.info("Starting lightning with $c");
             await _breezLib.startLightning(torBloc.torConfig);
-            log.info("account: lightning started");
+            _log.info("account: lightning started");
             if (user.token != null) {
               _breezLib.registerPeriodicSync(user.token);
             }
@@ -671,11 +672,11 @@ class AccountBloc {
     }
 
     return _breezLib.getFundStatus(_currentUser.userID ?? "").then((status) {
-      log.severe("fund status = ${status.writeToJson()}");
+      _log.severe("fund status = ${status.writeToJson()}");
       _accountController
           .add(_accountController.value.copyWith(addedFundsReply: status));
     }).catchError((err) {
-      log.severe("Error in getFundStatus $err");
+      _log.severe("Error in getFundStatus $err");
     });
   }
 
@@ -687,11 +688,11 @@ class AccountBloc {
 
   Future<PaymentsModel> fetchPayments() async {
     DateTime firstDate;
-    log.info("refreshing payments...");
+    _log.info("refreshing payments...");
 
     final hashedSales = await _posRepository.fetchSaleSummaryByPaymentHashes();
 
-    log.info("refreshing payments after fetching sales hashes...");
+    _log.info("refreshing payments after fetching sales hashes...");
     return _breezLib.getPayments().then((payments) {
       List<PaymentInfo> paymentsList = payments.paymentsList
           .map((payment) => SinglePaymentInfo(
@@ -706,7 +707,7 @@ class AccountBloc {
           paymentsList.last.creationTimestamp.toInt() * 1000,
         );
       }
-      log.info("refresh payments finished ${payments.paymentsList.length}");
+      _log.info("refresh payments finished ${payments.paymentsList.length}");
       return PaymentsModel(
         paymentsList,
         _filterPayments(paymentsList),
@@ -717,11 +718,11 @@ class AccountBloc {
   }
 
   Future _refreshPayments() {
-    log.info("before _refreshPayments");
+    _log.info("before _refreshPayments");
     return fetchPayments()
         .then((paymentModel) => _paymentsController.add(paymentModel))
         .catchError((Object err, [StackTrace stack]) {
-      log.severe("failed to fetch payments $err");
+      _log.severe("failed to fetch payments $err");
       _paymentsController.addError(err, stack);
     });
   }
@@ -744,7 +745,7 @@ class AccountBloc {
 
   _refreshLSPActivity() {
     _breezLib.lspActivity().then((lspActivity) {
-      log.info("--- LSPActivity ---\n$lspActivity");
+      _log.info("--- LSPActivity ---\n$lspActivity");
       _lspActivityController.add(lspActivity);
     });
   }
@@ -772,7 +773,7 @@ class AccountBloc {
   void _listenAccountChanges() {
     StreamSubscription<NotificationEvent> eventSubscription;
     eventSubscription = _breezLib.notificationStream.listen((event) async {
-      log.info('_breezLib.notificationStream received: ${event.type}.');
+      _log.info('_breezLib.notificationStream received: ${event.type}.');
       if (event.type ==
           NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _accountController
@@ -787,13 +788,13 @@ class AccountBloc {
         _lightningDownController.add(true);
       }
       if (event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
-        log.info("ACCOUNT_CHANGED event triggers _refreshAccountAndPayments");
+        _log.info("ACCOUNT_CHANGED event triggers _refreshAccountAndPayments");
         _refreshAccountAndPayments();
       }
       if (event.type == NotificationEvent_NotificationType.READY) {
         _accountController
             .add(_accountController.value.copyWith(serverReady: true));
-        log.info("READY event triggers _refreshAccountAndPayments");
+        _log.info("READY event triggers _refreshAccountAndPayments");
         _refreshAccountAndPayments();
       }
 
@@ -805,7 +806,7 @@ class AccountBloc {
 
       if (event.type ==
           NotificationEvent_NotificationType.BACKUP_NOT_LATEST_CONFLICT) {
-        log.info("BACKUP_NOT_LATEST_CONFLICT event triggered");
+        _log.info("BACKUP_NOT_LATEST_CONFLICT event triggered");
         eventSubscription.cancel();
         _nodeBackupNotLatestController.add(null);
       }
@@ -813,7 +814,7 @@ class AccountBloc {
       if (event.type == NotificationEvent_NotificationType.PAYMENT_SUCCEEDED) {
         var paymentRequest = event.data[0];
         var paymentHash = event.data[1];
-        log.info(
+        _log.info(
             '_listenAccountChanges: Payment succeeded with paymentHash = $paymentHash');
         PayRequest payRequest;
 
@@ -853,9 +854,9 @@ class AccountBloc {
 
   Future _fetchAccount() {
     return _breezLib.getAccount().then((acc) {
-      log.info("_fetchAccount id: ${acc.id}");
+      _log.info("_fetchAccount id: ${acc.id}");
       if (acc.id.isNotEmpty) {
-        log.info(
+        _log.info(
             "ACCOUNT CHANGED BALANCE=${acc.balance} STATUS = ${acc.status}");
         return _accountController.value.copyWith(
             accountResponse: acc,
@@ -864,21 +865,21 @@ class AccountBloc {
             preferredCurrencies: _currentUser?.preferredCurrencies,
             initial: false);
       } else {
-        log.info("_fetchAccount: setting initial account");
+        _log.info("_fetchAccount: setting initial account");
         return _accountController.value.copyWith(initial: false);
       }
     });
   }
 
   _refreshAccountAndPayments() async {
-    log.info("Account bloc refreshing payments...");
+    _log.info("Account bloc refreshing payments...");
     await _refreshPayments();
 
-    log.info("Account bloc refreshing account...");
+    _log.info("Account bloc refreshing account...");
     await _fetchAccount()
         .then((acc) => _accountController.add(acc))
         .catchError((Object err, [StackTrace stack]) {
-      log.severe("failed to fetch account $err");
+      _log.severe("failed to fetch account $err");
       _accountController.addError(err, stack);
     });
     _refreshLSPActivity();

@@ -6,7 +6,6 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
@@ -19,6 +18,9 @@ import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("NetworkPage");
 
 class _NetworkData {
   bool torIsActive = false;
@@ -277,7 +279,7 @@ class NetworkPageState extends State<NetworkPage> {
     ).then(
       (error) async {
         if (error != null) {
-          log.info('setTorActive error', error);
+          _log.info('setTorActive error', error);
           await promptError(
             context,
             null,

@@ -2,13 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("FastbitcoinsBloc");
 
 class FastbitcoinsBloc {
   static const PRODUCTION_URL = "wallet-api.fastbitcoins.com";
@@ -78,7 +80,7 @@ class FastbitcoinsBloc {
           description: texts.fast_bitcoin_dot_com_voucher,
         );
         request.lightningInvoice = payreq.paymentRequest;
-        log.info("fastbitcoins request: ${jsonEncode(request.toJson())}");
+        _log.info("fastbitcoins request: ${jsonEncode(request.toJson())}");
         Uri uri = Uri.https(baseURL, "w-api/v1/breez/redeem");
         var response = await _client.post(
           uri,
@@ -102,7 +104,7 @@ class FastbitcoinsBloc {
       final body = response.body != null && response.body.length > 100
           ? response.body.substring(0, 100)
           : response.body;
-      log.severe('fastbitcoins response error: $body');
+      _log.severe('fastbitcoins response error: $body');
       final texts = getSystemAppLocalizations();
       throw texts.fast_bitcoin_dot_com_error_service_unavailable;
     }

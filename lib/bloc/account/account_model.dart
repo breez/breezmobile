@@ -4,12 +4,14 @@ import 'dart:math';
 import 'package:breez/bloc/account/fiat_conversion.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/utils/exceptions.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("account_model");
 
 enum BugReportBehavior {
   PROMPT,
@@ -404,7 +406,7 @@ class AccountModel {
     /* TODO remove this auto-filled flag when we have a solution to decimals round at our library */
     bool autoFilled,
   ) {
-    log.info("validatePayment amount: $amount, outgoing: $outgoing where "
+    _log.info("validatePayment amount: $amount, outgoing: $outgoing where "
         "maxAllowedToReceive: $maxAllowedToReceive, maxAllowedToPay: $maxAllowedToPay, "
         "maxPaymentAmount: $maxPaymentAmount, reserveAmount: $reserveAmount");
     final texts = getSystemAppLocalizations();

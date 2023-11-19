@@ -2,13 +2,15 @@ import 'dart:async';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/widgets.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("CheckChannelConnection");
 
 class CheckChannelConnection {
   static final _instance = CheckChannelConnection._internal();
@@ -67,13 +69,13 @@ class CheckChannelConnection {
   }
 
   void _readyForPayments() {
-    log.info("Account is ready for payments");
+    _log.info("Account is ready for payments");
     _flushbar?.dismiss();
     _flushbar = null;
   }
 
   void _notReadyForPayments(BuildContext context) {
-    log.info("Account is not ready for payments, Breez is offline");
+    _log.info("Account is not ready for payments, Breez is offline");
     if (_flushbar != null) {
       return;
     }

@@ -32,6 +32,23 @@ class VendorRow extends StatelessWidget {
             "./src/icon/vendors/primal-fire-wave.svg",
             // width: 100,
             height: 50,
+    final vendorLogo = _vendor.logo != null
+        ? Image(
+            image: AssetImage(_vendor.logo),
+            height: (_vendor.id == 'Wavlake')
+                ? 73
+                : (_vendor.id == 'LNCal')
+                    ? 56
+                    : (_vendor.id == 'Snort')
+                        ? 100
+                        : 48,
+            width: _vendor.onlyShowLogo
+                ? (_vendor.id == 'Bitrefill')
+                    ? 156
+                    : 196
+                : null,
+            color: vendorFgColor,
+            colorBlendMode: BlendMode.srcATop,
           )
         : _vendor.logo != null
             ? Image(

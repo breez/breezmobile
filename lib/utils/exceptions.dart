@@ -1,5 +1,7 @@
-import 'package:breez/logger.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("Exceptions");
 
 String extractExceptionMessage(
   Object exception, {
@@ -13,7 +15,7 @@ String extractExceptionMessage(
   final grouped = RegExp('$nsLocalizedRegex|$lnUrlRegex|$detailRegex');
 
   var message = exception.toString();
-  log.info('extractExceptionMessage: $message');
+  _log.info('extractExceptionMessage: $message');
   message = grouped.stringMatch(message)?.trim() ?? message;
   message = _extractInnerErrorMessage(message);
   if (clearTrailingDot) {
@@ -26,7 +28,7 @@ String extractExceptionMessage(
 }
 
 String _extractInnerErrorMessage(String originalMessage) {
-  log.info('extractInnerErrorMessage: $originalMessage');
+  _log.info('extractInnerErrorMessage: $originalMessage');
   const descRegex = r'(?<=desc = )(.*)(?=})|(?<=desc = )(.*)';
   final grouped = RegExp(descRegex);
   return grouped.stringMatch(originalMessage)?.trim() ?? originalMessage;

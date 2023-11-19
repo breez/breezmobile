@@ -3,9 +3,11 @@ import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:anytime/entities/downloadable.dart';
-import 'package:breez/logger.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/subjects.dart';
+
+final _log = Logger("DownloadManager");
 
 class DownloadStatus {
   final String id;
@@ -33,9 +35,9 @@ class DownloadTaskManager {
   }
 
   Future _init() async {
-    log.info("GraphDownloader before Initialize");
+    _log.info("GraphDownloader before Initialize");
     await FlutterDownloader.initialize(ignoreSsl: true, debug: true);
-    log.info("GraphDownloader after Initialize");
+    _log.info("GraphDownloader after Initialize");
 
     bool success = IsolateNameServer.registerPortWithName(
         _port.sendPort, 'downloader_send_port');
@@ -44,10 +46,10 @@ class DownloadTaskManager {
       final status = DownloadTaskStatus(data[1] as int);
       final progress = data[2] as int;
 
-      log.info("GraphDownloader2 callback $id, $status, $progress");
+      _log.info("GraphDownloader2 callback $id, $status, $progress");
       _updateProgress(id, progress, status);
     });
-    log.info("GraphDownloader register success = $success");
+    _log.info("GraphDownloader register success = $success");
     FlutterDownloader.registerCallback(downloadCallback);
 
     final allTasks = await loadTasks();
@@ -125,7 +127,7 @@ class DownloadTaskManager {
 
   static void downloadCallback(String id, int status, int progress) {
     final send = IsolateNameServer.lookupPortByName('downloader_send_port');
-    log.info("GraphDownloader callback $id, $status, $progress");
+    _log.info("GraphDownloader callback $id, $status, $progress");
     send.send([id, status, progress]);
   }
 }

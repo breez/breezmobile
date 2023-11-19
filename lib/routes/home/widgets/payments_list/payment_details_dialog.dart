@@ -1,6 +1,5 @@
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/home/widgets/payments_list/dialog/payment_details_closed_channel_dialog.dart';
 import 'package:breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_amount.dart';
 import 'package:breez/routes/home/widgets/payments_list/dialog/payment_details_dialog_content_title.dart';
@@ -20,6 +19,9 @@ import 'package:breez/routes/home/widgets/payments_list/dialog/payment_details_d
 import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("PaymentDetailsDialog");
 
 final AutoSizeGroup _labelGroup = AutoSizeGroup();
 final AutoSizeGroup _valueGroup = AutoSizeGroup();
@@ -28,7 +30,7 @@ Future<void> showPaymentDetailsDialog(
   BuildContext context,
   PaymentInfo paymentInfo,
 ) {
-  log.info("showPaymentDetailsDialog: ${paymentInfo.paymentHash}");
+  _log.info("showPaymentDetailsDialog: ${paymentInfo.paymentHash}");
 
   if (paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
     return showDialog(
