@@ -1308,10 +1308,11 @@ packages:
   nfc_manager:
     dependency: "direct main"
     description:
-      name: nfc_manager
-      sha256: d6a4cc6a8a37119b1e8cc242392c0c87623d319cf1423f6a90cb998a52970baf
-      url: "https://pub.dev"
-    source: hosted
+      path: "."
+      ref: HEAD
+      resolved-ref: "4a993ed513f3cc50b0d7efcadde9a864556f8003"
+      url: "https://github.com/PeteClubSeven/flutter-nfc-manager"
+    source: git
     version: "3.3.0"
   nm:
     dependency: transitive

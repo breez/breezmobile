@@ -63,7 +63,10 @@ dependencies:
   md5_file_checksum:
     git:
       url: https://github.com/breez/md5_file_checksum.git
-  nfc_manager: ^3.3.0
+  nfc_manager:
+    git:
+      url: https://github.com/PeteClubSeven/flutter-nfc-manager
+      commit: 4a993ed513f3cc50b0d7efcadde9a864556f8003
   nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: ^4.1.0
   path: ^1.8.3
