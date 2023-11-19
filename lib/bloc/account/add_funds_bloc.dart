@@ -9,7 +9,6 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/currency.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -17,7 +16,10 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
 import "package:ini/ini.dart";
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = Logger("AddFundsBloc");
 
 class AddFundsBloc extends Bloc {
   static const String ADD_FUNDS_SETTINGS_PREFERENCES_KEY = "add_funds_settings";
@@ -193,7 +195,7 @@ class AddFundsBloc extends Bloc {
       final body = response.body;
       if (response.statusCode != 200 || body == null) {
         String msg = (body?.length ?? 0) > 100 ? body.substring(0, 100) : body;
-        log.severe('moonpay response error: $msg');
+        _log.severe('moonpay response error: $msg');
         throw getSystemAppLocalizations()
             .add_funds_moonpay_error_service_unavailable;
       }

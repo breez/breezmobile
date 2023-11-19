@@ -4,7 +4,6 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/tor/bloc.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
 import 'package:breez/routes/network/network.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -18,6 +17,9 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("remote_server_auth.dart");
 
 Future<RemoteServerAuthData> promptAuthData(
   BuildContext context,
@@ -336,12 +338,12 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
   }
 
   Future<DiscoverResult> testAuthData(RemoteServerAuthData authData) async {
-    log.info('remote_server_auth.dart: testAuthData');
+    _log.info('remote_server_auth.dart: testAuthData');
     try {
       final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
       await backupBloc.testAuth(BackupProvider.remoteServer(), authData);
     } on SignInFailedException catch (e) {
-      log.warning('remote_server_auth.dart: testAuthData: $e');
+      _log.warning('remote_server_auth.dart: testAuthData: $e');
       return DiscoverResult.INVALID_AUTH;
     } on RemoteServerNotFoundException {
       return DiscoverResult.INVALID_URL;

@@ -1,4 +1,4 @@
-import 'dart:async';
+import'dart:async';
 
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -8,7 +8,6 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
 import 'package:breez/routes/funds_over_limit_dialog.dart';
@@ -24,7 +23,10 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = Logger("AccountRequiredActionsIndicator");
 
 class AccountRequiredActionsIndicator extends StatefulWidget {
   @override
@@ -57,7 +59,7 @@ class AccountRequiredActionsIndicatorState
 
   void _promptBackup(bool signInNeeded) async {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
-    log.info("prompt backup: {signInNeeded: $signInNeeded }");
+    _log.info("prompt backup: {signInNeeded: $signInNeeded }");
     if (signInNeeded) {
       backupBloc.backupPromptVisibleSink.add(true);
       popFlushbars(context);

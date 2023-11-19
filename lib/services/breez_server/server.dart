@@ -1,11 +1,13 @@
 import 'dart:async';
 
-import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/generated/breez.pbgrpc.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/services.dart';
 import 'package:grpc/grpc.dart';
 import "package:ini/ini.dart";
+import 'package:logging/logging.dart';
+
+final _log = Logger("BreezServer");
 
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
@@ -21,8 +23,8 @@ class BreezServer {
     var response = await signerClient.signUrl(SignUrlRequest()
       ..baseUrl = baseUrl
       ..queryString = queryString);
-    log.info('signUrl baseUrl: $baseUrl; queryString: $queryString');
-    log.info('signUrl response: $response');
+    _log.info('signUrl baseUrl: $baseUrl; queryString: $queryString');
+    _log.info('signUrl response: $response');
     return response.fullUrl;
   }
 
@@ -32,7 +34,7 @@ class BreezServer {
     var response = await invoicerClient.registerDevice(RegisterRequest()
       ..deviceID = id
       ..lightningID = nodeid);
-    log.info('registerDevice response: $response');
+    _log.info('registerDevice response: $response');
     return response.breezID;
   }
 
@@ -45,7 +47,7 @@ class BreezServer {
       ..invoice = bolt11
       ..payee = payee
       ..amount = amount);
-    log.info('sendInvoice response: $response');
+    _log.info('sendInvoice response: $response');
     return response.toString();
   }
 

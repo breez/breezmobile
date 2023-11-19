@@ -8,7 +8,6 @@ import 'package:breez/bloc/backup/backup_actions.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/user_profile/backup_user_preferences.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/background_task.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
@@ -17,10 +16,13 @@ import 'package:breez/utils/exceptions.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sqflite/sqflite.dart';
+
+final _log = Logger("BackupBloc");
 
 class BackupBloc with AsyncActionsHandler {
   static const String _signInFailedCode = "401";
@@ -188,21 +190,21 @@ class BackupBloc with AsyncActionsHandler {
       final oldSettings = _backupSettingsController.value;
       final newSettings = action.settings;
       if (oldSettings != newSettings) {
-        log.info("update backup from:\n$oldSettings to:\n$newSettings");
+        _log.info("update backup from:\n$oldSettings to:\n$newSettings");
         _backupSettingsController.add(newSettings);
         if (newSettings.backupKeyType != oldSettings.backupKeyType) {
-          log.info("update backup key type");
+          _log.info("update backup key type");
           await _setBreezLibBackupKey(backupKeyType: newSettings.backupKeyType);
         } else {
-          log.info("backup key type continue to be the same");
+          _log.info("backup key type continue to be the same");
         }
         if (newSettings.backupProvider != oldSettings.backupProvider ||
             !oldSettings.remoteServerAuthData
                 .equal(newSettings.remoteServerAuthData)) {
-          log.info("update backup provider");
+          _log.info("update backup provider");
           await _updateBackupProvider(newSettings);
         } else {
-          log.info("backup provider continue to be the same");
+          _log.info("backup provider continue to be the same");
         }
       }
       action.resolve(newSettings);
@@ -216,11 +218,11 @@ class BackupBloc with AsyncActionsHandler {
       if (settings.backupProvider != null) {
         String authData;
         if (settings.backupProvider.isRemoteServer) {
-          log.info("update backup provider auth data as a remote server");
+          _log.info("update backup provider auth data as a remote server");
           var map = settings.remoteServerAuthData.toJson();
           authData = json.encode(map);
         } else {
-          log.info(
+          _log.info(
             "update backup provider auth data as ${settings.backupProvider.name} server",
           );
         }
@@ -229,7 +231,7 @@ class BackupBloc with AsyncActionsHandler {
           authData,
         );
       } else {
-        log.info("new backup provider is empty");
+        _log.info("new backup provider is empty");
       }
     } catch (error) {
       throw Exception("Failed to update backup provider.");
@@ -418,7 +420,7 @@ class BackupBloc with AsyncActionsHandler {
   Future _listSnapshots(ListSnapshots action) async {
     try {
       bool signInNeeded = _backupServiceNeedLoginController.value;
-      log.info(
+      _log.info(
         "Signing in, { force: $signInNeeded }",
       );
       bool signedIn = await _breezLib.signIn(signInNeeded);
@@ -443,7 +445,7 @@ class BackupBloc with AsyncActionsHandler {
       }
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
-      log.warning(exception, e);
+      _log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
@@ -470,7 +472,7 @@ class BackupBloc with AsyncActionsHandler {
       }
       action.resolveError(exception);
     } catch (error) {
-      log.warning("Failed to list snapshots.", error);
+      _log.warning("Failed to list snapshots.", error);
       action.resolveError("Failed to list snapshots.");
     }
   }
@@ -479,8 +481,8 @@ class BackupBloc with AsyncActionsHandler {
     try {
       final snapshot = action.restoreRequest.snapshot;
       final key = action.restoreRequest.encryptionKey.key;
-      log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
-      if (key != null) log.info('using key with length: ${key.length}');
+      _log.info('snapshotInfo with timestamp: ${snapshot.modifiedTime}');
+      if (key != null) _log.info('using key with length: ${key.length}');
       _setBackupKeyType(snapshot);
 
       _clearAppData();
@@ -493,7 +495,7 @@ class BackupBloc with AsyncActionsHandler {
       action.resolve(true);
     } on FileSystemException catch (error) {
       if (error.message.contains("Failed to decode data using encoding")) {
-        log.warning(
+        _log.warning(
             "Failed to restore backup. Incorrect mnemonic phrase.", error);
         _clearAppData();
         await _resetBackupKey();
@@ -502,7 +504,7 @@ class BackupBloc with AsyncActionsHandler {
         );
       }
     } catch (error) {
-      log.warning("Failed to restore backup.", error);
+      _log.warning("Failed to restore backup.", error);
       _clearAppData();
       await _resetBackupKey();
       action.resolveError("Failed to restore backup.");
@@ -530,10 +532,10 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future _signOut(SignOut action) async {
-    log.info("Signing out of Google Drive");
+    _log.info("Signing out of Google Drive");
     await _breezLib.signOut().catchError(
       (error) {
-        log.warning("Failed to sign out.", error);
+        _log.warning("Failed to sign out.", error);
         _promptBackupController.add(action.promptOnError);
       },
     );
@@ -545,7 +547,7 @@ class BackupBloc with AsyncActionsHandler {
   Future _signIn() async {
     try {
       bool signInNeeded = _backupServiceNeedLoginController.value;
-      log.info(
+      _log.info(
         "Signing in, { force: $signInNeeded }",
       );
       bool signedIn = await _breezLib.signIn(signInNeeded);
@@ -559,7 +561,7 @@ class BackupBloc with AsyncActionsHandler {
       }
     } on PlatformException catch (e) {
       dynamic exception = extractExceptionMessage(e.message);
-      log.warning(exception, e);
+      _log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
@@ -585,7 +587,7 @@ class BackupBloc with AsyncActionsHandler {
       _promptBackupController.add(true);
       throw exception;
     } catch (error) {
-      log.warning("Failed to sign in.", error);
+      _log.warning("Failed to sign in.", error);
       throw SignInFailedException(
         _backupSettingsController.value.backupProvider,
       );
@@ -621,18 +623,18 @@ class BackupBloc with AsyncActionsHandler {
   Future _backupNow(BackupNow action) async {
     final initialBackupSettings = _backupSettingsController.value;
     try {
-      log.info("Backup Now requested: $action");
+      _log.info("Backup Now requested: $action");
       bool signInNeeded = _backupServiceNeedLoginController.value;
       final backupProviderName =
           action.updateBackupSettings.settings.backupProvider.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
-      log.info("Does backup service need relogin $signInNeeded");
+      _log.info("Does backup service need relogin $signInNeeded");
       if (signInNeeded) {
-        log.info("Signing out of $backupProviderName");
+        _log.info("Signing out of $backupProviderName");
         await _breezLib.signOut();
-        log.info("Signed out of $backupProviderName");
-        log.info("Signing into $backupProviderName");
+        _log.info("Signed out of $backupProviderName");
+        _log.info("Signing into $backupProviderName");
         bool signedIn = await _signIn();
         backupServiceNeedLoginSink.add(!signedIn);
       }
@@ -645,12 +647,12 @@ class BackupBloc with AsyncActionsHandler {
       action.resolve(true);
     } on PlatformException catch (e) {
       // Reset backup settings to previous state on error
-      log.info(
+      _log.info(
         "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
       );
       await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
       dynamic exception = extractExceptionMessage(e.message);
-      log.warning(exception, e);
+      _log.warning(exception, e);
       // the error code equals the message from the go library so
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
@@ -680,7 +682,7 @@ class BackupBloc with AsyncActionsHandler {
       action.resolveError(exception);
     } catch (e) {
       // Reset backup settings to previous state on error
-      log.info(
+      _log.info(
         "Resetting backup settings to it's previous state: $initialBackupSettings from ${_backupSettingsController.value}",
       );
       await _updateBackupSettings(UpdateBackupSettings(initialBackupSettings));
@@ -772,7 +774,7 @@ class BackupBloc with AsyncActionsHandler {
     ];
 
     _breezLib.notificationStream.listen((event) async {
-      log.info("backup notification: $event");
+      _log.info("backup notification: $event");
       if (event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         backupServiceNeedLoginSink.add(false);
         _backupStateController.add(
@@ -800,9 +802,9 @@ class BackupBloc with AsyncActionsHandler {
         backupServiceNeedLoginSink.add(false);
         _enableBackupPrompt = false;
         _breezLib.getLatestBackupTime().then((timeStamp) {
-          log.info("Timestamp=$timeStamp");
+          _log.info("Timestamp=$timeStamp");
           if (timeStamp > 0) {
-            log.info(timeStamp);
+            _log.info(timeStamp);
             DateTime latestDateTime = DateTime.fromMillisecondsSinceEpoch(
               timeStamp,
             );
@@ -820,7 +822,7 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   void _pushPromptIfNeeded() {
-    log.info(
+    _log.info(
       "push prompt if needed: {_enableBackupPrompt: $_enableBackupPrompt, signInNeeded: ${_backupServiceNeedLoginController.value}}",
     );
     if (_enableBackupPrompt) {
@@ -834,7 +836,7 @@ class BackupBloc with AsyncActionsHandler {
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
         .catchError(
       (error) {
-        log.info('backupBloc.testAuth caught error: $error');
+        _log.info('backupBloc.testAuth caught error: $error');
 
         if (error is PlatformException) {
           var e = error;

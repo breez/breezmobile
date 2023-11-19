@@ -14,6 +14,9 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("SweepAllCoinsConfirmation");
 
 class SweepAllCoinsConfirmation extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -152,13 +155,13 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
           : SingleButtonBottomBar(
               text: texts.sweep_all_coins_action_confirm,
               onPressed: () {
-                log.info(
+                _log.info(
                     "Sweep all coins using $selectedFeeIndex of ${transactions.logDescription((e) => e.fees.toString())}");
                 Navigator.of(context).push(createLoaderRoute(context));
                 widget.onConfirm(transactions[selectedFeeIndex]).then((_) {
                   Navigator.of(context).pop();
                 }).catchError((error) {
-                  log.warning("Sweep all coins error", error);
+                  _log.warning("Sweep all coins error", error);
                   Navigator.of(context).pop();
                   promptError(
                     context,

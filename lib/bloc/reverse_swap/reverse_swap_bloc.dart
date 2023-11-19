@@ -7,14 +7,16 @@ import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_actions.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/notifications.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:fixnum/fixnum.dart';
+import 'package:logging/logging.dart';
 import 'package:rxdart/rxdart.dart';
+
+final _log = Logger("ReverseSwapBloc");
 
 class ReverseSwapBloc with AsyncActionsHandler {
   final StreamController<InProgressReverseSwaps> _swapsInProgressController =
@@ -117,12 +119,12 @@ class ReverseSwapBloc with AsyncActionsHandler {
       action.amount,
       action.feesHash,
     );
-    log.info('reverseSwap hash:');
-    log.info(hash);
+    _log.info('reverseSwap hash:');
+    _log.info(hash);
 
     var reverseSwap = await _breezLib.fetchReverseSwap(hash);
-    log.info('reverseSwap data:');
-    log.info(reverseSwap);
+    _log.info('reverseSwap data:');
+    _log.info(reverseSwap);
 
     await _breezLib.setReverseSwapClaimFee(
       hash,

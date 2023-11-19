@@ -15,8 +15,7 @@
     "url": "https://use.foldapp.com/sign-up?referral=breez"
   },
   "FixedFloat": {
-    "url": "https://widget.fixedfloat.com/?from=BTCLN&to=LTC&cciesRcvNot=BTCLN",
-    "logo": "src/icon/vendors/bitrefill_logo_lg.png"
+    "url": "https://widget.fixedfloat.com/?from=BTCLN&to=LTC&cciesRcvNot=BTCLN"
   },
   "tbc" : {
     "displayName": "The Bitcoin Company",
@@ -25,7 +24,7 @@
     "responseID": "lnurl"
   },
   "Azteco": {
-    "url": "https://azte.co/breezmap.php"
+    "url": "https://azte.co/bitcoin-vouchers/breez"
   },
   "Boltz": {
     "url": "https://boltz.exchange/swapbox"
@@ -48,8 +47,7 @@
     "endpointURI": "https://lncal.com/lnurl/breez"
   },
   "Snort":{
-    "url" : "https://snort.social",
-    "logo" : "src/icon/vendors/snort_logo_lg.png"
+    "url" : "https://snort.social"
   },
   "Primal":{
     "url": "https://primal.net/home",

@@ -2,13 +2,15 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("BackupProviderTile");
 
 class BackupProviderTile extends StatefulWidget {
   final BackupSettings backupSettings;
@@ -62,7 +64,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
                       backupBloc.backupServiceNeedLoginSink.add(true);
                       await _updateBackupProvider(selectedProvider);
                     } catch (e) {
-                      log.warning("Failed to re-login & backup.", e);
+                      _log.warning("Failed to re-login & backup.", e);
                       widget.onError(e);
                     }
                   }
@@ -113,7 +115,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         return false;
       },
       onError: (e) {
-        log.warning("Failed to get backup state.", e);
+        _log.warning("Failed to get backup state.", e);
         // If GDrive backup has failed.
         // Mostly for new accounts on Android(where GDrive is default provider)
         // where a backup was triggered before setting up a backup provider.
@@ -141,7 +143,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
         );
       }
     } catch (e) {
-      log.warning("Failed to update backup provider.", e);
+      _log.warning("Failed to update backup provider.", e);
       EasyLoading.dismiss();
       rethrow;
     }

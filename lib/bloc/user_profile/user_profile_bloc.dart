@@ -9,7 +9,6 @@ import 'package:breez/bloc/user_profile/currency.dart';
 import 'package:breez/bloc/user_profile/default_profile_generator.dart';
 import 'package:breez/bloc/user_profile/security_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breez_server/server.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/device.dart';
@@ -22,10 +21,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:google_api_availability/google_api_availability.dart';
 import 'package:hex/hex.dart';
+import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
+
+final _log = Logger("UserProfileBloc");
 
 class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
@@ -150,7 +152,7 @@ class UserProfileBloc {
 
   Future _initializeWithSavedUser(ServiceInjector injector) {
     return injector.sharedPreferences.then((preferences) async {
-      log.info("UserProfileBloc got preferences");
+      _log.info("UserProfileBloc got preferences");
       String jsonStr =
           preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
@@ -170,7 +172,7 @@ class UserProfileBloc {
         GooglePlayServicesAvailability availability =
             await GoogleApiAvailability.instance
                 .checkGooglePlayServicesAvailability();
-        log.info("GooglePlayServicesAvailability:$availability");
+        _log.info("GooglePlayServicesAvailability:$availability");
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
             (availability == GooglePlayServicesAvailability.serviceDisabled) ||
             (availability == GooglePlayServicesAvailability.serviceInvalid)) {
@@ -182,7 +184,7 @@ class UserProfileBloc {
         locked: user.securityModel.requiresPin,
         appMode: user.hasAdminPassword ? AppMode.pos : user.appMode,
       );
-      log.info("USER:${user.toJson()}");
+      _log.info("USER:${user.toJson()}");
       _publishUser(user);
     });
   }
@@ -248,7 +250,7 @@ class UserProfileBloc {
         });
       });
     } catch (error) {
-      log.severe(error);
+      _log.severe(error);
       rethrow;
     }
   }
@@ -455,9 +457,9 @@ class UserProfileBloc {
 
   void _publishUser(BreezUserModel user) {
     if (user?.token == null) {
-      log.info("UserProfileBloc publish first user null token");
+      _log.info("UserProfileBloc publish first user null token");
     } else {
-      log.info("UserProfileBloc before _publishUser token = ${user.token}");
+      _log.info("UserProfileBloc before _publishUser token = ${user.token}");
     }
     _userStreamController.add(user);
     _userStreamPreviewController.add(user);

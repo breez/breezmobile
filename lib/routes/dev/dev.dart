@@ -11,6 +11,8 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/nostr/nostr_model.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/marketplace/nostr_settings.dart';
 import 'package:breez/bloc/podcast_history/sqflite/podcast_history_database.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/db.dart';
@@ -18,6 +20,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
+import 'package:breez/routes/dev/default_commands.dart';
 import 'package:breez/routes/dev/set_height_hint.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -30,10 +33,12 @@ import 'package:breez/widgets/route.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:logging/logging.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
 import 'default_commands.dart';
+final _log = Logger("DevView");
 
 bool allowRebroadcastRefunds = false;
 final _cliInputController = TextEditingController();
@@ -536,10 +541,10 @@ class DevViewState extends State<DevView> {
               final databasePath = await getDatabasePath();
               await File(file.path).copy(databasePath);
             } else {
-              log.warning("Invalid file type for product catalog DB");
+              _log.warning("Invalid file type for product catalog DB");
             }
           } else {
-            log.info("No file selected for product catalog DB");
+            _log.info("No file selected for product catalog DB");
           }
         },
       ),
@@ -775,12 +780,12 @@ class DevViewState extends State<DevView> {
   void _printCacheUsage() async {
     Directory tempDir = await getTemporaryDirectory();
     var stats = await tempDir.stat();
-    log.info("temp dir size = ${stats.size / 1024}kb");
+    _log.info("temp dir size = ${stats.size / 1024}kb");
     var children = tempDir.listSync();
     for (var child in children) {
       var childStats = await child.stat();
       var idDir = (child is Directory);
-      log.info(
+      _log.info(
         '${idDir ? "Directory - " : "File - "} path: ${child.path}: ${childStats.size / 1024}kb',
       );
       if (child is Directory) {
@@ -788,7 +793,7 @@ class DevViewState extends State<DevView> {
         for (var secondLevelChild in secondLevelChildren) {
           var idChildDir = (secondLevelChild is Directory);
           var secondLevelChildStats = await secondLevelChild.stat();
-          log.info(
+          _log.info(
             "\t${idChildDir ? "Directory - " : "File - "} path: ${secondLevelChild.path}: ${secondLevelChildStats.size / 1024}kb",
           );
         }
