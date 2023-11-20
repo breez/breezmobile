@@ -53,12 +53,17 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     var action = SweepAllCoinsTxsAction(widget.address);
     widget.accountBloc.userActionsSink.add(action);
     _txsDetailsFuture = action.future.then((r) {
+      _log.info("Sweep all coins response: $r");
       SweepAllCoinsTxs response = r as SweepAllCoinsTxs;
       _sweepAmount = response.amount;
       List<int> targetConfirmations = response.transactions.keys.toList()
         ..sort();
-      var trimmedTargetConfirmations = targetConfirmations.reversed.toList();
+      List<int> trimmedTargetConfirmations =
+          targetConfirmations.reversed.toList();
+      _log.info("Sweep all coins amount $_sweepAmount"
+          "confirmations: ${trimmedTargetConfirmations.logDescription((e) => e.toString())}");
       if (trimmedTargetConfirmations.length > 3) {
+        _log.info("Reducing confirmations to 3");
         var middle = (targetConfirmations.length / 2).floor();
         trimmedTargetConfirmations = [
           targetConfirmations.last,
@@ -70,6 +75,8 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
       transactions = trimmedTargetConfirmations
           .map((index) => response.transactions[index])
           .toList();
+      _log.info("Sweep all coins transactions: "
+          "${transactions.logDescription((e) => e.txHash)}");
 
       feeOptions =
           List.generate(trimmedTargetConfirmations.length, (index) => index)
@@ -86,6 +93,16 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
         feeOptions.add(null);
         transactions.add(null);
       }
+    }, onError: (error) {
+      _log.warning("Sweep all coins error", error);
+      promptError(
+        context,
+        null,
+        Text(
+          extractExceptionMessage(error, texts: context.texts()),
+          style: Theme.of(context).dialogTheme.contentTextStyle,
+        ),
+      );
     });
   }
 
@@ -96,6 +113,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
     return Scaffold(
       appBar: AppBar(
         leading: backBtn.BackButton(onPressed: () {
+          _log.info("Back");
           widget.onPrevious();
         }),
         title: Text(texts.sweep_all_coins_speed),
@@ -108,18 +126,21 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
             future: _txsDetailsFuture,
             builder: (context, futureSnapshot) {
               if (futureSnapshot.error != null) {
-                //render error
+                _log.warning("Sweep all coins error", futureSnapshot.error);
                 return _ErrorMessage(
                   message: texts.sweep_all_coins_error_retrieve_fees,
                 );
               }
+
               if (futureSnapshot.connectionState != ConnectionState.done ||
                   acc == null) {
-                //render loader
+                _log.info("Waiting ${futureSnapshot.connectionState} $acc");
                 return const SizedBox();
               }
 
-              if (feeOptions.where((f) => f != null).isEmpty) {
+              if (feeOptions == null ||
+                  feeOptions.where((f) => f != null).isEmpty) {
+                _log.info("No fees");
                 return _ErrorMessage(
                   message: texts.sweep_all_coins_error_amount_small,
                 );
@@ -138,6 +159,7 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                       priorityFee: feeOptions[2],
                       selectedIndex: selectedFeeIndex,
                       onSelect: (index) => setState(() {
+                        _log.info("Selected fee $index");
                         selectedFeeIndex = index;
                       }),
                     ),
@@ -178,6 +200,8 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
   }
 
   Widget buildSummary(AccountModel acc) {
+    _log.info("buildSummary, $selectedFeeIndex "
+        "${feeOptions != null ? feeOptions.logDescription((e) => e.confirmationTarget.toString()) : "null"}");
     final themeData = Theme.of(context);
     final texts = context.texts();
     final receive = _sweepAmount - feeOptions[selectedFeeIndex].sats;

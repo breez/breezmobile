@@ -1,4 +1,4 @@
-import'dart:async';
+import 'dart:async';
 
 import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -8,13 +8,14 @@ import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
+import 'package:breez/logger.dart';
 import 'package:breez/routes/backup_in_progress_dialog.dart';
 import 'package:breez/routes/close_warning_dialog.dart';
 import 'package:breez/routes/funds_over_limit_dialog.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/select_provider_error_dialog.dart';
 import 'package:breez/routes/transfer_funds_in_progress_dialog.dart';
-import 'package:breez/services/breezlib/data/messages.pb.dart';
+import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/enable_backup_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/rotator.dart';
@@ -148,198 +149,168 @@ class AccountRequiredActionsIndicatorState
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
 
-    return StreamBuilder<LSPStatus>(
-      stream: lspBloc.lspStatusStream,
-      builder: (ctx, lspStatusSnapshot) {
+    return StreamBuilder5(
+      streamA: lspBloc.lspStatusStream,
+      streamB: accountBloc.accountSettingsStream,
+      streamC: accountBloc.accountStream,
+      streamD: accountBloc.lspActivityStream,
+      streamE: backupBloc.backupStateStream,
+      builder: (context, lspStatusSnapshot, settingsSnapshot, accountSnapshot,
+          lspActivitySnapshot, backupSnapshot) {
         final lspStatus = lspStatusSnapshot.data;
+        final accountSettings = settingsSnapshot.data;
+        final accountModel = accountSnapshot.data;
+        final lspActivity = lspActivitySnapshot.data;
+        final backup = backupSnapshot.data;
+        final hasError = backupSnapshot.hasError;
+        _log.info("building account required actions indicator");
 
-        return StreamBuilder<AccountSettings>(
-          stream: accountBloc.accountSettingsStream,
-          builder: (context, settingsSnapshot) {
-            final accountSettings = settingsSnapshot.data;
+        final texts = context.texts();
+        final themeData = Theme.of(context);
+        final navigatorState = Navigator.of(context);
 
-            return StreamBuilder<AccountModel>(
-              stream: accountBloc.accountStream,
-              builder: (context, accountSnapshot) {
-                final accountModel = accountSnapshot.data;
+        List<Widget> warnings = [];
+        Int64 walletBalance = accountModel?.walletBalance ?? Int64(0);
 
-                return StreamBuilder<List<PaymentInfo>>(
-                  stream: accountBloc.pendingChannelsStream,
-                  builder: (ctx, pendingChannelsSnapshot) {
-                    final pendingChannels = pendingChannelsSnapshot.data;
+        if (walletBalance > 0) {
+          if (!accountSettings.ignoreWalletBalance) {
+            _log.info("adding unexpected funds warning for $walletBalance sat");
+            warnings.add(
+              WarningAction(
+                () => navigatorState.pushNamed("/send_coins"),
+                tooltip: texts.unexpected_funds_title,
+              ),
+            );
+          } else {
+            _log.info("ignoring unexpected funds for $walletBalance sat");
+          }
+        }
 
-                    return StreamBuilder<LSPActivity>(
-                      stream: accountBloc.lspActivityStream,
-                      builder: (context, lspActivitySnapshot) {
-                        final lspActivity = lspActivitySnapshot.data;
-
-                        return StreamBuilder<BackupState>(
-                          stream: backupBloc.backupStateStream,
-                          builder: (context, backupSnapshot) {
-                            final backup = backupSnapshot.data;
-                            final hasError = backupSnapshot.hasError;
-                            final backupError = backupSnapshot.error;
-
-                            return _build(
-                              lspStatus,
-                              accountSettings,
-                              accountModel,
-                              pendingChannels,
-                              lspActivity,
-                              backup,
-                              hasError,
-                              backupError,
-                            );
-                          },
-                        );
-                      },
-                    );
-                  },
+        if (hasError) {
+          _log.info("adding backup error warning");
+          warnings.add(
+            WarningAction(
+              () async {
+                showDialog(
+                  useRootNavigator: false,
+                  barrierDismissible: false,
+                  context: context,
+                  builder: (_) => const EnableBackupDialog(),
                 );
               },
+              tooltip: texts.account_required_actions_backup,
+            ),
+          );
+        }
+
+        final availableLSPs = lspStatus?.availableLSPs ?? [];
+        if (lspActivity != null) {
+          int inactiveWarningDuration = _inactiveWarningDuration(
+            availableLSPs,
+            lspActivity.activity,
+          );
+          if (inactiveWarningDuration > 0) {
+            _log.info("Inactive warning duration: $inactiveWarningDuration");
+            warnings.add(
+              WarningAction(
+                () async {
+                  showDialog(
+                    useRootNavigator: false,
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (_) => CloseWarningDialog(inactiveWarningDuration),
+                  );
+                },
+                tooltip: texts.close_warning_dialog_title,
+              ),
             );
-          },
+          }
+        } else {
+          _log.info("Skipping inactive warning as lspActivity is null");
+        }
+
+        final loaderIcon = _buildLoader(backup, accountModel);
+        if (loaderIcon != null) {
+          _log.info("adding loader icon");
+          warnings.add(loaderIcon);
+        }
+
+        final swapStatus = accountModel?.swapFundsStatus;
+        // only warn on refundable addresses that weren't refunded in the past.
+        if (swapStatus != null) {
+          List<RefundableAddress> address = swapStatus.waitingRefundAddresses;
+          if (address.isNotEmpty) {
+            _log.info("adding swap warning");
+            warnings.add(
+              WarningAction(
+                () async {
+                  showDialog(
+                    useRootNavigator: false,
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (_) => const SwapRefundDialog(),
+                  );
+                },
+                tooltip: texts.funds_over_limit_dialog_on_chain_transaction,
+              ),
+            );
+          } else {
+            _log.info("Skipping swap warning: "
+                "${address.logDescription((e) => e.address)}");
+          }
+        }
+
+        if (accountModel?.syncUIState == SyncUIState.COLLAPSED) {
+          _log.info("adding sync warning");
+          final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+          warnings.add(
+            WarningAction(
+              () => accountBloc.userActionsSink.add(
+                ChangeSyncUIState(SyncUIState.BLOCKING),
+              ),
+              tooltip: texts.handler_sync_ui_message,
+              iconWidget: Rotator(
+                child: Image(
+                  image: const AssetImage("src/icon/sync.png"),
+                  color: themeData.appBarTheme.actionsIconTheme.color,
+                ),
+              ),
+            ),
+          );
+        }
+
+        if (lspStatus?.selectionRequired == true) {
+          final error = lspStatus?.lastConnectionError;
+          _log.info("adding lsp selection warning $error");
+          warnings.add(WarningAction(
+            () {
+              if (error != null) {
+                showProviderErrorDialog(context, error, () {
+                  navigatorState.push(
+                    FadeInRoute(
+                      builder: (_) => const SelectLSPPage(),
+                    ),
+                  );
+                });
+              } else {
+                navigatorState.pushNamed("/select_lsp");
+              }
+            },
+            tooltip: texts.account_page_activation_provider_label,
+          ));
+        }
+
+        _log.info("Total of warnings: ${warnings.length}");
+        if (warnings.isEmpty) {
+          return const SizedBox();
+        }
+
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          mainAxisSize: MainAxisSize.min,
+          children: warnings,
         );
       },
-    );
-  }
-
-  Widget _build(
-    LSPStatus lspStatus,
-    AccountSettings accountSettings,
-    AccountModel accountModel,
-    List<PaymentInfo> pendingChannels,
-    LSPActivity lspActivity,
-    BackupState backup,
-    bool hasError,
-    Object backupError,
-  ) {
-    final texts = context.texts();
-    final themeData = Theme.of(context);
-    final navigatorState = Navigator.of(context);
-
-    List<Widget> warnings = [];
-    Int64 walletBalance = accountModel?.walletBalance ?? Int64(0);
-
-    if (walletBalance > 0 && !accountSettings.ignoreWalletBalance) {
-      warnings.add(
-        WarningAction(
-          () => navigatorState.pushNamed("/send_coins"),
-          tooltip: texts.unexpected_funds_title,
-        ),
-      );
-    }
-
-    if (hasError) {
-      warnings.add(
-        WarningAction(
-          () async {
-            showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (_) => const EnableBackupDialog(),
-            );
-          },
-          tooltip: texts.account_required_actions_backup,
-        ),
-      );
-    }
-
-    final availableLSPs = lspStatus?.availableLSPs ?? [];
-    if (lspActivity != null) {
-      int inactiveWarningDuration = _inactiveWarningDuration(
-        availableLSPs,
-        lspActivity.activity,
-      );
-      if (inactiveWarningDuration > 0) {
-        warnings.add(
-          WarningAction(
-            () async {
-              showDialog(
-                useRootNavigator: false,
-                barrierDismissible: false,
-                context: context,
-                builder: (_) => CloseWarningDialog(inactiveWarningDuration),
-              );
-            },
-            tooltip: texts.close_warning_dialog_title,
-          ),
-        );
-      }
-    }
-
-    final loaderIcon = _buildLoader(backup, accountModel);
-    if (loaderIcon != null) {
-      warnings.add(loaderIcon);
-    }
-
-    final swapStatus = accountModel?.swapFundsStatus;
-    // only warn on refundable addresses that weren't refunded in the past.
-    if (swapStatus != null && swapStatus.waitingRefundAddresses.isNotEmpty) {
-      warnings.add(
-        WarningAction(
-          () async {
-            showDialog(
-              useRootNavigator: false,
-              barrierDismissible: false,
-              context: context,
-              builder: (_) => const SwapRefundDialog(),
-            );
-          },
-          tooltip: texts.funds_over_limit_dialog_on_chain_transaction,
-        ),
-      );
-    }
-
-    if (accountModel?.syncUIState == SyncUIState.COLLAPSED) {
-      final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
-      warnings.add(
-        WarningAction(
-          () => accountBloc.userActionsSink.add(
-            ChangeSyncUIState(SyncUIState.BLOCKING),
-          ),
-          tooltip: texts.handler_sync_ui_message,
-          iconWidget: Rotator(
-            child: Image(
-              image: const AssetImage("src/icon/sync.png"),
-              color: themeData.appBarTheme.actionsIconTheme.color,
-            ),
-          ),
-        ),
-      );
-    }
-
-    if (lspStatus?.selectionRequired == true) {
-      warnings.add(
-        WarningAction(
-          () {
-            if (lspStatus?.lastConnectionError != null) {
-              showProviderErrorDialog(context, lspStatus?.lastConnectionError,
-                  () {
-                navigatorState.push(
-                  FadeInRoute(
-                    builder: (_) => const SelectLSPPage(),
-                  ),
-                );
-              });
-            } else {
-              navigatorState.pushNamed("/select_lsp");
-            }
-          },
-          tooltip: texts.account_page_activation_provider_label,
-        ),
-      );
-    }
-
-    if (warnings.isEmpty) {
-      return const SizedBox();
-    }
-
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.end,
-      mainAxisSize: MainAxisSize.min,
-      children: warnings,
     );
   }
 }

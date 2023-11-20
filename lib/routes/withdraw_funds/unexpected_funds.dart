@@ -4,12 +4,14 @@ import 'package:breez/bloc/account/account_actions.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/routes/withdraw_funds/sweep_all_coins_confirmation.dart';
+import 'package:breez/routes/withdraw_funds/withdraw_funds_page.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
-import 'sweep_all_coins_confirmation.dart';
-import 'withdraw_funds_page.dart';
+final _log = Logger("UnexpectedFunds");
 
 class UnexpectedFunds extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
   void initState() {
     super.initState();
     _pageController.addListener(() {
+      _log.info("Page ${_pageController.page}");
       setState(() {});
     });
   }
@@ -38,21 +41,26 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
 
   @override
   Widget build(BuildContext context) {
+    _log.info("build address: $_destAddress");
     final themeData = Theme.of(context);
     final texts = context.texts();
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
+
     return Scaffold(
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, accSnapshot) {
           if (accSnapshot.data == null) {
+            _log.info("No account yet");
             return Center(
               child: Loader(
                 color: themeData.primaryColor.withOpacity(0.5),
               ),
             );
           }
+
           final balance = accSnapshot.data.walletBalance;
+          _log.info("balance: $balance");
           return PageView(
             controller: _pageController,
             physics: const NeverScrollableScrollPhysics(),
@@ -68,6 +76,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                   includeDisplayName: false,
                 ),
                 onNext: (amount, address, _) {
+                  _log.info("onNext: $amount, $address");
                   setState(() {
                     _destAddress = address;
                     _pageController.nextPage(
@@ -84,12 +93,14 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                       accountBloc: accountBloc,
                       address: _destAddress,
                       onConfirm: (txDetails) {
+                        _log.info("onConfirm: ${txDetails.txHash}}");
                         var action = PublishTransaction(txDetails.txBytes);
                         accountBloc.userActionsSink.add(action);
                         return action.future
                             .then((value) => Navigator.of(context).pop());
                       },
                       onPrevious: () {
+                        _log.info("onPrevious");
                         _pageController.previousPage(
                           duration: const Duration(milliseconds: 250),
                           curve: Curves.easeInOut,

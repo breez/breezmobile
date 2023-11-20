@@ -9,6 +9,7 @@ import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/btc_address.dart';
+import 'package:breez/utils/exceptions.dart';
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/amount_form_field.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
@@ -22,6 +23,9 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("WithdrawFundsPage");
 
 class WithdrawFundsPage extends StatefulWidget {
   final Future Function(Int64 amount, String destAddress, bool isMax) onNext;
@@ -74,6 +78,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     if (widget.initialIsMax != null) {
       _isMax = widget.initialIsMax;
     }
+    _log.info("State init with address: ${_addressController.text} "
+        "amount: ${_amountController.text} isMax: $_isMax");
   }
 
   @override
@@ -92,9 +98,17 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) return StaticLoader();
+          if (!snapshot.hasData) {
+            _log.info("No account yet");
+            return StaticLoader();
+          }
+          _log.info("Building: scanner error message: $_scannerErrorMessage "
+              "address: ${_addressController.text} selected index $selectedFeeIndex"
+              "amount: ${_amountController.text} isMax: $_isMax "
+              "fetching: $fetching address validated $_addressValidated");
 
           final acc = snapshot.data;
+          _log.info("Optional message: ${widget.optionalMessage}");
           Widget optionalMessage = widget.optionalMessage == null
               ? const SizedBox()
               : WarningBox(
@@ -108,8 +122,11 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                     style: themeData.textTheme.titleLarge,
                   ),
                 );
+
           List<Widget> amountWidget = [];
           if (widget.policy.minValue != widget.policy.maxValue) {
+            _log.info("Min value: ${widget.policy.minValue} "
+                "Max value: ${widget.policy.maxValue}");
             amountWidget.add(AmountFormField(
               readOnly: fetching || _isMax,
               context: context,
@@ -165,6 +182,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
               ),
             ));
           }
+
           return SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -197,6 +215,7 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
                       style: theme.FieldTextStyle.textStyle,
                       validator: (value) {
                         if (_addressValidated == null) {
+                          _log.info("Invalid address");
                           return texts.withdraw_funds_error_invalid_address;
                         }
                         return null;
@@ -265,6 +284,8 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
     ReverseSwapBloc reverseSwapBloc,
     bool isNext,
   ) {
+    _log.info("onNext: fetching: $fetching, amount: ${_amountController.text}, "
+        "address: ${_addressController.text}");
     if (fetching) {
       return;
     }
@@ -282,15 +303,17 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
         );
       }
     }).catchError((error) {
+      _log.warning("onNext error", error);
       promptError(
         context,
         null,
         Text(
-          error.toString(),
+          extractExceptionMessage(error),
           style: Theme.of(context).dialogTheme.contentTextStyle,
         ),
       );
     }).whenComplete(() {
+      _log.info("onNext done");
       setState(() {
         fetching = false;
       });
@@ -298,39 +321,55 @@ class WithdrawFundsPageState extends State<WithdrawFundsPage> {
   }
 
   Future _scanBarcode(AccountModel account) async {
+    _log.info("Scanning barcode");
     final texts = context.texts();
     FocusScope.of(context).requestFocus(FocusNode());
     await Navigator.pushNamed<String>(context, "/qr_scan").then((barcode) {
       if (barcode.isEmpty) {
+        _log.info("Received an empty barcode");
         showFlushbar(
           context,
           message: texts.withdraw_funds_error_qr_code_not_detected,
         );
         return;
+      } else {
+        _log.info("Barcode: $barcode");
       }
+
       BTCAddressInfo btcInvoice = parseBTCAddress(barcode);
       String amount;
       if (btcInvoice.satAmount != null) {
+        _log.info("Amount in barcode: ${btcInvoice.satAmount}");
         amount = account.currency.format(
           btcInvoice.satAmount,
           userInput: true,
           includeDisplayName: false,
         );
+      } else {
+        _log.info("No amount in barcode");
       }
+
       setState(() {
         _addressController.text = btcInvoice.address;
         _amountController.text = amount ?? _amountController.text;
         _scannerErrorMessage = "";
       });
+    }, onError: (error) {
+      _log.warning("Scanning barcode error", error);
+      setState(() {
+        _scannerErrorMessage = error.toString();
+      });
     });
   }
 
   Future<bool> _asyncValidate() {
+    _log.info("Validating address: ${_addressController.text}");
     return _breezLib.validateAddress(_addressController.text).then((data) {
+      _log.info("Address validated: $data");
       _addressValidated = data;
-      var v = _formKey.currentState.validate();
-      return v;
+      return _formKey.currentState.validate();
     }).catchError((err) {
+      _log.warning("Validating address error", err);
       _addressValidated = null;
       return _formKey.currentState.validate();
     });
