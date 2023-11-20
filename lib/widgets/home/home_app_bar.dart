@@ -4,6 +4,7 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/account_required_actions.dart';
 import 'package:breez/theme_data.dart' as theme;
+import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -87,8 +88,7 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     const AssetImage("assets/icons/layout.png"),
                     color: themeData.primaryIconTheme.color,
                   ),
-                  // TODO extract layout to breez translations
-                  tooltip: 'Layout',
+                  tooltip: context.texts().podcast_action_layout,
                   onPressed: () async {
                     await showModalBottomSheet<void>(
                       context: context,
