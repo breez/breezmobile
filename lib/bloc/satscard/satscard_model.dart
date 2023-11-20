@@ -1,11 +1,11 @@
 import 'package:cktap_protocol/cktapcard.dart';
 
-class InitializeSatscardModel {
+class InitializeSlotModel {
   final Satscard satscard;
   final String cvcCode;
   final String chainCode;
 
-  InitializeSatscardModel(this.satscard, this.cvcCode, this.chainCode);
+  InitializeSlotModel(this.satscard, this.cvcCode, this.chainCode);
 }
 
 class SweepSatscardModel {

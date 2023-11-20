@@ -8,16 +8,24 @@ class CircularProgress extends StatelessWidget {
   final String title;
   final double size;
   final Color color;
+  final MainAxisAlignment mainAxisAlignment;
+  final CrossAxisAlignment crossAxisAlignment;
 
-  const CircularProgress(
-      {Key key, this.value, this.title, this.size, this.color})
-      : super(key: key);
+  const CircularProgress({
+        Key key,
+        this.value,
+        this.title,
+        this.size,
+        this.color,
+        this.mainAxisAlignment = MainAxisAlignment.center,
+        this.crossAxisAlignment = CrossAxisAlignment.center,
+      }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: mainAxisAlignment,
+      crossAxisAlignment: crossAxisAlignment,
       children: <Widget>[
         Stack(
           alignment: Alignment.center,

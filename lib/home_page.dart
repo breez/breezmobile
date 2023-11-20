@@ -16,7 +16,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
-import 'package:breez/bloc/satscard/satscard_detected_status.dart';
+import 'package:breez/bloc/satscard/detected_satscard_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/check_channel_connection_handler.dart';
@@ -531,21 +531,31 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
 
   void _listenSatscards() {
     widget.satscardBloc.detectedStream.listen((status) async {
+      Navigator.popUntil(context, (route) => route.settings.name == "/");
+      final texts = context.texts();
+      final themeData = Theme.of(context);
+      
       if (status is DetectedSweepableSatscardStatus) {
-
       } else if (status is DetectedUnusedSatscardStatus) {
-        Navigator.popUntil(context, (route) => route.settings.name == "/");
-        final texts = context.texts();
         promptAreYouSure(context,
           texts.satscard_unused_prompt_title,
-          Text(texts.satscard_unused_prompt_body),
+          Text(
+            texts.satscard_unused_prompt_body,
+            style: themeData.dialogTheme.contentTextStyle,
+          ),
         ).then((result) {
           if (result) {
             Navigator.pushNamed(context, "/initialize_satscard", arguments: status.card);
           }
         });
       } else if (status is DetectedUsedUpSatscardStatus) {
-
+        promptMessage(context,
+            texts.satscard_used_up_prompt_title,
+            Text(
+              texts.satscard_used_up_prompt_body,
+              style: themeData.dialogTheme.contentTextStyle,
+            )
+        );
       }
     });
   }

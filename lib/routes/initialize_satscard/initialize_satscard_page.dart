@@ -1,10 +1,14 @@
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/satscard/satscard_actions.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_model.dart';
+import 'package:breez/routes/initialize_satscard/satscard_operation_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/satscard/chain_code_field.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -45,11 +49,17 @@ class InitializeSatscardPage extends StatelessWidget {
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 final navigator = Navigator.of(context);
-                var loaderRoute = createLoaderRoute(
-                  context,
-                  message: "Test message",
-                );
-                navigator.push(loaderRoute);
+                navigator.pop();
+                final bloc = AppBlocsProvider.of<SatscardBloc>(context);
+                final request = InitializeSlotModel(_card,
+                    _spendCodeController.text, _chainCodeController.text);
+                bloc.actionsSink.add(InitializeSlot(request));
+                showDialog(
+                    useRootNavigator: false,
+                    barrierDismissible: false,
+                    context: context,
+                    builder: (_) =>
+                        SatscardOperationDialog(context, bloc, _card.ident));
               }
             },
           )),

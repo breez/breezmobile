@@ -2,10 +2,10 @@ import 'package:breez/bloc/async_action.dart';
 
 import 'satscard_model.dart';
 
-class InitializeSatscard extends AsyncAction {
-  final InitializeSatscardModel request;
+class InitializeSlot extends AsyncAction {
+  final InitializeSlotModel request;
 
-  InitializeSatscard(this.request);
+  InitializeSlot(this.request);
 }
 
 class SweepSatscard extends AsyncAction {
