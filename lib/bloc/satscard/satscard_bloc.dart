@@ -4,13 +4,15 @@ import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/detected_satscard_status.dart';
 import 'package:breez/bloc/satscard/satscard_op_status.dart';
-import 'package:breez/logger.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/nfc.dart';
 import 'package:cktap_protocol/cktapcard.dart';
 import 'package:cktap_protocol/exceptions.dart';
 import 'package:cktap_protocol/transport.dart';
+import 'package:logging/logging.dart';
+
+final _log = Logger("SatscardBloc");
 
 class SatscardBloc with AsyncActionsHandler {
   final BreezBridge _breezLib;
@@ -38,61 +40,61 @@ class SatscardBloc with AsyncActionsHandler {
   }
 
   void _listenSatscards() {
-    log.info("SatscardBloc: _listenSatscards() registered with NFCService");
+    _log.info("_listenSatscards() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
       try {
-        log.info("Attempting to read Satscard with the following tag: $tag");
+        _log.info("Attempting to read Satscard with the following tag: $tag");
         final card = await Satscard.fromTransport(NfcManagerTransport(tag));
         if (card.isUsedUp) {
-          log.info("Found Satscard with no unused slots: $card");
+        _log.info("Found Satscard with no unused slots: $card");
           _detectedController.add(DetectedSatscardStatus.usedUp(card));
           return;
         }
         var slot = await card.getActiveSlot();
         switch (slot.status) {
           case SlotStatus.unused:
-            log.info("Uninitialized active slot found on Satscard: $card");
+            _log.info("Uninitialized active slot found on Satscard: $card");
             _detectedController.add(DetectedSatscardStatus.unused(card));
             break;
           case SlotStatus.sealed:
           case SlotStatus.unsealed:
-            log.info("Sweepable Satscard found: $card");
-            log.info("Active slot: $slot");
+            _log.info("Sweepable Satscard found: $card");
+            _log.info("Active slot: $slot");
             _detectedController
                 .add(DetectedSatscardStatus.sweepable(card, slot));
             break;
           default:
-            log.severe(
+            _log.severe(
                 "Satscard detected with unknown slot status: ${slot.status}");
             break;
         }
       } on NfcCommunicationException catch (e) {
-        log.warning(
+        _log.warning(
             "Reading a satscard failed due to a communication error: $e");
       } catch (e, s) {
-        log.severe("Reading a satscard failed with an unexpected error", e, s);
+        _log.severe("Reading a satscard failed with an unexpected error", e, s);
       }
     };
   }
 
   Future<void> _disableListening(DisableListening _) async {
-    log.info("SatscardBloc: _disableListening() called");
+    _log.info("_disableListening() called");
     _nfc.onSatscardTag = (tag) async =>
-      log.info("Ignoring Satscard tag due to listening being disabled: $tag");
+        _log.info("Ignoring Satscard tag due to listening being disabled: $tag");
   }
 
   Future<void> _enableListening(EnableListening _) async {
-    log.info("SatscardBloc: _enableListening() called");
+    _log.info("_enableListening() called");
     _listenSatscards();
   }
 
   Future<void> _initializeSlot(InitializeSlot action) async {
     final id = action.request.satscard.ident;
 
-    log.info("SatscardBloc: _initializeSatscard() registered with NFCService");
+    _log.info("_initializeSatscard() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
       try {
-        log.info(
+        _log.info(
             "Attempting to initialize satscard slot with the following ID: $id");
         _operationController.add(SatscardOpStatus.inProgress());
 
@@ -138,14 +140,14 @@ class SatscardBloc with AsyncActionsHandler {
             chainCode: action.request.chainCode);
         _operationController.add(SatscardOpStatus.slotInitialized(card, slot));
       } on NfcCommunicationException catch (e) {
-        log.warning(
+        _log.warning(
             "Slot initialization failed due to a communication error: $e");
         _operationController.add(SatscardOpStatus.nfcError());
       } on TapProtoException catch (e, s) {
-        log.severe("Slot initialization failed due to a protocol error", e, s);
+        _log.severe("Slot initialization failed due to a protocol error", e, s);
         _operationController.add(SatscardOpStatus.protocolError(e));
       } catch (e, s) {
-        log.severe("Slot initialization failed with an unexpected error", e, s);
+        _log.severe("Slot initialization failed with an unexpected error", e, s);
         _operationController
             .add(SatscardOpStatus.unexpectedError(e.toString()));
       }

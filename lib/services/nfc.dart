@@ -108,7 +108,7 @@ class NFCService {
   bool _handleLnLink(String payload) {
     final link = extractPayloadLink(payload);
     if (link != null) {
-      log.info("nfc broadcasting link: $link");
+      _log.info("nfc broadcasting link: $link");
       _lnLinkController.add(link);
       return true;
     }
@@ -119,10 +119,10 @@ class NFCService {
   Future<bool> _handleSatscard(String payload, NfcTag tag) async {
     if (CKTapProtocol.isLikelySatscard(payload)) {
       if (onSatscardTag != null) {
-        log.info("nfc broadcasting possible satscard: $payload");
+        _log.info("nfc broadcasting possible satscard: $payload");
         await onSatscardTag(tag);
       } else {
-        log.warning(
+        _log.warning(
             "nfc encountered Satscard but no callback was registered: $payload");
       }
       return true;
