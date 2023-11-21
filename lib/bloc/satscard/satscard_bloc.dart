@@ -15,17 +15,15 @@ import 'package:logging/logging.dart';
 final _log = Logger("SatscardBloc");
 
 class SatscardBloc with AsyncActionsHandler {
-  final BreezBridge _breezLib;
-  final NFCService _nfc;
-
-  final StreamController<DetectedSatscardStatus> _detectedController =
-      StreamController<DetectedSatscardStatus>();
+  final _detectedController = StreamController<DetectedSatscardStatus>();
   Stream<DetectedSatscardStatus> get detectedStream =>
       _detectedController.stream;
 
-  final StreamController<SatscardOpStatus> _operationController =
-      StreamController<SatscardOpStatus>.broadcast();
+  final _operationController = StreamController<SatscardOpStatus>.broadcast();
   Stream<SatscardOpStatus> get operationStream => _operationController.stream;
+
+  final BreezBridge _breezLib;
+  final NFCService _nfc;
 
   SatscardBloc()
       : _breezLib = ServiceInjector().breezBridge,
@@ -46,7 +44,7 @@ class SatscardBloc with AsyncActionsHandler {
         _log.info("Attempting to read Satscard with the following tag: $tag");
         final card = await Satscard.fromTransport(NfcManagerTransport(tag));
         if (card.isUsedUp) {
-        _log.info("Found Satscard with no unused slots: $card");
+          _log.info("Found Satscard with no unused slots: $card");
           _detectedController.add(DetectedSatscardStatus.usedUp(card));
           return;
         }
@@ -79,8 +77,8 @@ class SatscardBloc with AsyncActionsHandler {
 
   Future<void> _disableListening(DisableListening _) async {
     _log.info("_disableListening() called");
-    _nfc.onSatscardTag = (tag) async =>
-        _log.info("Ignoring Satscard tag due to listening being disabled: $tag");
+    _nfc.onSatscardTag = (tag) async => _log
+        .info("Ignoring Satscard tag due to listening being disabled: $tag");
   }
 
   Future<void> _enableListening(EnableListening _) async {
@@ -114,8 +112,8 @@ class SatscardBloc with AsyncActionsHandler {
         }
         final activeSlot = await card.getActiveSlot();
         if (activeSlot.status != SlotStatus.unused) {
-          _operationController.add(SatscardOpStatus.staleCard());
-          return;
+          //_operationController.add(SatscardOpStatus.staleCard());
+          //return;
         }
 
         // Handle the auth delay
@@ -147,7 +145,8 @@ class SatscardBloc with AsyncActionsHandler {
         _log.severe("Slot initialization failed due to a protocol error", e, s);
         _operationController.add(SatscardOpStatus.protocolError(e));
       } catch (e, s) {
-        _log.severe("Slot initialization failed with an unexpected error", e, s);
+        _log.severe(
+            "Slot initialization failed with an unexpected error", e, s);
         _operationController
             .add(SatscardOpStatus.unexpectedError(e.toString()));
       }
@@ -158,7 +157,9 @@ class SatscardBloc with AsyncActionsHandler {
     return Future.error("SweepSatscard action not implemented");
   }
 
-  void _close() {
-    _detectedController.close();
+  @override
+  Future dispose() async {
+    await _detectedController.close();
+    await _operationController.close();
   }
 }
