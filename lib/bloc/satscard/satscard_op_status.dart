@@ -4,25 +4,32 @@ import 'package:cktap_protocol/exceptions.dart';
 abstract class SatscardOpStatus {
   const SatscardOpStatus();
 
-  factory SatscardOpStatus.inProgress() => const SatscardOpStatusInProgress();
+  // Progress states
 
+  factory SatscardOpStatus.inProgress() => const SatscardOpStatusInProgress();
   factory SatscardOpStatus.waiting(
           int currentAuthDelay, int initialAuthDelay) =>
       SatscardOpStatusWaiting(currentAuthDelay, initialAuthDelay);
 
+  // Success states
+
   factory SatscardOpStatus.slotInitialized(Satscard card, Slot slot) =>
       SatscardOpStatusSlotInitialized(card, slot);
 
+  // Failure states
+
   factory SatscardOpStatus.incorrectCard() =>
       const SatscardOpStatusIncorrectCard();
-
-  factory SatscardOpStatus.staleCard() => const SatscardOpStatusStaleCard();
-
   factory SatscardOpStatus.nfcError() => const SatscardOpStatusNfcError();
-
-  factory SatscardOpStatus.protocolError(TapProtoException e) =>
-      SatscardOpStatusProtocolError(e);
-
+  factory SatscardOpStatus.protocolError(TapProtoException e) {
+    switch (e.code) {
+      case TapProtoExceptionCode.BAD_AUTH:
+        return const SatscardOpStatusBadAuth();
+      default:
+        return SatscardOpStatusProtocolError(e);
+    }
+  }
+  factory SatscardOpStatus.staleCard() => const SatscardOpStatusStaleCard();
   factory SatscardOpStatus.unexpectedError(String message) =>
       SatscardOpStatusUnexpectedError(message);
 }
@@ -45,12 +52,11 @@ class SatscardOpStatusSlotInitialized extends SatscardOpStatus {
   const SatscardOpStatusSlotInitialized(this.card, this.slot);
 }
 
+class SatscardOpStatusBadAuth extends SatscardOpStatus {
+  const SatscardOpStatusBadAuth();
+}
 class SatscardOpStatusIncorrectCard extends SatscardOpStatus {
   const SatscardOpStatusIncorrectCard();
-}
-
-class SatscardOpStatusStaleCard extends SatscardOpStatus {
-  const SatscardOpStatusStaleCard();
 }
 
 class SatscardOpStatusNfcError extends SatscardOpStatus {
@@ -61,6 +67,10 @@ class SatscardOpStatusProtocolError extends SatscardOpStatus {
   final TapProtoException e;
 
   const SatscardOpStatusProtocolError(this.e);
+}
+
+class SatscardOpStatusStaleCard extends SatscardOpStatus {
+  const SatscardOpStatusStaleCard();
 }
 
 class SatscardOpStatusUnexpectedError extends SatscardOpStatus {

@@ -50,7 +50,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
     controller.value = 1.0;
     controller.addStatusListener((status) async {
       if (status == AnimationStatus.dismissed && mounted) {
-        _onFinish(delay: false);
+        _onFinish(false, delay: false);
       }
     });
   }
@@ -188,7 +188,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
 
   Widget _buildCancelButton(BreezTranslations texts, ThemeData themeData) {
     return TextButton(
-      onPressed: _isClosing ? null : () => _onFinish(delay: false),
+      onPressed: _isClosing ? null : () => _onFinish(false, delay: false),
       child: Text(
         texts.satscard_operation_dialog_cancel_label,
         style: themeData.primaryTextTheme.labelLarge.copyWith(
@@ -203,17 +203,18 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   void _handleExitConditions(SatscardOpStatus status) {
     if (_isClosing == true) {
       return;
-    }
-    if (status is SatscardOpStatusSlotInitialized) {
-      _onFinish(delay: true);
+    } else if (status is SatscardOpStatusSlotInitialized) {
+      _onFinish(status, delay: true);
+    } else if (status is SatscardOpStatusBadAuth) {
+      _onFinish(status, delay: false);
     }
   }
 
-  void _onFinish({bool delay = true}) {
+  void _onFinish<T>(T result, {bool delay = true}) {
     _isClosing = true;
     widget._bloc.actionsSink.add(DisableListening());
     void closeFunc() {
-      Navigator.removeRoute(context, _currentRoute);
+      Navigator.of(context).pop(result);
     }
 
     if (delay) {

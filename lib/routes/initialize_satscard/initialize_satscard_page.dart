@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
@@ -5,6 +6,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_model.dart';
+import 'package:breez/bloc/satscard/satscard_op_status.dart';
 import 'package:breez/routes/initialize_satscard/satscard_operation_dialog.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
@@ -23,6 +25,8 @@ class InitializeSatscardPage extends StatelessWidget {
   final _chainCodeController = TextEditingController();
   final _spendCodeFocusNode = FocusNode();
   final _chainCodeFocusNode = FocusNode();
+  final _incorrectCodes =
+      HashSet<String>(equals: (a, b) => a == b, hashCode: (a) => a.hashCode);
 
   final Satscard _card;
   final String _activeSlot;
@@ -53,11 +57,20 @@ class InitializeSatscardPage extends StatelessWidget {
                     _spendCodeController.text, _chainCodeController.text);
                 bloc.actionsSink.add(InitializeSlot(request));
                 showDialog(
-                    useRootNavigator: false,
-                    barrierDismissible: false,
-                    context: context,
-                    builder: (_) =>
-                        SatscardOperationDialog(context, bloc, _card.ident));
+                        useRootNavigator: false,
+                        barrierDismissible: false,
+                        context: context,
+                        builder: (_) =>
+                            SatscardOperationDialog(context, bloc, _card.ident))
+                    .then((result) {
+                  if (result is SatscardOpStatusBadAuth) {
+                    _incorrectCodes.add(request.cvcCode);
+                    _formKey.currentState.validate();
+                  } else if (result is SatscardOpStatusSlotInitialized) {
+                    // do stuff with initialized slot
+                    bool here = true;
+                  }
+                });
               }
             },
           )),
@@ -76,12 +89,14 @@ class InitializeSatscardPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   SpendCodeFormField(
-                    context: context,
-                    texts: texts,
-                    focusNode: _spendCodeFocusNode,
-                    controller: _spendCodeController,
-                    style: theme.FieldTextStyle.textStyle,
-                  ),
+                      context: context,
+                      texts: texts,
+                      focusNode: _spendCodeFocusNode,
+                      controller: _spendCodeController,
+                      style: theme.FieldTextStyle.textStyle,
+                      validatorFn: (code) => _incorrectCodes.contains(code)
+                          ? texts.satscard_spend_code_incorrect_code_hint
+                          : null),
                   ChainCodeFormField(
                     context: context,
                     texts: texts,

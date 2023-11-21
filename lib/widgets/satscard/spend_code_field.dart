@@ -50,16 +50,15 @@ class SpendCodeFormField extends TextFormField {
   FormFieldValidator<String> get validator {
     return (value) {
       if (value.length != 6) {
-        return texts.satscard_spend_code_wrong_hint;
-      } else {
-        try {
-          if (validatorFn != null) {
-            return validatorFn(value);
-          }
-        } catch (_) {}
-
-        return null;
+        return texts.satscard_spend_code_incorrect_length_hint;
       }
+      try {
+        if (validatorFn != null) {
+          return validatorFn(value);
+        }
+      } catch (_) {}
+
+      return null;
     };
   }
 }
