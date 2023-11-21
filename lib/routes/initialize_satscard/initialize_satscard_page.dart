@@ -48,8 +48,6 @@ class InitializeSatscardPage extends StatelessWidget {
             text: texts.satscard_initialize_button_label,
             onPressed: () {
               if (_formKey.currentState.validate()) {
-                final navigator = Navigator.of(context);
-                navigator.pop();
                 final bloc = AppBlocsProvider.of<SatscardBloc>(context);
                 final request = InitializeSlotModel(_card,
                     _spendCodeController.text, _chainCodeController.text);
