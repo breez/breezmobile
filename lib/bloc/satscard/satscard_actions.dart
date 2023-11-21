@@ -2,6 +2,10 @@ import 'package:breez/bloc/async_action.dart';
 
 import 'satscard_model.dart';
 
+class DisableListening extends AsyncAction {}
+
+class EnableListening extends AsyncAction {}
+
 class InitializeSlot extends AsyncAction {
   final InitializeSlotModel request;
 

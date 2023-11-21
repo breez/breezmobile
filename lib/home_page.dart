@@ -15,6 +15,7 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/satscard/detected_satscard_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
@@ -51,6 +52,8 @@ import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:cktap_protocol/satscard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -530,34 +533,53 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   }
 
   void _listenSatscards() {
+    widget.satscardBloc.actionsSink.add(EnableListening());
     widget.satscardBloc.detectedStream.listen((status) async {
       Navigator.popUntil(context, (route) => route.settings.name == "/");
       final texts = context.texts();
       final themeData = Theme.of(context);
-      
-      if (status is DetectedSweepableSatscardStatus) {
-      } else if (status is DetectedUnusedSatscardStatus) {
-        promptAreYouSure(context,
-          texts.satscard_unused_prompt_title,
+
+      if (status is DetectedUsedUpSatscardStatus) {
+        promptMessage(
+          context,
+          texts.satscard_used_up_prompt_title,
           Text(
-            texts.satscard_unused_prompt_body,
+            texts.satscard_used_up_prompt_body,
             style: themeData.dialogTheme.contentTextStyle,
           ),
-        ).then((result) {
-          if (result) {
-            Navigator.pushNamed(context, "/initialize_satscard", arguments: status.card);
-          }
-        });
-      } else if (status is DetectedUsedUpSatscardStatus) {
-        promptMessage(context,
-            texts.satscard_used_up_prompt_title,
-            Text(
-              texts.satscard_used_up_prompt_body,
-              style: themeData.dialogTheme.contentTextStyle,
-            )
         );
+        return;
       }
+
+      widget.satscardBloc.actionsSink.add(DisableListening());
+      Future future;
+      if (status is DetectedSweepableSatscardStatus) {
+        future = _handleUnusedSatscard(themeData, texts, status.card);
+      } else if (status is DetectedUnusedSatscardStatus) {
+        future = _handleUnusedSatscard(themeData, texts, status.card);
+      }
+      await future.then(
+          (value) => widget.satscardBloc.actionsSink.add(EnableListening()));
     });
+  }
+
+  Future _handleSweepableSatscard(
+      ThemeData themeData, BreezTranslations texts, Satscard card, Slot slot) {
+    return Future.error(-1);
+  }
+
+  Future _handleUnusedSatscard(
+      ThemeData themeData, BreezTranslations texts, Satscard card) {
+    return promptAreYouSure(
+      context,
+      texts.satscard_unused_prompt_title,
+      Text(
+        texts.satscard_unused_prompt_body,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+    ).then((result) => result
+        ? Navigator.pushNamed(context, "/initialize_satscard", arguments: card)
+        : null);
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {

@@ -28,9 +28,9 @@ class SatscardBloc with AsyncActionsHandler {
   SatscardBloc()
       : _breezLib = ServiceInjector().breezBridge,
         _nfc = ServiceInjector().nfc {
-    _listenSatscards();
-
     registerAsyncHandlers({
+      DisableListening: _disableListening,
+      EnableListening: _enableListening,
       InitializeSlot: _initializeSlot,
       SweepSatscard: _sweepSatscard,
     });
@@ -38,7 +38,7 @@ class SatscardBloc with AsyncActionsHandler {
   }
 
   void _listenSatscards() {
-    log.info("SatscardBloc: _listenSatscards registered with NFCService");
+    log.info("SatscardBloc: _listenSatscards() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
       try {
         log.info("Attempting to read Satscard with the following tag: $tag");
@@ -75,10 +75,21 @@ class SatscardBloc with AsyncActionsHandler {
     };
   }
 
-  Future _initializeSlot(InitializeSlot action) async {
+  Future<void> _disableListening(DisableListening _) async {
+    log.info("SatscardBloc: _disableListening() called");
+    _nfc.onSatscardTag = (tag) async =>
+      log.info("Ignoring Satscard tag due to listening being disabled: $tag");
+  }
+
+  Future<void> _enableListening(EnableListening _) async {
+    log.info("SatscardBloc: _enableListening() called");
+    _listenSatscards();
+  }
+
+  Future<void> _initializeSlot(InitializeSlot action) async {
     final id = action.request.satscard.ident;
 
-    log.info("SatscardBloc: _initializeSatscard registered with NFCService");
+    log.info("SatscardBloc: _initializeSatscard() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
       try {
         log.info(
@@ -141,11 +152,11 @@ class SatscardBloc with AsyncActionsHandler {
     };
   }
 
-  Future _sweepSatscard(SweepSatscard action) async {
+  Future<void> _sweepSatscard(SweepSatscard action) async {
     return Future.error("SweepSatscard action not implemented");
   }
 
-  close() {
+  void _close() {
     _detectedController.close();
   }
 }

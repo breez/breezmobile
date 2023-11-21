@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_op_status.dart';
 import 'package:breez/widgets/circular_progress.dart';
@@ -11,13 +12,11 @@ class SatscardOperationDialog extends StatefulWidget {
   final BuildContext _context;
   final SatscardBloc _bloc;
   final String _cardId;
-  //final Function(dynamic result) _onFinish;
 
   const SatscardOperationDialog(
     this._context,
     this._bloc,
     this._cardId,
-    //this._onFinish,
   );
 
   @override
@@ -212,9 +211,9 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
 
   void _onFinish({bool delay = true}) {
     _isClosing = true;
+    widget._bloc.actionsSink.add(DisableListening());
     void closeFunc() {
       Navigator.removeRoute(context, _currentRoute);
-      //widget._onFinish(result);
     }
 
     if (delay) {
