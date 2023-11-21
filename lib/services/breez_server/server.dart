@@ -19,6 +19,7 @@ class BreezServer {
   ClientChannel _channel;
 
   Future<String> signUrl(String baseUrl, String queryString) async {
+    await _ensureValidChannel();
     var signerClient = SignerClient(_channel);
     var response = await signerClient.signUrl(SignUrlRequest()
       ..baseUrl = baseUrl
