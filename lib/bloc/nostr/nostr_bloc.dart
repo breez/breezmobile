@@ -1,28 +1,32 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:breez/bloc/async_actions_handler.dart';
 import 'package:breez/bloc/nostr/nostr_actions.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:breez/services/injector.dart';
+import 'package:breez/utils/nostrConnect.dart';
 import 'package:nostr_tools/nostr_tools.dart';
+import 'package:rxdart/rxdart.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../services/injector.dart';
 
 class NostrBloc with AsyncActionsHandler {
   BreezBridge _breezLib;
   String nostrPublicKey;
-  String nostrPrivateKey;
+  String _nostrPrivateKey;
 
-  FlutterSecureStorage _secureStorage;
+  List<String> defaultRelaysList = [];
+
   SharedPreferences sharedPreferences;
+  SharedPreferences pref;
 
   NostrBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    _secureStorage = const FlutterSecureStorage();
 
     _initNostr();
+    _listenNostrSettings();
 
     registerAsyncHandlers({
       GetPublicKey: _handleGetPublicKey,
@@ -30,14 +34,61 @@ class NostrBloc with AsyncActionsHandler {
       GetRelays: _handleGetRelays,
       Nip04Encrypt: _handleNip04Encrypt,
       Nip04Decrypt: _handleNip04Decrypt,
+      StoreImportedPrivateKey: _handleStoreImportedPrivateKey,
+      DeleteKey: _handleDeleteKey,
+      PublishRelays: _handlePublishRelays,
+      Nip46Connect: _handleNip46Connect,
+      Nip46Disconnect: _handleNip47Disconnect,
     });
     listenActions();
   }
+  final _nostrSettingsController =
+      BehaviorSubject<NostrSettings>.seeded(NostrSettings.initial());
+  Stream<NostrSettings> get nostrSettingsStream =>
+      _nostrSettingsController.stream;
+  Sink<NostrSettings> get nostrSettingsSettingsSink =>
+      _nostrSettingsController.sink;
 
   void _initNostr() async {
-    nostrPublicKey = await _secureStorage.read(key: "nostrPublicKey");
-    nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
+    pref = await SharedPreferences.getInstance();
+    _fetchPublicKey();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      _nostrSettingsController.add(NostrSettings.fromJson(settings));
+    }
   }
+
+  _listenNostrSettings() async {
+    pref = await SharedPreferences.getInstance();
+    nostrSettingsStream.listen((settings) async {
+      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
+          json.encode(settings.toJson()));
+    });
+  }
+
+  String get nostrPrivateKey => _nostrPrivateKey;
+
+  final StreamController<String> nip46ConnectController =
+      StreamController<String>.broadcast();
+
+  final StreamController<String> nip46DisconnectController =
+      StreamController<String>.broadcast();
+
+  Stream<String> get nip46ConnectStream => nip46ConnectController.stream;
+
+  Stream<String> get nip46DisconnectStream => nip46DisconnectController.stream;
+
+  final StreamController<String> _encryptDataController =
+      StreamController<String>.broadcast();
+  Stream<String> get encryptDataStream => _encryptDataController.stream;
+
+  final StreamController<String> _decryptDataController =
+      StreamController<String>.broadcast();
+  Stream<String> get decryptDataStream => _decryptDataController.stream;
 
   final StreamController<String> _publicKeyController =
       StreamController<String>.broadcast();
@@ -57,8 +108,7 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleSignEvent(SignEvent action) async {
     //  to sign the event
-    Map<String, dynamic> signedEvent =
-        await _signEvent(action.eventObject, action.privateKey);
+    Map<String, dynamic> signedEvent = await _signEvent(action.eventObject);
 
     _eventController.add(signedEvent);
     action.resolve(signedEvent);
@@ -72,44 +122,91 @@ class NostrBloc with AsyncActionsHandler {
   }
 
   Future<void> _handleNip04Encrypt(Nip04Encrypt action) async {
-    // to encrypt the data`
-    String encryptedData = await _encryptData(action.data, action.publicKey);
+    // to encrypt the data
+    String encryptedData = await _encryptData(
+      action.data,
+      action.publicKey,
+    );
+    _encryptDataController.add(encryptedData);
     action.resolve(encryptedData);
   }
 
   Future<void> _handleNip04Decrypt(Nip04Decrypt action) async {
     // to decrypt the data
-    String decryptedData =
-        await _decryptData(action.encryptedData, action.privateKey);
+    String decryptedData = await _decryptData(
+      action.encryptedData,
+      action.publicKey,
+    );
+    _decryptDataController.add(decryptedData);
     action.resolve(decryptedData);
+  }
+
+  Future<void> _handleStoreImportedPrivateKey(
+      StoreImportedPrivateKey action) async {
+    await _breezLib
+        .loginWithImportedNostrKey(action.privateKey)
+        .catchError((error) {
+      throw error.toString();
+    });
+
+    action.resolve(true);
+  }
+
+  Future<void> _handleDeleteKey(DeleteKey action) async {
+    nostrPublicKey = null;
+    _nostrPrivateKey = null;
+
+    await _breezLib.deleteNostrKey().catchError((error) {
+      throw error.toString();
+    });
+
+    action.resolve(true);
   }
 
   // Methods to simulate the actual logic
 
+  Future<List<String>> _fetchDefaultRelayList() async {
+    pref = await SharedPreferences.getInstance();
+
+    var nostrSettings =
+        pref.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+
+    if (nostrSettings != null) {
+      Map<String, dynamic> settings = json.decode(nostrSettings);
+      var nostrSetttingsModel = NostrSettings.fromJson(settings);
+      defaultRelaysList = nostrSetttingsModel.relayList;
+    }
+    return defaultRelaysList;
+  }
+
   Future<String> _fetchPublicKey() async {
-    if (nostrPublicKey == null) {
+    if (nostrPublicKey == null || _nostrPrivateKey == null) {
       // check if key pair already exists otherwise generate it
       String nostrKeyPair;
 
-      nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
-        throw error.toString();
-      });
+      try {
+        nostrKeyPair = await _breezLib.getNostrKeyPair().catchError((error) {
+          throw error.toString();
+        });
+      } catch (e) {
+        throw Exception(e);
+      }
 
       int index = nostrKeyPair.indexOf('_');
-      nostrPrivateKey = nostrKeyPair.substring(0, index);
+      _nostrPrivateKey = nostrKeyPair.substring(0, index);
       nostrPublicKey = nostrKeyPair.substring(index + 1);
 
-      // Write value
-      await _secureStorage.write(
-          key: 'nostrPrivateKey', value: nostrPrivateKey);
-      await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
+      // publishing the default relayList when creating the account for the first time
+      _fetchDefaultRelayList();
+      _publishRelays(defaultRelaysList);
     }
 
     return nostrPublicKey;
   }
 
   Future<Map<String, dynamic>> _signEvent(
-      Map<String, dynamic> eventObject, String nostrPrivateKey) async {
+    Map<String, dynamic> eventObject,
+  ) async {
     final eventApi = EventApi();
 
     if (eventObject['pubkey'] == null) {
@@ -135,7 +232,7 @@ class NostrBloc with AsyncActionsHandler {
       event.id = eventObject['id'];
     }
 
-    event.sig = eventApi.signEvent(event, nostrPrivateKey);
+    event.sig = eventApi.signEvent(event, _nostrPrivateKey);
 
     if (eventApi.verifySignature(event)) {
       eventObject['sig'] = event.sig;
@@ -144,27 +241,133 @@ class NostrBloc with AsyncActionsHandler {
     return eventObject;
   }
 
+  Future<void> _handlePublishRelays(PublishRelays action) async {
+    await _publishRelays(action.userRelayList);
+    action.resolve(true);
+  }
+
+  List<List<String>> _formRelayPublishEventTagList(List<String> userRelayList) {
+    List<List<String>> tagList = [];
+
+    for (int i = 0; i < userRelayList.length; i++) {
+      tagList.add(['r', userRelayList[i]]);
+    }
+
+    return tagList;
+  }
+
+  Future<void> _publishRelays(List<String> userRelayList) async {
+    RelayPoolApi relayPool = RelayPoolApi(relaysList: userRelayList);
+
+    List<List<String>> tagList = _formRelayPublishEventTagList(userRelayList);
+
+    Event relayPublishEvent = Event(
+      content: null,
+      kind: 10002,
+      created_at: DateTime.now().millisecondsSinceEpoch ~/ 1000,
+      tags: tagList,
+      pubkey: nostrPublicKey,
+    );
+
+    Map<String, dynamic> eventObject = eventToMap(relayPublishEvent);
+
+    try {
+      Map<String, dynamic> signedEventObject = await _signEvent(eventObject);
+      Event signedNostrEvent = mapToEvent(signedEventObject);
+      relayPool.publish(signedNostrEvent);
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   // this method is created for future use
   Future<List<String>> _fetchRelays() async {
     return ['Relay1', 'Relay2', 'Relay3'];
   }
 
-  // this method is created for future use
   Future<String> _encryptData(String data, String publicKey) async {
     // Simulating an encryption operation
-
-    throw Exception("HandleNip04Encrypt not supported");
+    return Nip04().encrypt(_nostrPrivateKey, publicKey, data);
   }
 
-  // this method is created for future use
-  Future<String> _decryptData(String encryptedData, String privateKey) async {
+  Future<String> _decryptData(String encryptedData, String publicKey) async {
     // Simulating a decryption operation
-    throw Exception("HandleNip04Decrypt not supported");
+    return Nip04().decrypt(_nostrPrivateKey, publicKey, encryptedData);
   }
 
+  Future<void> _handleNip46Connect(Nip46Connect action) async {
+    try {
+      final rpc = NostrRpc(
+        relay: action.connectUri.relay,
+        nostrBloc: action.nostrBloc,
+      );
+      await rpc.call(
+        action.connectUri.target,
+        method: 'connect',
+        params: [action.nostrBloc.nostrPublicKey],
+      );
+    } catch (e) {
+      throw Exception(e);
+    }
+    // adding app to the list of connectedApps
+    await _addNip46App(action.connectUri);
+    action.resolve(true);
+  }
+
+  Future<void> _addNip46App(ConnectUri connectUri) async {
+    String connectAppId = await nip46ConnectStream.first;
+    // get the list of connectedApps
+    NostrSettings settings = await nostrSettingsStream.first;
+
+    List<ConnectUri> connectedApps = settings.connectedAppsList;
+    if (connectAppId == connectUri.target &&
+        !connectedApps.contains(connectUri)) {
+      connectedApps.add(connectUri);
+      nostrSettingsSettingsSink.add(settings.copyWith(
+        connectedAppsList: connectedApps,
+      ));
+    }
+  }
+
+  Future<void> _handleNip47Disconnect(Nip46Disconnect action) async {
+    try {
+      final rpc = NostrRpc(
+        relay: action.connectUri.relay,
+        nostrBloc: action.nostrBloc,
+      );
+      await rpc.call(
+        action.connectUri.target,
+        method: 'disconnect',
+        params: [],
+      );
+    } catch (e) {
+      throw Exception(e);
+    }
+    await _removeNip46App(action.connectUri);
+    action.resolve(true);
+  }
+
+  Future<void> _removeNip46App(ConnectUri connectUri) async {
+    String connectAppId = await nip46DisconnectStream.first;
+
+    NostrSettings settings = await nostrSettingsStream.first;
+    List<ConnectUri> connectedApps = settings.connectedAppsList;
+    if (connectAppId == connectUri.target &&
+        connectedApps.contains(connectUri)) {
+      connectedApps.remove(connectUri);
+      nostrSettingsSettingsSink.add(settings.copyWith(
+        connectedAppsList: connectedApps,
+      ));
+    }
+  }
+
+  // check for other controllers to be added in dispose
   @override
   Future dispose() {
     _publicKeyController.close();
+    _encryptDataController.close();
+    _decryptDataController.close();
+    _eventController.close();
     return super.dispose();
   }
 }

@@ -230,6 +230,14 @@ class BreezBridge {
         .then((value) => value as String);
   }
 
+  Future loginWithImportedNostrKey(String privateKey) {
+    return _invokeMethodWhenReady("storeNostrKey", {"argument": privateKey});
+  }
+
+  Future deleteNostrKey() {
+    return _invokeMethodWhenReady("deleteNostrKey");
+  }
+
   Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
     return _invokeMethodWhenReady(
       "finishLNURLPay",

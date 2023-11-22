@@ -4,6 +4,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
 import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
 import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
@@ -26,6 +27,7 @@ class AppBlocs {
   final InvoiceBloc invoicesBloc;
   final ConnectPayBloc connectPayBloc;
   final BackupBloc backupBloc;
+  final NostrBloc nostrBloc;
   final MarketplaceBloc marketplaceBloc;
   final FastbitcoinsBloc fastbitcoinsBloc;
   final LSPBloc lspBloc;
@@ -72,8 +74,12 @@ class AppBlocs {
         ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
             accountBloc.userActionsSink),
         blocsByType);
-    MarketplaceBloc marketplaceBloc =
-        _registerBloc(MarketplaceBloc(), blocsByType);
+    NostrBloc nostrBloc = _registerBloc(NostrBloc(), blocsByType);
+    MarketplaceBloc marketplaceBloc = _registerBloc(
+        MarketplaceBloc(
+          nostrBloc.nostrSettingsStream,
+        ),
+        blocsByType);
     LSPBloc lspBloc =
         _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     LNUrlBloc lnurlBloc = _registerBloc(LNUrlBloc(), blocsByType);
@@ -110,6 +116,7 @@ class AppBlocs {
         invoicesBloc,
         connectPayBloc,
         backupBloc,
+        nostrBloc,
         marketplaceBloc,
         fastbitcoinsBloc,
         lspBloc,
@@ -129,6 +136,7 @@ class AppBlocs {
       this.invoicesBloc,
       this.connectPayBloc,
       this.backupBloc,
+      this.nostrBloc,
       this.marketplaceBloc,
       this.fastbitcoinsBloc,
       this.lspBloc,

@@ -3,7 +3,8 @@ import 'dart:convert' as JSON;
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
-import 'package:breez/routes/marketplace/nostr_event_handlers.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_model.dart';
 import 'package:breez/utils/webview_controller_util.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 // Import for Android features.
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
+import 'nostr_event_handlers.dart';
 import 'webln_handlers.dart';
 
 class VendorWebViewPage extends StatefulWidget {
@@ -37,6 +39,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   InvoiceBloc _invoiceBloc;
   bool _isInit = false;
   NostrEventHandler _nostrEventHandler;
+  NostrBloc _nostrBloc;
 
   WebViewController _webViewController;
 
@@ -45,13 +48,15 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
+      _nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
       _webViewController = setWebViewController(
         url: widget._url,
         onPageFinished: _onPageFinished,
         onMessageReceived: _onMessageReceived,
         onNavigationRequest: _handleNavigationRequest,
       );
-      _nostrEventHandler = NostrEventHandler(context, widget._title);
+      _nostrEventHandler =
+          NostrEventHandler(_nostrBloc, context, widget._title);
       _isInit = true;
     }
 
@@ -115,9 +120,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
 
     // inject nostr-provider for Snort
-    if (widget._title == "Snort") {
+    if (widget._title == "Snort" || widget._title == "Primal") {
       _webViewController
           .runJavaScript(await _nostrEventHandler.initNostrProvider);
+      // logging in the user
+      NostrSettings settings = await _nostrBloc.nostrSettingsStream.first;
+      if (!settings.isLoggedIn) {
+        _nostrBloc.nostrSettingsSettingsSink.add(settings.copyWith(
+          isLoggedIn: true,
+        ));
+      }
     }
 
     if (kDebugMode) {
