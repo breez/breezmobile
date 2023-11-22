@@ -7,6 +7,7 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
@@ -27,6 +28,7 @@ import 'package:breez/routes/initial_walkthrough/initial_walkthrough.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
+import 'package:breez/routes/nostr/nostr_screen.dart';
 import 'package:breez/routes/order_card/order_card_page.dart';
 import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
@@ -78,6 +80,7 @@ class UserApp extends StatelessWidget {
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
+    var nostrBloc = AppBlocsProvider.of<NostrBloc>(context);
 
     return StreamBuilder(
       stream: userProfileBloc.userStream,
@@ -206,6 +209,7 @@ class UserApp extends StatelessWidget {
                                   lspBloc,
                                   reverseSwapBloc,
                                   lnurlBloc,
+                                  nostrBloc,
                                 ),
                                 settings: settings,
                               );
@@ -362,6 +366,13 @@ class UserApp extends StatelessWidget {
                               return MaterialPageRoute<String>(
                                 fullscreenDialog: true,
                                 builder: (_) => QRScan(),
+                                settings: settings,
+                              );
+                            case '/nostr_screen':
+                              return FadeInRoute(
+                                builder: (_) => NostrScreen(
+                                  nostrBloc: nostrBloc,
+                                ),
                                 settings: settings,
                               );
                           }

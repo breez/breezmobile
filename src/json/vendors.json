@@ -49,6 +49,10 @@
   "Snort":{
     "url" : "https://snort.social"
   },
+  "Primal":{
+    "url": "https://primal.net/home",
+    "logo":"src/icon/vendors/primal-fire-wave.svg"
+  },
   "Kollider": {
     "url": "https://light.kollider.xyz/auth/login",
     "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
