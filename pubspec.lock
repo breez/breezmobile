@@ -36,6 +36,7 @@ packages:
   anytime:
     dependency: "direct main"
     description:
+
       path: "."
       ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
       resolved-ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
@@ -46,6 +47,7 @@ packages:
     dependency: "direct main"
     description:
       name: app_settings
+
       sha256: "09bc7fe0313a507087bec1a3baf555f0576e816a760cbb31813a88890a09d9e5"
       url: "https://pub.dev"
     source: hosted
@@ -2119,7 +2121,9 @@ packages:
     dependency: "direct main"
     description:
       name: webview_flutter_android
-      sha256: b0cd33dd7d3dd8e5f664e11a19e17ba12c352647269921a3b568406b001f1dff
+
+      sha256: ddc167c6676f57c8b367d19fcbee267d6dc6adf81bd6c3cb87981d30746e0a6d
+
       url: "https://pub.dev"
     source: hosted
     version: "3.12.0"
@@ -2135,7 +2139,8 @@ packages:
     dependency: transitive
     description:
       name: webview_flutter_wkwebview
-      sha256: "30b9af6bdd457b44c08748b9190d23208b5165357cc2eb57914fee1366c42974"
+      sha256: d2f7241849582da80b79acb03bb936422412ce5c0c79fb5f6a1de5421a5aecc4
+
       url: "https://pub.dev"
     source: hosted
     version: "3.9.1"

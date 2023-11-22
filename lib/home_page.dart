@@ -14,6 +14,8 @@ import 'package:breez/bloc/connect_pay/connect_pay_bloc.dart';
 import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
+import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
+import 'package:breez/bloc/nostr/nostr_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -70,6 +72,8 @@ class Home extends StatefulWidget {
   final LSPBloc lspBloc;
   final ReverseSwapBloc reverseSwapBloc;
   final LNUrlBloc lnurlBloc;
+  final NostrBloc nostrBloc;
+  final MarketplaceBloc marketplaceBloc;
 
   Home(
     this.accountBloc,
@@ -80,6 +84,8 @@ class Home extends StatefulWidget {
     this.lspBloc,
     this.reverseSwapBloc,
     this.lnurlBloc,
+    this.nostrBloc,
+    this.marketplaceBloc,
   );
 
   final List<DrawerItemConfig> _screens = List<DrawerItemConfig>.unmodifiable([
@@ -189,6 +195,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       value: themeData.appBarTheme.systemOverlayStyle.copyWith(
         systemNavigationBarColor: themeData.bottomAppBarTheme.color,
       ),
+
       child: WillPopScope(
         onWillPop: willPopCallback(
           context,
@@ -230,7 +237,6 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     if (appMode == null) {
       return AccountPage(firstPaymentItemKey, scrollController);
     }
-
     final texts = context.texts();
     final themeData = Theme.of(context);
 
