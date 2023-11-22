@@ -554,7 +554,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       widget.satscardBloc.actionsSink.add(DisableListening());
       Future future;
       if (status is DetectedSweepableSatscardStatus) {
-        future = _handleUnusedSatscard(themeData, texts, status.card);
+        future = _handleSweepableSatscard(status.card, status.slot);
       } else if (status is DetectedUnusedSatscardStatus) {
         future = _handleUnusedSatscard(themeData, texts, status.card);
       }
@@ -563,10 +563,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     });
   }
 
-  Future _handleSweepableSatscard(
-      ThemeData themeData, BreezTranslations texts, Satscard card, Slot slot) {
-    return Future.error(-1);
-  }
+  Future _handleSweepableSatscard(Satscard card, Slot slot) =>
+    Navigator.pushNamed(context, "/satscard_balance", arguments: { "card": card, "slot": slot });
 
   Future _handleUnusedSatscard(
       ThemeData themeData, BreezTranslations texts, Satscard card) {

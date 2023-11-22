@@ -34,6 +34,7 @@ import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/podcast_history/podcast_history.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/routes/satscard_balance/satscard_balance_page.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_and_backup_page.dart';
 import 'package:breez/routes/settings/pos_settings_page.dart';
@@ -373,6 +374,16 @@ class UserApp extends StatelessWidget {
                               return FadeInRoute (
                                 builder: (_) =>
                                     InitializeSatscardPage(settings.arguments as Satscard),
+                                settings: settings,
+                              );
+                            case '/satscard_balance':
+                              return FadeInRoute (
+                                builder: (_) {
+                                  final arguments = settings.arguments as Map;
+                                  final card = arguments["card"] as Satscard;
+                                  final slot = arguments["slot"] as Slot;
+                                  return SatscardsBalancePage(card, slot);
+                                },
                                 settings: settings,
                               );
                           }
