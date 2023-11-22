@@ -7,6 +7,7 @@ import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SatscardOperationDialog extends StatefulWidget {
   final BuildContext _context;
@@ -31,6 +32,8 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   StreamSubscription<SatscardOpStatus> _operationSubscription;
   ModalRoute _currentRoute;
   bool _isClosing;
+
+  static const _iconHeight = 64.0;
 
   @override
   void initState() {
@@ -85,15 +88,13 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
               titlePadding: const EdgeInsets.fromLTRB(20.0, 22.0, 0.0, 8.0),
               contentPadding: const EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 20.0),
               children: [
-                StreamBuilder<SatscardOpStatus>(
-                  stream: widget._bloc.operationStream,
-                  builder: (context, _) {
-                    return SizedBox(
-                      width: 310,
-                      height: 250,
-                      child: _buildContentForState(context, data),
-                    );
-                  },
+                SizedBox(
+                  width: 310,
+                  height: 250,
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 60),
+                    child: _buildContentForState(context, data),
+                  ),
                 ),
                 _buildCancelButton(texts, themeData),
               ],
@@ -108,6 +109,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
     if (status == null) {
       return _buildTextPrompt(
           themeData,
+          _buildNfcIcon(themeData),
           texts.satscard_operation_dialog_present_satscards_label(
               widget._cardId));
     }
@@ -123,28 +125,30 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
           value: percentage);
     }
     if (status is SatscardOpStatusSlotInitialized) {
-      return _buildOperationSuccessIndicator(context, status, texts, themeData);
+      return _buildTextPrompt(themeData, _buildSuccessIcon(themeData),
+          texts.satscard_operation_dialog_success_label);
     }
     if (status is SatscardOpStatusIncorrectCard) {
-      return _buildTextPrompt(themeData,
+      return _buildTextPrompt(themeData, _buildErrorIcon(themeData),
           texts.satscard_operation_dialog_incorrect_card_label(widget._cardId));
     }
     if (status is SatscardOpStatusStaleCard) {
-      return _buildTextPrompt(
-          themeData, texts.satscard_operation_dialog_stale_card_label);
+      return _buildTextPrompt(themeData, _buildErrorIcon(themeData),
+          texts.satscard_operation_dialog_stale_card_label);
     }
     if (status is SatscardOpStatusNfcError) {
-      return _buildTextPrompt(
-          themeData, texts.satscard_operation_dialog_nfc_error_label);
+      return _buildTextPrompt(themeData, _buildNfcIcon(themeData),
+          texts.satscard_operation_dialog_nfc_error_label);
     }
     if (status is SatscardOpStatusProtocolError) {
       return _buildTextPrompt(
           themeData,
+          _buildErrorIcon(themeData),
           texts.satscard_operation_dialog_protocol_error_label(
               status.e.code, status.e.literal, status.e.message));
     }
     if (status is SatscardOpStatusUnexpectedError) {
-      return _buildTextPrompt(themeData,
+      return _buildTextPrompt(themeData, _buildErrorIcon(themeData),
           texts.satscard_operation_dialog_unknown_error_label(status.message));
     }
     return Container();
@@ -152,38 +156,64 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
 
   Widget _buildProgressIndicator(ThemeData themeData, String title,
       {double value}) {
-    return Padding(
-      padding: const EdgeInsets.only(top: 50),
-      child: CircularProgress(
+    return CircularProgress(
         color: themeData.dialogTheme.contentTextStyle.color,
         mainAxisAlignment: MainAxisAlignment.start,
-        size: 100,
+        size: _iconHeight,
         title: title,
         value: value,
-      ),
     );
   }
 
-  Widget _buildTextPrompt(ThemeData themeData, String label) {
+  Widget _buildTextPrompt(ThemeData themeData, Widget image, String label) {
     return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
-        Text(
-          label,
-          style: themeData.dialogTheme.contentTextStyle,
-          textAlign: TextAlign.center,
+        image,
+        Padding(
+          padding: const EdgeInsets.only(top: _iconHeight / 5),
+          child: Text(
+            label,
+            style:
+                TextStyle(color: themeData.dialogTheme.contentTextStyle.color),
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
   }
 
-  Widget _buildOperationSuccessIndicator(
-      BuildContext context,
-      SatscardOpStatusSlotInitialized status,
-      BreezTranslations texts,
-      ThemeData themeData) {
-    return const Text("Success!");
+  Widget _buildSuccessIcon(ThemeData themeData) {
+    return Image(
+      image: const AssetImage("src/icon/ic_done.png"),
+      height: _iconHeight,
+      fit: BoxFit.fitHeight,
+      color: themeData.primaryColorLight,
+    );
+  }
+
+  Widget _buildNfcIcon(ThemeData themeData) {
+    return  SvgPicture.asset(
+      "src/icon/nfc.svg",
+      height: _iconHeight,
+      fit: BoxFit.fitHeight,
+      colorFilter: ColorFilter.mode(
+        themeData.primaryColorLight,
+        BlendMode.srcATop,
+      ),
+    );
+  }
+
+  Widget _buildErrorIcon(ThemeData themeData) {
+    return SvgPicture.asset(
+      "src/icon/warning.svg",
+      height: _iconHeight,
+      fit: BoxFit.fitHeight,
+      colorFilter: ColorFilter.mode(
+        themeData.colorScheme.error,
+        BlendMode.srcATop,
+      ),
+    );
   }
 
   Widget _buildCancelButton(BreezTranslations texts, ThemeData themeData) {

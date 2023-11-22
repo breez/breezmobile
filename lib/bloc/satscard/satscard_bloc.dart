@@ -112,8 +112,8 @@ class SatscardBloc with AsyncActionsHandler {
         }
         final activeSlot = await card.getActiveSlot();
         if (activeSlot.status != SlotStatus.unused) {
-          //_operationController.add(SatscardOpStatus.staleCard());
-          //return;
+          _operationController.add(SatscardOpStatus.staleCard());
+          return;
         }
 
         // Handle the auth delay
