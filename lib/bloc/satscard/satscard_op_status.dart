@@ -45,7 +45,11 @@ class SatscardOpStatusWaiting extends SatscardOpStatus {
   const SatscardOpStatusWaiting(this.currentAuthDelay, this.initialAuthDelay);
 }
 
-class SatscardOpStatusSlotInitialized extends SatscardOpStatus {
+class SatscardOpStatusSuccess extends SatscardOpStatus {
+  const SatscardOpStatusSuccess();
+}
+
+class SatscardOpStatusSlotInitialized extends SatscardOpStatusSuccess {
   final Satscard card;
   final Slot slot;
 

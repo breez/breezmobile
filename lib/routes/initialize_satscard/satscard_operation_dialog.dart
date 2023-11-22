@@ -10,27 +10,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class SatscardOperationDialog extends StatefulWidget {
-  final BuildContext _context;
   final SatscardBloc _bloc;
   final String _cardId;
 
   const SatscardOperationDialog(
-    this._context,
     this._bloc,
     this._cardId,
   );
 
   @override
-  State<StatefulWidget> createState() {
-    return SatscardOperationDialogState();
-  }
+  State<StatefulWidget> createState() => SatscardOperationDialogState();
 }
 
 class SatscardOperationDialogState extends State<SatscardOperationDialog>
     with SingleTickerProviderStateMixin {
+  AnimationController _animationController;
   Animation<double> _opacityAnimation;
   StreamSubscription<SatscardOpStatus> _operationSubscription;
-  ModalRoute _currentRoute;
   bool _isClosing;
 
   static const _iconHeight = 64.0;
@@ -39,33 +35,24 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   void initState() {
     super.initState();
     _isClosing = false;
-    var controller = AnimationController(
+
+    _animationController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 500),
     );
     _opacityAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: controller,
+      parent: _animationController,
       curve: Curves.ease,
     ));
-    controller.value = 1.0;
-    controller.addStatusListener((status) async {
-      if (status == AnimationStatus.dismissed && mounted) {
-        _onFinish(false, delay: false);
-      }
-    });
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _currentRoute ??= ModalRoute.of(context);
+    _animationController.forward();
   }
 
   @override
   void dispose() {
+    _animationController?.dispose();
     _operationSubscription?.cancel();
     super.dispose();
   }
@@ -124,9 +111,13 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
           themeData, texts.satscard_operation_dialog_waiting_label,
           value: percentage);
     }
-    if (status is SatscardOpStatusSlotInitialized) {
+    if (status is SatscardOpStatusSuccess) {
       return _buildTextPrompt(themeData, _buildSuccessIcon(themeData),
           texts.satscard_operation_dialog_success_label);
+    }
+    if (status is SatscardOpStatusBadAuth) {
+      return _buildTextPrompt(themeData, _buildErrorIcon(themeData),
+          texts.satscard_operation_dialog_incorrect_code_label);
     }
     if (status is SatscardOpStatusIncorrectCard) {
       return _buildTextPrompt(themeData, _buildErrorIcon(themeData),
@@ -157,11 +148,11 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   Widget _buildProgressIndicator(ThemeData themeData, String title,
       {double value}) {
     return CircularProgress(
-        color: themeData.dialogTheme.contentTextStyle.color,
-        mainAxisAlignment: MainAxisAlignment.start,
-        size: _iconHeight,
-        title: title,
-        value: value,
+      color: themeData.dialogTheme.contentTextStyle.color,
+      mainAxisAlignment: MainAxisAlignment.start,
+      size: _iconHeight,
+      title: title,
+      value: value,
     );
   }
 
@@ -193,7 +184,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   }
 
   Widget _buildNfcIcon(ThemeData themeData) {
-    return  SvgPicture.asset(
+    return SvgPicture.asset(
       "src/icon/nfc.svg",
       height: _iconHeight,
       fit: BoxFit.fitHeight,
@@ -218,7 +209,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
 
   Widget _buildCancelButton(BreezTranslations texts, ThemeData themeData) {
     return TextButton(
-      onPressed: _isClosing ? null : () => _onFinish(false, delay: false),
+      onPressed: _isClosing ? null : () => _onFinish(false),
       child: Text(
         texts.satscard_operation_dialog_cancel_label,
         style: themeData.primaryTextTheme.labelLarge.copyWith(
@@ -234,23 +225,25 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
     if (_isClosing == true) {
       return;
     } else if (status is SatscardOpStatusSlotInitialized) {
-      _onFinish(status, delay: true);
+      _onFinish(status, delay: 1.5);
     } else if (status is SatscardOpStatusBadAuth) {
-      _onFinish(status, delay: false);
+      _onFinish(status, delay: 1.5);
     }
   }
 
-  void _onFinish<T>(T result, {bool delay = true}) {
+  void _onFinish<T>(T result, {double delay = 0.0}) async {
+    if (_isClosing) {
+      return;
+    }
     _isClosing = true;
     widget._bloc.actionsSink.add(DisableListening());
-    void closeFunc() {
-      Navigator.of(context).pop(result);
-    }
 
-    if (delay) {
-      Future.delayed(const Duration(seconds: 5), closeFunc);
-    } else {
-      closeFunc();
+    if (delay > 0.0) {
+      await Future.delayed(Duration(milliseconds: (1000 * delay).toInt()));
+      await _animationController.reverse();
+    }
+    if (mounted) {
+      Navigator.of(context).pop(result);
     }
   }
 }

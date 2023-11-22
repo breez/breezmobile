@@ -61,7 +61,7 @@ class InitializeSatscardPage extends StatelessWidget {
                         barrierDismissible: false,
                         context: context,
                         builder: (_) =>
-                            SatscardOperationDialog(context, bloc, _card.ident))
+                            SatscardOperationDialog(bloc, _card.ident))
                     .then((result) {
                   if (result is SatscardOpStatusBadAuth) {
                     _incorrectCodes.add(request.cvcCode);
