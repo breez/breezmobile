@@ -558,13 +558,20 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       } else if (status is DetectedUnusedSatscardStatus) {
         future = _handleUnusedSatscard(themeData, texts, status.card);
       }
-      await future.then(
-          (value) => widget.satscardBloc.actionsSink.add(EnableListening()));
+      await future.then((result) {
+        // Pages may choose to enable listening themselves at a later pointer.
+        // E.g. InitializeSatscardPage upon successful slot initialization
+        final shouldEnableListening = result == null || result == true;
+        if (shouldEnableListening) {
+          widget.satscardBloc.actionsSink.add(EnableListening());
+        }
+      });
     });
   }
 
   Future _handleSweepableSatscard(Satscard card, Slot slot) =>
-    Navigator.pushNamed(context, "/satscard_balance", arguments: { "card": card, "slot": slot });
+      Navigator.pushNamed(context, "/satscard_balance",
+          arguments: {"card": card, "slot": slot});
 
   Future _handleUnusedSatscard(
       ThemeData themeData, BreezTranslations texts, Satscard card) {

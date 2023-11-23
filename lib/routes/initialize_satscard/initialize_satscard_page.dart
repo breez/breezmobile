@@ -69,8 +69,13 @@ class InitializeSatscardPage extends StatelessWidget {
                     _incorrectCodes.add(request.cvcCode);
                     _formKey.currentState.validate();
                   } else if (result is SatscardOpStatusSlotInitialized) {
-                    // do stuff with initialized slot
-                    bool here = true;
+                    Navigator.of(context).pushReplacementNamed(
+                        "/satscard_balance",
+                        result: false,
+                        arguments: {
+                          "card": result.card,
+                          "slot": result.slot
+                        }).then((_) => bloc.actionsSink.add(EnableListening()));
                   }
                 });
               }
