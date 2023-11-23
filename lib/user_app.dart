@@ -382,7 +382,7 @@ class UserApp extends StatelessWidget {
                                   final arguments = settings.arguments as Map;
                                   final card = arguments["card"] as Satscard;
                                   final slot = arguments["slot"] as Slot;
-                                  return SatscardsBalancePage(card, slot);
+                                  return SatscardBalancePage(card, slot);
                                 },
                                 settings: settings,
                               );
