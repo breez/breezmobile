@@ -7,9 +7,11 @@ import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_model.dart';
 import 'package:breez/bloc/satscard/satscard_op_status.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/satscard/chain_code_field.dart';
 import 'package:breez/widgets/satscard/satscard_operation_dialog.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
@@ -106,11 +108,18 @@ class InitializeSatscardPage extends StatelessWidget {
                   ),
                   Container(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: AutoSizeText(
-                      texts.satscard_card_id_text(_card.ident),
-                      style: theme.textStyle,
-                      maxLines: 1,
-                      minFontSize: MinFontSize(context).minFontSize,
+                    child: GestureDetector(
+                      onTap: () {
+                        ServiceInjector().device.setClipboardText(_card.ident);
+                        showFlushbar(context,
+                            message: texts.satscard_card_id_copied);
+                      },
+                      child: AutoSizeText(
+                        texts.satscard_card_id_text(_card.ident),
+                        style: theme.textStyle,
+                        maxLines: 1,
+                        minFontSize: MinFontSize(context).minFontSize,
+                      ),
                     ),
                   ),
                 ],

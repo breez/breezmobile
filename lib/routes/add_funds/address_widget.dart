@@ -10,11 +10,13 @@ import 'package:share_plus/share_plus.dart';
 class AddressWidget extends StatelessWidget {
   final String address;
   final String backupJson;
+  final bool isGeneric;
 
   const AddressWidget(
-    this.address,
+    this.address, {
     this.backupJson,
-  );
+    this.isGeneric = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +34,9 @@ class AddressWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  texts.invoice_btc_address_deposit_address,
+                  (isGeneric
+                      ? texts.invoice_btc_address_generic_address
+                      : texts.invoice_btc_address_deposit_address),
                   style: theme.FieldTextStyle.labelStyle,
                 ),
                 Row(
@@ -46,6 +50,8 @@ class AddressWidget extends StatelessWidget {
               : Column(
                   children: [
                     GestureDetector(
+                      onLongPress:
+                          isGeneric ? null : () => _showAlertDialog(context),
                       child: Container(
                         margin: const EdgeInsets.only(top: 32.0, bottom: 16.0),
                         padding: const EdgeInsets.all(8.6),
@@ -54,7 +60,6 @@ class AddressWidget extends StatelessWidget {
                           size: 180.0,
                         ),
                       ),
-                      onLongPress: () => _showAlertDialog(context),
                     ),
                     Container(
                       padding: const EdgeInsets.only(top: 16.0),
@@ -63,8 +68,11 @@ class AddressWidget extends StatelessWidget {
                           ServiceInjector().device.setClipboardText(address);
                           showFlushbar(
                             context,
-                            message: texts
-                                .invoice_btc_address_deposit_address_copied,
+                            message: (isGeneric
+                                ? texts
+                                    .invoice_btc_address_generic_address_copied
+                                : texts
+                                    .invoice_btc_address_deposit_address_copied),
                           );
                         },
                         child: Text(
