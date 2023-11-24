@@ -31,6 +31,7 @@ class SatscardBloc with AsyncActionsHandler {
     registerAsyncHandlers({
       DisableListening: _disableListening,
       EnableListening: _enableListening,
+      GetAddressBalance: _getAddressBalance,
       InitializeSlot: _initializeSlot,
       SweepSatscard: _sweepSatscard,
     });
@@ -75,15 +76,23 @@ class SatscardBloc with AsyncActionsHandler {
     };
   }
 
-  Future<void> _disableListening(DisableListening _) async {
+  Future<void> _disableListening(DisableListening action) async {
     _log.info("_disableListening() called");
     _nfc.onSatscardTag = (tag) async => _log
         .info("Ignoring Satscard tag due to listening being disabled: $tag");
+    action.resolve(true);
   }
 
-  Future<void> _enableListening(EnableListening _) async {
+  Future<void> _enableListening(EnableListening action) async {
     _log.info("_enableListening() called");
     _listenSatscards();
+    action.resolve(true);
+  }
+
+  Future<void> _getAddressBalance(GetAddressBalance action) async {
+    return _breezLib
+        .getMempoolAddressBalance(action.address)
+        .then((result) => action.resolve(result));
   }
 
   Future<void> _initializeSlot(InitializeSlot action) async {

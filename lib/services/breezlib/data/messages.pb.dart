@@ -6065,3 +6065,64 @@ class TorConfig extends $pb.GeneratedMessage {
   void clearSocks() => clearField(3);
 }
 
+class AddressBalance extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddressBalance', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'confirmed')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'unconfirmed')
+    ..hasRequiredFields = false
+  ;
+
+  AddressBalance._() : super();
+  factory AddressBalance({
+    $fixnum.Int64? confirmed,
+    $fixnum.Int64? unconfirmed,
+  }) {
+    final _result = create();
+    if (confirmed != null) {
+      _result.confirmed = confirmed;
+    }
+    if (unconfirmed != null) {
+      _result.unconfirmed = unconfirmed;
+    }
+    return _result;
+  }
+  factory AddressBalance.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddressBalance.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddressBalance clone() => AddressBalance()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddressBalance copyWith(void Function(AddressBalance) updates) => super.copyWith((message) => updates(message as AddressBalance)) as AddressBalance; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddressBalance create() => AddressBalance._();
+  AddressBalance createEmptyInstance() => create();
+  static $pb.PbList<AddressBalance> createRepeated() => $pb.PbList<AddressBalance>();
+  @$core.pragma('dart2js:noInline')
+  static AddressBalance getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddressBalance>(create);
+  static AddressBalance? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get confirmed => $_getI64(0);
+  @$pb.TagNumber(1)
+  set confirmed($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasConfirmed() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearConfirmed() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get unconfirmed => $_getI64(1);
+  @$pb.TagNumber(2)
+  set unconfirmed($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasUnconfirmed() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUnconfirmed() => clearField(2);
+}
+

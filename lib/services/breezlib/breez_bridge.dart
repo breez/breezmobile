@@ -924,6 +924,12 @@ class BreezBridge {
     });
   }
 
+  Future<AddressBalance> getMempoolAddressBalance(String address) {
+    return _invokeMethodImmediate(
+            'getMempoolAddressBalance', {'argument': address})
+        .then((res) => AddressBalance()..mergeFromBuffer(res ?? []));
+  }
+
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
       _log.info("before invoking method $methodName");

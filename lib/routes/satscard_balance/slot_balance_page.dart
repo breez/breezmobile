@@ -2,30 +2,54 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
+import 'package:breez/bloc/satscard/satscard_actions.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/routes/add_funds/address_widget.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/circular_progress.dart';
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:cktap_protocol/cktapcard.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class SlotBalancePage extends StatefulWidget {
+  final SatscardBloc _bloc;
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
   final Function() onSweep;
 
-  const SlotBalancePage(this._card, this._slot, {this.onBack, this.onSweep});
+  const SlotBalancePage(this._bloc, this._card, this._slot,
+      {this.onBack, this.onSweep});
 
   @override
   State<StatefulWidget> createState() => SlotBalancePageState();
 }
 
 class SlotBalancePageState extends State<SlotBalancePage> {
+  AddressBalance _balance;
+
+  @override
+  void initState() {
+    super.initState();
+    final action = GetAddressBalance(widget._slot.address);
+    widget._bloc.actionsSink.add(action);
+    action.future.then((result) {
+      final newBalance = result as AddressBalance;
+      setState(() => _balance = newBalance);
+    }).onError((error, stackTrace) {
+      bool here = true; // TODO: Handle errors when retrieving balance
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<AccountModel>(
@@ -34,6 +58,9 @@ class SlotBalancePageState extends State<SlotBalancePage> {
         final minFont = MinFontSize(context);
         final texts = context.texts();
         final themeData = Theme.of(context);
+        final acc = snapshot.data;
+        final showIndicator = _balance == null || acc == null;
+        final canSweep = !showIndicator && _balance.confirmed > 0;
 
         return Scaffold(
           bottomNavigationBar: Padding(
@@ -41,7 +68,35 @@ class SlotBalancePageState extends State<SlotBalancePage> {
             child: SingleButtonBottomBar(
               stickToBottom: true,
               text: texts.satscard_balance_button_label,
-              onPressed: widget.onSweep,
+              onPressed: () {
+                if (!canSweep) {
+                  promptError(
+                      context,
+                      texts.satscard_balance_warning_no_funds_title,
+                      Text(
+                        texts.satscard_balance_warning_no_funds_body,
+                        style: themeData.dialogTheme.contentTextStyle,
+                      ));
+                  return;
+                }
+
+                if (_balance.unconfirmed > 0) {
+                  promptAreYouSure(
+                    context,
+                    texts.satscard_balance_warning_unconfirmed_title,
+                    Text(
+                      texts.satscard_balance_warning_unconfirmed_body,
+                      style: themeData.dialogTheme.contentTextStyle,
+                    ),
+                  ).then((result) {
+                    if (result == true) {
+                      widget.onSweep();
+                    }
+                  });
+                } else {
+                  widget.onSweep();
+                }
+              },
             ),
           ),
           appBar: AppBar(
@@ -59,41 +114,53 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 25, 16, 10),
-                    child: Column(
-                      children: [
-                        _buildTextTile(
-                            context,
-                            themeData,
-                            minFont,
-                            texts.satscard_balance_balance_label,
-                            "TODO: Asynchronously get"), // TODO: Satscard
-                        _buildTextTile(
-                            context,
-                            themeData,
-                            minFont,
-                            texts.satscard_balance_slot_label,
-                            "${widget._card.activeSlotIndex + 1} / ${widget._card.numSlots}"),
-                        _buildTextTile(
-                            context,
-                            themeData,
-                            minFont,
-                            texts.satscard_balance_version_label,
-                            widget._card.appletVersion),
-                        _buildTextTile(
-                            context,
-                            themeData,
-                            minFont,
-                            texts.satscard_balance_birth_height_label,
-                            widget._card.birthHeight.toString()),
-                        _buildTextTile(
-                            context,
-                            themeData,
-                            minFont,
-                            texts.satscard_balance_card_id_label,
-                            widget._card.ident,
-                            flushbarMessage: texts.satscard_card_id_copied),
-                      ],
-                    ),
+                    child: showIndicator
+                        ? Padding(
+                            padding: const EdgeInsets.only(top: 15),
+                            child: CircularProgress(
+                              color: themeData.progressIndicatorTheme.color,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              size: 64,
+                              title: _balance == null
+                                  ? texts
+                                      .satscard_balance_awaiting_balance_label
+                                  : texts
+                                      .satscard_balance_awaiting_account_label,
+                            ),
+                          )
+                        : Column(
+                            children: [
+                              ..._buildBalanceLabels(
+                                  context, texts, themeData, minFont, acc),
+                              _buildTextTile(
+                                  context,
+                                  themeData,
+                                  minFont,
+                                  texts.satscard_balance_slot_label,
+                                  "${widget._card.activeSlotIndex + 1} / ${widget._card.numSlots}"),
+                              _buildTextTile(
+                                  context,
+                                  themeData,
+                                  minFont,
+                                  texts.satscard_balance_version_label,
+                                  widget._card.appletVersion),
+                              _buildTextTile(
+                                  context,
+                                  themeData,
+                                  minFont,
+                                  texts.satscard_balance_birth_height_label,
+                                  widget._card.birthHeight.toString()),
+                              _buildTextTile(
+                                  context,
+                                  themeData,
+                                  minFont,
+                                  texts.satscard_balance_card_id_label,
+                                  widget._card.ident,
+                                  flushbarMessage:
+                                      texts.satscard_card_id_copied),
+                            ],
+                          ),
                   ),
                 ],
               ),
@@ -134,5 +201,31 @@ class SlotBalancePageState extends State<SlotBalancePage> {
               child: trailing,
             ),
     );
+  }
+
+  List<Widget> _buildBalanceLabels(
+      BuildContext context,
+      BreezTranslations texts,
+      ThemeData themeData,
+      MinFontSize minFont,
+      AccountModel acc) {
+    Widget build(String title, Int64 sats) {
+      final formatted = acc.currency.format(sats);
+      final translated = acc.fiatCurrency == null
+          ? texts.satscard_balance_value_no_fiat(formatted)
+          : texts.satscard_balance_value_with_fiat(
+              formatted, acc.fiatCurrency.format(sats));
+      return _buildTextTile(context, themeData, minFont, title, translated);
+    }
+
+    final confirmedWidget =
+        build(texts.satscard_balance_confirmed_label, _balance.confirmed);
+    return _balance.unconfirmed > 0
+        ? [
+            confirmedWidget,
+            build(
+                texts.satscard_balance_unconfirmed_label, _balance.unconfirmed)
+          ]
+        : [confirmedWidget];
   }
 }

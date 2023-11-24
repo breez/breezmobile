@@ -6,6 +6,12 @@ class DisableListening extends AsyncAction {}
 
 class EnableListening extends AsyncAction {}
 
+class GetAddressBalance extends AsyncAction {
+  final String address;
+
+  GetAddressBalance(this.address);
+}
+
 class InitializeSlot extends AsyncAction {
   final InitializeSlotModel request;
 

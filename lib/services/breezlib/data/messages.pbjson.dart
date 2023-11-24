@@ -1073,3 +1073,14 @@ const TorConfig$json = const {
 
 /// Descriptor for `TorConfig`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List torConfigDescriptor = $convert.base64Decode('CglUb3JDb25maWcSGAoHY29udHJvbBgBIAEoCVIHY29udHJvbBISCgRodHRwGAIgASgJUgRodHRwEhQKBXNvY2tzGAMgASgJUgVzb2Nrcw==');
+@$core.Deprecated('Use addressBalanceDescriptor instead')
+const AddressBalance$json = const {
+  '1': 'AddressBalance',
+  '2': const [
+    const {'1': 'confirmed', '3': 1, '4': 1, '5': 3, '10': 'confirmed'},
+    const {'1': 'unconfirmed', '3': 2, '4': 1, '5': 3, '10': 'unconfirmed'},
+  ],
+};
+
+/// Descriptor for `AddressBalance`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List addressBalanceDescriptor = $convert.base64Decode('Cg5BZGRyZXNzQmFsYW5jZRIcCgljb25maXJtZWQYASABKANSCWNvbmZpcm1lZBIgCgt1bmNvbmZpcm1lZBgCIAEoA1ILdW5jb25maXJtZWQ=');
