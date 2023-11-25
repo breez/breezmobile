@@ -2,6 +2,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/routes/satscard_balance/slot_balance_page.dart';
 import 'package:breez/routes/satscard_balance/sweep_slot_page.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class SatscardBalancePage extends StatefulWidget {
 
 class SatscardBalancePageState extends State<SatscardBalancePage> {
   final _pageController = PageController();
+  AddressBalance _recentBalance;
 
   @override
   void initState() {
@@ -42,10 +44,13 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
             widget._card,
             widget._slot,
             onBack: () => Navigator.pop(context),
-            onSweep: () => _pageController.nextPage(
-              duration: const Duration(milliseconds: 250),
-              curve: Curves.easeInOut,
-            ),
+            onSweep: (balance) {
+              _recentBalance = balance;
+              _pageController.nextPage(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+              );
+            },
           ),
           SweepSlotPage(
             bloc,
@@ -55,6 +60,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             ),
+            getBalance: () => _recentBalance,
           ),
         ],
       ),

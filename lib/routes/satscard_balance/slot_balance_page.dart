@@ -25,7 +25,7 @@ class SlotBalancePage extends StatefulWidget {
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
-  final Function() onSweep;
+  final Function(AddressBalance) onSweep;
 
   const SlotBalancePage(this._bloc, this._card, this._slot,
       {this.onBack, this.onSweep});
@@ -44,7 +44,9 @@ class SlotBalancePageState extends State<SlotBalancePage> {
     widget._bloc.actionsSink.add(action);
     action.future.then((result) {
       final newBalance = result as AddressBalance;
-      setState(() => _balance = newBalance);
+      if (mounted) {
+        setState(() => _balance = newBalance);
+      }
     }).onError((error, stackTrace) {
       bool here = true; // TODO: Handle errors when retrieving balance
     });
@@ -77,7 +79,7 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                         texts.satscard_balance_warning_no_funds_body,
                         style: themeData.dialogTheme.contentTextStyle,
                       ));
-                  return;
+                  //return;
                 }
 
                 if (_balance.unconfirmed > 0) {
@@ -90,11 +92,11 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                     ),
                   ).then((result) {
                     if (result == true) {
-                      widget.onSweep();
+                      widget.onSweep(_balance);
                     }
                   });
                 } else {
-                  widget.onSweep();
+                  widget.onSweep(_balance);
                 }
               },
             ),
@@ -133,30 +135,23 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                             children: [
                               ..._buildBalanceLabels(
                                   context, texts, themeData, minFont, acc),
-                              _buildTextTile(
-                                  context,
-                                  themeData,
-                                  minFont,
-                                  texts.satscard_balance_slot_label,
-                                  "${widget._card.activeSlotIndex + 1} / ${widget._card.numSlots}"),
-                              _buildTextTile(
-                                  context,
-                                  themeData,
-                                  minFont,
-                                  texts.satscard_balance_version_label,
-                                  widget._card.appletVersion),
-                              _buildTextTile(
-                                  context,
-                                  themeData,
-                                  minFont,
-                                  texts.satscard_balance_birth_height_label,
-                                  widget._card.birthHeight.toString()),
-                              _buildTextTile(
-                                  context,
-                                  themeData,
-                                  minFont,
-                                  texts.satscard_balance_card_id_label,
-                                  widget._card.ident,
+                              _buildTextTile(context, themeData, minFont,
+                                  titleText: texts.satscard_balance_slot_label,
+                                  trailingText:
+                                      "${widget._card.activeSlotIndex + 1} / ${widget._card.numSlots}"),
+                              _buildTextTile(context, themeData, minFont,
+                                  titleText:
+                                      texts.satscard_balance_version_label,
+                                  trailingText: widget._card.appletVersion),
+                              _buildTextTile(context, themeData, minFont,
+                                  titleText:
+                                      texts.satscard_balance_birth_height_label,
+                                  trailingText:
+                                      widget._card.birthHeight.toString()),
+                              _buildTextTile(context, themeData, minFont,
+                                  titleText:
+                                      texts.satscard_balance_card_id_label,
+                                  trailingText: widget._card.ident,
                                   flushbarMessage:
                                       texts.satscard_card_id_copied),
                             ],
@@ -171,9 +166,9 @@ class SlotBalancePageState extends State<SlotBalancePage> {
     );
   }
 
-  ListTile _buildTextTile(BuildContext context, ThemeData themeData,
-      MinFontSize minFont, String label, String trailingText,
-      {String flushbarMessage}) {
+  ListTile _buildTextTile(
+      BuildContext context, ThemeData themeData, MinFontSize minFont,
+      {String titleText, String trailingText, String flushbarMessage}) {
     final style = theme.FieldTextStyle.labelStyle.copyWith(color: Colors.white);
     final trailing = AutoSizeText(
       trailingText,
@@ -185,7 +180,7 @@ class SlotBalancePageState extends State<SlotBalancePage> {
     return ListTile(
       visualDensity: const VisualDensity(horizontal: 0, vertical: -4),
       title: AutoSizeText(
-        label,
+        titleText ?? "",
         style: style,
         maxLines: 1,
         minFontSize: minFont.minFontSize,
@@ -215,7 +210,8 @@ class SlotBalancePageState extends State<SlotBalancePage> {
           ? texts.satscard_balance_value_no_fiat(formatted)
           : texts.satscard_balance_value_with_fiat(
               formatted, acc.fiatCurrency.format(sats));
-      return _buildTextTile(context, themeData, minFont, title, translated);
+      return _buildTextTile(context, themeData, minFont,
+          titleText: title, trailingText: translated);
     }
 
     final confirmedWidget =

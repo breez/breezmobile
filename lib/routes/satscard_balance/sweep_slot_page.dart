@@ -7,6 +7,7 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
+import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
 import 'package:breez/widgets/satscard/spend_code_field.dart';
@@ -20,8 +21,15 @@ class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
+  final AddressBalance Function() getBalance;
 
-  const SweepSlotPage(this._bloc, this._card, this._slot, {this.onBack});
+  AddressBalance _balance;
+  set balance(AddressBalance balance) {
+    _balance = balance;
+  }
+
+  SweepSlotPage(this._bloc, this._card, this._slot,
+      {this.onBack, this.getBalance});
 
   @override
   State<StatefulWidget> createState() => SweepSlotPageState();
@@ -38,6 +46,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
+    final balance = widget.getBalance();
 
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
