@@ -10,6 +10,7 @@ import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -103,6 +104,16 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                                   ? texts
                                       .satscard_spend_code_incorrect_code_hint
                                   : null),
+                          Padding(
+                            padding: const EdgeInsets.only(top: 20),
+                            child: const FeeChooser(
+                              // TODO: Fill with real data
+                              economyFee: FeeOption(10, 6),
+                              regularFee: FeeOption(30, 3),
+                              priorityFee: FeeOption(60, 1),
+                              selectedIndex: 1,
+                            ),
+                          ),
                         ],
                       ),
                     ),
