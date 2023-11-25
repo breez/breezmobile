@@ -31,7 +31,8 @@ class SatscardBloc with AsyncActionsHandler {
     registerAsyncHandlers({
       DisableListening: _disableListening,
       EnableListening: _enableListening,
-      GetAddressBalance: _getAddressBalance,
+      GetAddressInfo: _getAddressInfo,
+      GetFeeRates: _getFeeRates,
       InitializeSlot: _initializeSlot,
       SweepSatscard: _sweepSatscard,
     });
@@ -89,9 +90,15 @@ class SatscardBloc with AsyncActionsHandler {
     action.resolve(true);
   }
 
-  Future<void> _getAddressBalance(GetAddressBalance action) async {
+  Future<void> _getAddressInfo(GetAddressInfo action) async {
     return _breezLib
-        .getMempoolAddressBalance(action.address)
+        .getMempoolAddressInfo(action.address)
+        .then((result) => action.resolve(result));
+  }
+
+  Future<void> _getFeeRates(GetFeeRates action) async {
+    return _breezLib
+        .getMempoolRecommendedFees()
         .then((result) => action.resolve(result));
   }
 

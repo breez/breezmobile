@@ -1073,14 +1073,42 @@ const TorConfig$json = const {
 
 /// Descriptor for `TorConfig`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List torConfigDescriptor = $convert.base64Decode('CglUb3JDb25maWcSGAoHY29udHJvbBgBIAEoCVIHY29udHJvbBISCgRodHRwGAIgASgJUgRodHRwEhQKBXNvY2tzGAMgASgJUgVzb2Nrcw==');
-@$core.Deprecated('Use addressBalanceDescriptor instead')
-const AddressBalance$json = const {
-  '1': 'AddressBalance',
+@$core.Deprecated('Use utxoDescriptor instead')
+const Utxo$json = const {
+  '1': 'Utxo',
   '2': const [
-    const {'1': 'confirmed', '3': 1, '4': 1, '5': 3, '10': 'confirmed'},
-    const {'1': 'unconfirmed', '3': 2, '4': 1, '5': 3, '10': 'unconfirmed'},
+    const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
+    const {'1': 'vout', '3': 2, '4': 1, '5': 5, '10': 'vout'},
+    const {'1': 'value', '3': 3, '4': 1, '5': 3, '10': 'value'},
+    const {'1': 'isConfirmed', '3': 4, '4': 1, '5': 8, '10': 'isConfirmed'},
   ],
 };
 
-/// Descriptor for `AddressBalance`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List addressBalanceDescriptor = $convert.base64Decode('Cg5BZGRyZXNzQmFsYW5jZRIcCgljb25maXJtZWQYASABKANSCWNvbmZpcm1lZBIgCgt1bmNvbmZpcm1lZBgCIAEoA1ILdW5jb25maXJtZWQ=');
+/// Descriptor for `Utxo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List utxoDescriptor = $convert.base64Decode('CgRVdHhvEhIKBHR4aWQYASABKAlSBHR4aWQSEgoEdm91dBgCIAEoBVIEdm91dBIUCgV2YWx1ZRgDIAEoA1IFdmFsdWUSIAoLaXNDb25maXJtZWQYBCABKAhSC2lzQ29uZmlybWVk');
+@$core.Deprecated('Use addressInfoDescriptor instead')
+const AddressInfo$json = const {
+  '1': 'AddressInfo',
+  '2': const [
+    const {'1': 'confirmedBalance', '3': 1, '4': 1, '5': 3, '10': 'confirmedBalance'},
+    const {'1': 'unconfirmedBalance', '3': 2, '4': 1, '5': 3, '10': 'unconfirmedBalance'},
+    const {'1': 'utxos', '3': 3, '4': 3, '5': 11, '6': '.data.Utxo', '10': 'utxos'},
+  ],
+};
+
+/// Descriptor for `AddressInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List addressInfoDescriptor = $convert.base64Decode('CgtBZGRyZXNzSW5mbxIqChBjb25maXJtZWRCYWxhbmNlGAEgASgDUhBjb25maXJtZWRCYWxhbmNlEi4KEnVuY29uZmlybWVkQmFsYW5jZRgCIAEoA1ISdW5jb25maXJtZWRCYWxhbmNlEiAKBXV0eG9zGAMgAygLMgouZGF0YS5VdHhvUgV1dHhvcw==');
+@$core.Deprecated('Use mempoolFeeRatesDescriptor instead')
+const MempoolFeeRates$json = const {
+  '1': 'MempoolFeeRates',
+  '2': const [
+    const {'1': 'fastest', '3': 1, '4': 1, '5': 3, '10': 'fastest'},
+    const {'1': 'halfHour', '3': 2, '4': 1, '5': 3, '10': 'halfHour'},
+    const {'1': 'hour', '3': 3, '4': 1, '5': 3, '10': 'hour'},
+    const {'1': 'economy', '3': 4, '4': 1, '5': 3, '10': 'economy'},
+    const {'1': 'minimum', '3': 5, '4': 1, '5': 3, '10': 'minimum'},
+  ],
+};
+
+/// Descriptor for `MempoolFeeRates`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List mempoolFeeRatesDescriptor = $convert.base64Decode('Cg9NZW1wb29sRmVlUmF0ZXMSGAoHZmFzdGVzdBgBIAEoA1IHZmFzdGVzdBIaCghoYWxmSG91chgCIAEoA1IIaGFsZkhvdXISEgoEaG91chgDIAEoA1IEaG91chIYCgdlY29ub215GAQgASgDUgdlY29ub215EhgKB21pbmltdW0YBSABKANSB21pbmltdW0=');

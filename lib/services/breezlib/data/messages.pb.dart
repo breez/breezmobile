@@ -6065,64 +6065,264 @@ class TorConfig extends $pb.GeneratedMessage {
   void clearSocks() => clearField(3);
 }
 
-class AddressBalance extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddressBalance', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'confirmed')
-    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'unconfirmed')
+class Utxo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Utxo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txid')
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vout', $pb.PbFieldType.O3)
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value')
+    ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
     ..hasRequiredFields = false
   ;
 
-  AddressBalance._() : super();
-  factory AddressBalance({
-    $fixnum.Int64? confirmed,
-    $fixnum.Int64? unconfirmed,
+  Utxo._() : super();
+  factory Utxo({
+    $core.String? txid,
+    $core.int? vout,
+    $fixnum.Int64? value,
+    $core.bool? isConfirmed,
   }) {
     final _result = create();
-    if (confirmed != null) {
-      _result.confirmed = confirmed;
+    if (txid != null) {
+      _result.txid = txid;
     }
-    if (unconfirmed != null) {
-      _result.unconfirmed = unconfirmed;
+    if (vout != null) {
+      _result.vout = vout;
+    }
+    if (value != null) {
+      _result.value = value;
+    }
+    if (isConfirmed != null) {
+      _result.isConfirmed = isConfirmed;
     }
     return _result;
   }
-  factory AddressBalance.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory AddressBalance.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory Utxo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Utxo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  AddressBalance clone() => AddressBalance()..mergeFromMessage(this);
+  Utxo clone() => Utxo()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  AddressBalance copyWith(void Function(AddressBalance) updates) => super.copyWith((message) => updates(message as AddressBalance)) as AddressBalance; // ignore: deprecated_member_use
+  Utxo copyWith(void Function(Utxo) updates) => super.copyWith((message) => updates(message as Utxo)) as Utxo; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static AddressBalance create() => AddressBalance._();
-  AddressBalance createEmptyInstance() => create();
-  static $pb.PbList<AddressBalance> createRepeated() => $pb.PbList<AddressBalance>();
+  static Utxo create() => Utxo._();
+  Utxo createEmptyInstance() => create();
+  static $pb.PbList<Utxo> createRepeated() => $pb.PbList<Utxo>();
   @$core.pragma('dart2js:noInline')
-  static AddressBalance getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddressBalance>(create);
-  static AddressBalance? _defaultInstance;
+  static Utxo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Utxo>(create);
+  static Utxo? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $fixnum.Int64 get confirmed => $_getI64(0);
+  $core.String get txid => $_getSZ(0);
   @$pb.TagNumber(1)
-  set confirmed($fixnum.Int64 v) { $_setInt64(0, v); }
+  set txid($core.String v) { $_setString(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasConfirmed() => $_has(0);
+  $core.bool hasTxid() => $_has(0);
   @$pb.TagNumber(1)
-  void clearConfirmed() => clearField(1);
+  void clearTxid() => clearField(1);
 
   @$pb.TagNumber(2)
-  $fixnum.Int64 get unconfirmed => $_getI64(1);
+  $core.int get vout => $_getIZ(1);
   @$pb.TagNumber(2)
-  set unconfirmed($fixnum.Int64 v) { $_setInt64(1, v); }
+  set vout($core.int v) { $_setSignedInt32(1, v); }
   @$pb.TagNumber(2)
-  $core.bool hasUnconfirmed() => $_has(1);
+  $core.bool hasVout() => $_has(1);
   @$pb.TagNumber(2)
-  void clearUnconfirmed() => clearField(2);
+  void clearVout() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get value => $_getI64(2);
+  @$pb.TagNumber(3)
+  set value($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasValue() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearValue() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.bool get isConfirmed => $_getBF(3);
+  @$pb.TagNumber(4)
+  set isConfirmed($core.bool v) { $_setBool(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasIsConfirmed() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearIsConfirmed() => clearField(4);
+}
+
+class AddressInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddressInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'confirmedBalance', protoName: 'confirmedBalance')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'unconfirmedBalance', protoName: 'unconfirmedBalance')
+    ..pc<Utxo>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'utxos', $pb.PbFieldType.PM, subBuilder: Utxo.create)
+    ..hasRequiredFields = false
+  ;
+
+  AddressInfo._() : super();
+  factory AddressInfo({
+    $fixnum.Int64? confirmedBalance,
+    $fixnum.Int64? unconfirmedBalance,
+    $core.Iterable<Utxo>? utxos,
+  }) {
+    final _result = create();
+    if (confirmedBalance != null) {
+      _result.confirmedBalance = confirmedBalance;
+    }
+    if (unconfirmedBalance != null) {
+      _result.unconfirmedBalance = unconfirmedBalance;
+    }
+    if (utxos != null) {
+      _result.utxos.addAll(utxos);
+    }
+    return _result;
+  }
+  factory AddressInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddressInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddressInfo clone() => AddressInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddressInfo copyWith(void Function(AddressInfo) updates) => super.copyWith((message) => updates(message as AddressInfo)) as AddressInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddressInfo create() => AddressInfo._();
+  AddressInfo createEmptyInstance() => create();
+  static $pb.PbList<AddressInfo> createRepeated() => $pb.PbList<AddressInfo>();
+  @$core.pragma('dart2js:noInline')
+  static AddressInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddressInfo>(create);
+  static AddressInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get confirmedBalance => $_getI64(0);
+  @$pb.TagNumber(1)
+  set confirmedBalance($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasConfirmedBalance() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearConfirmedBalance() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get unconfirmedBalance => $_getI64(1);
+  @$pb.TagNumber(2)
+  set unconfirmedBalance($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasUnconfirmedBalance() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearUnconfirmedBalance() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.List<Utxo> get utxos => $_getList(2);
+}
+
+class MempoolFeeRates extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'MempoolFeeRates', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fastest')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'halfHour', protoName: 'halfHour')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hour')
+    ..aInt64(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'economy')
+    ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minimum')
+    ..hasRequiredFields = false
+  ;
+
+  MempoolFeeRates._() : super();
+  factory MempoolFeeRates({
+    $fixnum.Int64? fastest,
+    $fixnum.Int64? halfHour,
+    $fixnum.Int64? hour,
+    $fixnum.Int64? economy,
+    $fixnum.Int64? minimum,
+  }) {
+    final _result = create();
+    if (fastest != null) {
+      _result.fastest = fastest;
+    }
+    if (halfHour != null) {
+      _result.halfHour = halfHour;
+    }
+    if (hour != null) {
+      _result.hour = hour;
+    }
+    if (economy != null) {
+      _result.economy = economy;
+    }
+    if (minimum != null) {
+      _result.minimum = minimum;
+    }
+    return _result;
+  }
+  factory MempoolFeeRates.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory MempoolFeeRates.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  MempoolFeeRates clone() => MempoolFeeRates()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  MempoolFeeRates copyWith(void Function(MempoolFeeRates) updates) => super.copyWith((message) => updates(message as MempoolFeeRates)) as MempoolFeeRates; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static MempoolFeeRates create() => MempoolFeeRates._();
+  MempoolFeeRates createEmptyInstance() => create();
+  static $pb.PbList<MempoolFeeRates> createRepeated() => $pb.PbList<MempoolFeeRates>();
+  @$core.pragma('dart2js:noInline')
+  static MempoolFeeRates getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<MempoolFeeRates>(create);
+  static MempoolFeeRates? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $fixnum.Int64 get fastest => $_getI64(0);
+  @$pb.TagNumber(1)
+  set fastest($fixnum.Int64 v) { $_setInt64(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasFastest() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearFastest() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get halfHour => $_getI64(1);
+  @$pb.TagNumber(2)
+  set halfHour($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasHalfHour() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearHalfHour() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get hour => $_getI64(2);
+  @$pb.TagNumber(3)
+  set hour($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasHour() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearHour() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $fixnum.Int64 get economy => $_getI64(3);
+  @$pb.TagNumber(4)
+  set economy($fixnum.Int64 v) { $_setInt64(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasEconomy() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearEconomy() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get minimum => $_getI64(4);
+  @$pb.TagNumber(5)
+  set minimum($fixnum.Int64 v) { $_setInt64(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasMinimum() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearMinimum() => clearField(5);
 }
 

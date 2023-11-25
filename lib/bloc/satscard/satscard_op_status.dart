@@ -59,6 +59,7 @@ class SatscardOpStatusSlotInitialized extends SatscardOpStatusSuccess {
 class SatscardOpStatusBadAuth extends SatscardOpStatus {
   const SatscardOpStatusBadAuth();
 }
+
 class SatscardOpStatusIncorrectCard extends SatscardOpStatus {
   const SatscardOpStatusIncorrectCard();
 }

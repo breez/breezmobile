@@ -83,7 +83,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
                     child: _buildContentForState(context, data),
                   ),
                 ),
-                _buildCancelButton(texts, themeData),
+                _buildCancelButton(themeData, texts),
               ],
             ),
           );
@@ -207,7 +207,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
     );
   }
 
-  Widget _buildCancelButton(BreezTranslations texts, ThemeData themeData) {
+  Widget _buildCancelButton(ThemeData themeData, BreezTranslations texts) {
     return TextButton(
       onPressed: _isClosing ? null : () => _onFinish(false),
       child: Text(
