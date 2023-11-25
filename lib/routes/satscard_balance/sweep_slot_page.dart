@@ -73,7 +73,14 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                 ),
               ),
               appBar: AppBar(
-                leading: backBtn.BackButton(onPressed: widget.onBack),
+                leading: backBtn.BackButton(
+                  onPressed: () {
+                    if (_spendCodeFocusNode.hasFocus) {
+                      _spendCodeFocusNode.unfocus();
+                    }
+                    widget.onBack();
+                  },
+                ),
                 title: Text(texts.satscard_sweep_title(widget._slot.index + 1)),
               ),
               body: Form(
