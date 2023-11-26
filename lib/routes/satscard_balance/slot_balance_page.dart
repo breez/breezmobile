@@ -1,4 +1,3 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
@@ -19,27 +18,29 @@ import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class SlotBalancePage extends StatefulWidget {
-  final SatscardBloc _bloc;
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
   final Function(AddressInfo) onSweep;
 
-  const SlotBalancePage(this._bloc, this._card, this._slot,
-      {this.onBack, this.onSweep});
+  const SlotBalancePage(this._card, this._slot, {this.onBack, this.onSweep});
 
   @override
   State<StatefulWidget> createState() => SlotBalancePageState();
 }
 
 class SlotBalancePageState extends State<SlotBalancePage> {
+  SatscardBloc _satscardBloc;
   AddressInfo _addressInfo;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
+
+    // We need to know the balance and UTXO's associated with the slot
     final action = GetAddressInfo(widget._slot.address);
-    widget._bloc.actionsSink.add(action);
+    _satscardBloc.actionsSink.add(action);
     action.future.then((result) {
       final newInfo = result as AddressInfo;
       if (mounted) {

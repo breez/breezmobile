@@ -3,6 +3,8 @@ import 'dart:io';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
+import 'package:breez/bloc/account/add_funds_bloc.dart';
+import 'package:breez/bloc/account/add_funds_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
@@ -23,13 +25,12 @@ import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
 
 class SweepSlotPage extends StatefulWidget {
-  final SatscardBloc _bloc;
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
   final AddressInfo Function() getAddressInfo;
 
-  SweepSlotPage(this._bloc, this._card, this._slot,
+  const SweepSlotPage(this._card, this._slot,
       {this.onBack, this.getAddressInfo});
 
   @override
@@ -43,19 +44,34 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   final _incorrectCodes =
       HashSet<String>(equals: (a, b) => a == b, hashCode: (a) => a.hashCode);
 
-  int _selectedFee = 1;
+  AddFundsBloc _addFundsBloc;
+  SatscardBloc _satscardBloc;
+
   AddressInfo _addressInfo;
-  MempoolFeeRates _mempoolFeeRates;
+  AddFundResponse _fundResponse;
   List<FeeOption> _feeOptions;
+  int _selectedFee = 1;
 
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
+    _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     _addressInfo = widget.getAddressInfo();
+
+    // We need a deposit address before we can do anything
+    _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
+    _addFundsBloc.addFundResponseStream.listen((response) {
+      if (mounted) {
+        setState(() {
+          _fundResponse = response;
+        });
+      }
+    });
 
     // Get the fee options
     final getFeeRates = GetFeeRates();
-    widget._bloc.actionsSink.add(getFeeRates);
+    _satscardBloc.actionsSink.add(getFeeRates);
     getFeeRates.future.then((result) {
       final rates = result as MempoolFeeRates;
       final options = List<FeeOption>.filled(3, null);
@@ -63,7 +79,6 @@ class SweepSlotPageState extends State<SweepSlotPage> {
       options[1] = FeeOption(rates.halfHour.toInt(), 3);
       options[2] = FeeOption(rates.fastest.toInt(), 1);
       setState(() {
-        _mempoolFeeRates = rates;
         _feeOptions = options;
       });
     });
@@ -83,7 +98,11 @@ class SweepSlotPageState extends State<SweepSlotPage> {
           final texts = context.texts();
           final acc = accSnapshot.data;
           final lsp = lspSnapshot.data;
-          final loaderText = _getLoaderText(texts, acc, lsp);
+          final loaderText = _getLoaderText(
+            texts,
+            acc,
+            lsp,
+          );
           final isLoading = loaderText != null;
 
           return Scaffold(
@@ -143,7 +162,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                               ),
                               Padding(
                                 padding:
-                                    const EdgeInsets.only(top: 24, bottom: 32),
+                                    const EdgeInsets.only(top: 24, bottom: 24),
                                 child: FeeChooser(
                                   economyFee: _feeOptions[0],
                                   regularFee: _feeOptions[1],
@@ -166,7 +185,12 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                                   shrinkWrap: true,
                                   children: [
                                     ..._buildSweepSummary(
-                                        context, themeData, texts, acc, lsp)
+                                      context,
+                                      themeData,
+                                      texts,
+                                      acc,
+                                      lsp,
+                                    )
                                   ],
                                 ),
                               ),
@@ -202,8 +226,13 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     );
   }
 
-  List<Widget> _buildSweepSummary(BuildContext context, ThemeData themeData,
-      BreezTranslations texts, AccountModel acc, LSPStatus lsp) {
+  List<Widget> _buildSweepSummary(
+    BuildContext context,
+    ThemeData themeData,
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
     final minFont = MinFontSize(context);
     final balance = acc.currency.format(_addressInfo.confirmedBalance);
     return [
@@ -218,13 +247,18 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   }
 
   String _getLoaderText(
-      BreezTranslations texts, AccountModel acc, LSPStatus lsp) {
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
     if (acc == null) {
       return texts.satscard_balance_awaiting_account_label;
     } else if (lsp == null) {
       return texts.satscard_sweep_awaiting_lsp_label;
+    } else if (_fundResponse == null) {
+      return texts.satscard_sweep_awaiting_deposit_label;
     } else if (_feeOptions == null) {
-      return texts.satscard_sweep_awaiting_recommended_fees_label;
+      return texts.satscard_sweep_awaiting_fees_label;
     }
 
     return null;

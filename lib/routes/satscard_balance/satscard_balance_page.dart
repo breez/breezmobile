@@ -1,6 +1,4 @@
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/routes/satscard_balance/slot_balance_page.dart';
 import 'package:breez/routes/satscard_balance/sweep_slot_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
@@ -23,6 +21,7 @@ class SatscardBalancePage extends StatefulWidget {
 
 class SatscardBalancePageState extends State<SatscardBalancePage> {
   final _pageController = PageController();
+
   AddressInfo _recentAddressInfo;
 
   @override
@@ -33,14 +32,12 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
 
   @override
   Widget build(BuildContext context) {
-    final bloc = AppBlocsProvider.of<SatscardBloc>(context);
     return Scaffold(
       body: PageView(
         controller: _pageController,
         physics: const NeverScrollableScrollPhysics(),
         children: [
           SlotBalancePage(
-            bloc,
             widget._card,
             widget._slot,
             onBack: () => Navigator.pop(context),
@@ -53,7 +50,6 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
             },
           ),
           SweepSlotPage(
-            bloc,
             widget._card,
             widget._slot,
             onBack: () => _pageController.previousPage(
