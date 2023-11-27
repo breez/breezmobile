@@ -83,11 +83,19 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         Navigator.pop(context, texts.invoice_payment_success);
       });
       if (widget.lnurlWithdraw != null) {
-        accBloc.accountStream.first.then((account) {
+        _log.info("lnurlw = ${widget.lnurlWithdraw}");
+        accBloc.accountStream
+            .firstWhere(
+                (account) =>
+                    (account != null && account != AccountModel.initial()),
+                orElse: null)
+            .then((state) {
+          _log.info("we have currency state ${state.currency}");
           setState(() {
-            applyWithdrawFetchResponse(widget.lnurlWithdraw, account);
+            applyWithdrawFetchResponse(widget.lnurlWithdraw, state.currency);
           });
         });
+        super.didChangeDependencies();
       }
 
       _isInit = true;
@@ -98,7 +106,6 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         );
       }
     }
-    super.didChangeDependencies();
   }
 
   @override
@@ -236,7 +243,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
-          if (!snapshot.hasData) {
+          if (snapshot.connectionState != ConnectionState.done &&
+              !snapshot.hasData) {
             return StaticLoader();
           }
           final acc = snapshot.data;
@@ -577,18 +585,19 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     }
     final withdrawResponse = response as WithdrawFetchResponse;
     setState(() {
-      applyWithdrawFetchResponse(withdrawResponse, account);
+      applyWithdrawFetchResponse(withdrawResponse, account.currency);
     });
   }
 
   void applyWithdrawFetchResponse(
     WithdrawFetchResponse response,
-    AccountModel account,
+    Currency currency,
   ) {
     _withdrawFetchResponse = response;
     _descriptionController.text = response.defaultDescription;
     if (response.isFixedAmount) {
-      _amountController.text = account.currency.format(
+      _log.info("create invoice page currency is ${currency.displayName}");
+      _amountController.text = currency.format(
         response.minAmount,
         includeDisplayName: false,
       );
