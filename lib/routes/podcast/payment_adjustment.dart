@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/podcast_payments/actions.dart';
@@ -11,15 +12,17 @@ import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/routes/podcast/boost.dart';
+import 'package:breez/routes/podcast/confetti.dart';
 import 'package:breez/routes/podcast/payment_adjuster.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/widgets/loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 import 'package:provider/provider.dart';
 import 'package:tutorial_coach_mark/tutorial_coach_mark.dart';
 
-import 'confetti.dart';
+final _log = Logger("PaymentAdjustment");
 
 class PaymentAdjustment extends StatefulWidget {
   const PaymentAdjustment({
@@ -297,11 +300,17 @@ class PaymentAdjustmentState extends State<PaymentAdjustment> {
             key: boostWidgetKey,
             userModel: userModel,
             onBoost: (int boostAmount, {String boostMessage}) {
-              paymentsBloc.actionsSink.add(PayBoost(
-                boostAmount,
-                boostMessage: boostMessage,
-                senderName: userModel.name,
-              ));
+              _log.info("Boosting $boostAmount sats, message $boostMessage");
+              Provider.of<AudioBloc>(context, listen: false).playPosition.first.then((state) {
+                paymentsBloc.actionsSink.add(PayBoost(
+                  boostAmount,
+                  boostMessage: boostMessage,
+                  senderName: userModel.name,
+                  time: state.position.inSeconds.toDouble(),
+                ));
+              }, onError: (e) {
+                _log.warning("Error getting position", e);
+              });
             },
             onChanged: (int boostAmount) {
               userProfileBloc.userActionsSink.add(SetPaymentOptions(

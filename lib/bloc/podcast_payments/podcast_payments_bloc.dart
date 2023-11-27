@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:math';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/bloc/settings/settings_bloc.dart';
-import 'package:anytime/entities/episode.dart';
+import 'package:anytime/entities/episode.dart' as anytimeEpisode;
+import 'package:anytime/entities/value.dart' as anytimeValue;
 import 'package:anytime/repository/repository.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -15,6 +17,7 @@ import 'package:breez/bloc/podcast_payments/aggregated_payments.dart';
 import 'package:breez/bloc/podcast_payments/model.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
+import 'package:breez/routes/podcast/podcast_loader.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
 import 'package:fixnum/fixnum.dart';
@@ -32,6 +35,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   final Repository repository;
   final AccountBloc accountBloc;
   final UserProfileBloc userProfile;
+  final PodcastIndexClient podcastIndexClient;
 
   final _paymentEventsController = StreamController<PaymentEvent>.broadcast();
 
@@ -44,8 +48,14 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   String breezReceiverNode;
   Map<String, bool> paidPositions = <String, bool>{};
 
-  PodcastPaymentsBloc(this.userProfile, this.accountBloc, this.settingsBloc,
-      this.audioBloc, this.repository) {
+  PodcastPaymentsBloc(
+    this.userProfile,
+    this.accountBloc,
+    this.settingsBloc,
+    this.audioBloc,
+    this.repository,
+    this.podcastIndexClient,
+  ) {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
     _startTicker(injector);
@@ -63,12 +73,19 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   Future _payBoost(PayBoost action) async {
+    _log.info("paying boost $action");
     var currentEpisode = await _getCurrentPlayingEpisode();
+    _log.info("currentEpisode = ${currentEpisode.guid}");
     _paymentEventsController
         .add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
     if (currentEpisode != null) {
-      final value = await _getLightningPaymentValue(currentEpisode);
+      final value = await _applyValueFromTimeSplit(
+        await _getLightningPaymentValue(currentEpisode),
+        currentEpisode,
+        action.time,
+      );
       if (value != null) {
+        _log.info("Has a valid value, paying recipients");
         _payRecipients(
           currentEpisode,
           value.recipients,
@@ -77,6 +94,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           boostMessage: action.boostMessage,
           senderName: action.senderName,
         );
+      } else {
+        _log.info("No valid value, skipping boost");
       }
     }
   }
@@ -134,7 +153,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       );
       if (nextPaidMinutes > paidMinutes) {
         _log.info("paying recipients $nextPaidMinutes");
-        final value = await _getLightningPaymentValue(currentPlayedEpisode);
+        final playPosition = await audioBloc.playPosition.first;
+        final boostTime = playPosition.position.inSeconds.toDouble();
+        final value = await _applyValueFromTimeSplit(
+          await _getLightningPaymentValue(currentPlayedEpisode),
+          currentPlayedEpisode,
+          boostTime,
+        );
         if (value != null) {
           _payRecipients(currentPlayedEpisode, value.recipients,
               user.paymentOptions.preferredSatsPerMinValue);
@@ -151,7 +176,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     }
   }
 
-  Future<Episode> _getCurrentPlayingEpisode() {
+  Future<anytimeEpisode.Episode> _getCurrentPlayingEpisode() {
     try {
       return audioBloc.nowPlaying.first.timeout(const Duration(seconds: 1));
     } catch (e) {
@@ -170,7 +195,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
   }
 
   void _payRecipients(
-    Episode episode,
+    anytimeEpisode.Episode episode,
     List<ValueDestination> recipients,
     int total, {
     bool boost = false,
@@ -296,35 +321,98 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     }
   }
 
-  Future<Value> _getLightningPaymentValue(Episode episode) async {
-    // If the episode has a value block parsed from the RSS feed, we'll take that.
-    if (episode.value != null) {
-      ValueModel valueModel = ValueModel.fromJson(episode.value.toMap());
-      List<ValueDestination> valueDestinations = episode.value.recipients
-          .map((r) => ValueDestination.fromJson(r.toMap()))
-          .toList();
-
-      if (valueModel.type == "lightning" && valueModel.method == 'keysend') {
-        return Value._(model: valueModel, recipients: valueDestinations);
-      }
-
+  anytimeValue.ValueTimeSplit _getValueTimeSplit(
+    anytimeValue.Value value,
+    double boostTime,
+  ) {
+    if (boostTime == null) {
+      _log.info("No boost time, can't get time split");
+      return null;
+    }
+    if (value == null) {
+      _log.info("No value, can't get time split");
       return null;
     }
 
+    _log.info("Looking for split for boost time $boostTime");
+    for (var split in value.timeSplits) {
+      if (boostTime >= split.startTime &&
+          boostTime <= (split.startTime + split.duration)) {
+        _log.info("Found a split for boost time ${split.toMap()}");
+        return split;
+      } else {
+        _log.info("Not in range of ${split.toMap()}");
+      }
+    }
+
+    _log.info("No split for boost time $boostTime");
+    return null;
+  }
+
+  Future<Value> _getLightningPaymentValue(
+    anytimeEpisode.Episode episode,
+  ) async {
+    // If the episode has a value block parsed from the RSS feed, we'll take that.
+    final episodeValue = episode.value;
+    if (episodeValue != null) {
+      _log.info("Get payment value: Using value");
+      final valueFromEpisodeValue = _getLightningPaymentValueFromEpisodeValue(episodeValue);
+      if (valueFromEpisodeValue != null) {
+        return valueFromEpisodeValue;
+      }
+    }
+
     // Else, we'll check if the episode has a value block defined via the PodcastIndex API.
-    if (episode.episodeMetadata != null &&
-        episode.episodeMetadata["episode"] != null) {
+    final valueFromMetadata = _getLightningPaymentValueFromMetadata(episode);
+    if (valueFromMetadata != null) {
+      return valueFromMetadata;
+    }
+
+    _log.info("Get payment value: Using PodcastIndex API");
+    // Else, we'll take the value block defined for the entire podcast via the PodcastIndex API.
+    final valueFromPodcastIndex = await _getLightningPaymentValueFromPodcastIndex(episode);
+    if (valueFromPodcastIndex != null) {
+      return valueFromPodcastIndex;
+    }
+
+    _log.info("Get payment value: Failed to find value");
+    return null;
+  }
+
+  Future<Value> _getLightningPaymentValueFromEpisodeValue(
+    anytimeValue.Value episodeValue,
+  ) async {
+    final valueModel = ValueModel.fromJson(episodeValue.toMap());
+    if (valueModel.type != "lightning" || valueModel.method != 'keysend') {
+      _log.info("Invalid value model type ${valueModel.type} or method ${valueModel.method}");
+      return null;
+    }
+
+    return Value._(
+      model: valueModel,
+      recipients: episodeValue.recipients.map((r) => ValueDestination.fromJson(r.toMap())).toList(),
+    );
+  }
+
+  Future<Value> _getLightningPaymentValueFromMetadata(
+    anytimeEpisode.Episode episode,
+  ) async {
+    if (episode.episodeMetadata != null && episode.episodeMetadata["episode"] != null) {
+      _log.info("Get payment value: Using metadata");
       final value = episode.episodeMetadata["episode"]["value"];
       if (value != null && value is Map<String, dynamic>) {
         final valueObj = Value.fromJson(value);
-        if (valueObj?.model?.type == "lightning" &&
-            valueObj?.model?.method == 'keysend') {
+        if (valueObj?.model?.type == "lightning" && valueObj?.model?.method == 'keysend') {
           return valueObj;
         }
       }
     }
+    return null;
+  }
 
-    // Else, we'll take the value block defined for the entire podcast via the PodcastIndex API.
+  Future<Value> _getLightningPaymentValueFromPodcastIndex(
+    anytimeEpisode.Episode episode,
+  ) async {
     Map<String, dynamic> metadata;
     if (episode.pguid != null && episode.pguid.isNotEmpty) {
       var podcast = await repository.findPodcastByGuid(episode.pguid);
@@ -339,8 +427,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final value = metadata["feed"]["value"];
       if (value != null && value is Map<String, dynamic>) {
         final valueObj = Value.fromJson(value);
-        if (valueObj?.model?.type == "lightning" &&
-            valueObj?.model?.method == 'keysend') {
+        if (valueObj?.model?.type == "lightning" && valueObj?.model?.method == 'keysend') {
           return valueObj;
         }
       }
@@ -348,7 +435,119 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return null;
   }
 
-  String _getPodcastGroupKey(Episode episode) {
+  Future<Value> _applyValueFromTimeSplit(
+    Value baseValue,
+    anytimeEpisode.Episode episode,
+    double boostTime,
+  ) async {
+    if (baseValue == null) {
+      _log.info("No value to apply a time split");
+      return null;
+    }
+
+    final timeSplit = _getValueTimeSplit(episode.value, boostTime);
+    _log.info("Get payment value: timeSplit = $timeSplit");
+    if (timeSplit == null) {
+      return baseValue;
+    }
+
+    final timeSplitDestinations = <ValueDestination>[];
+    double timeSplitPercentage = 0.0;
+
+    if (timeSplit.valueRecipients.isNotEmpty) {
+      _log.info("Using value recipients from time split");
+      for (var recipient in timeSplit.valueRecipients) {
+        final valueDestination = ValueDestination.fromJson(recipient.toMap());
+        timeSplitDestinations.add(valueDestination);
+        timeSplitPercentage += valueDestination.split;
+      }
+      timeSplitPercentage = min(100.0, max(0.0, timeSplitPercentage));
+    } else if (timeSplit.remoteItems.length == 1) {
+      // remote item should for time split should be exactly one
+      // https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#value-time-split
+      _log.info("Using remote items from time split");
+      final remoteItem = timeSplit.remoteItems.first;
+      // remote percentage is defined between 0 and 100; if it is lower than 0, 0 is assumed; if it is higher
+      // than 100, 100 is assumed. More details:
+      // https://github.com/Podcastindex-org/podcast-namespace/blob/main/docs/1.0.md#attributes-24
+      timeSplitPercentage = min(100.0, max(0.0, timeSplit.remotePercentage.toDouble()));
+
+      Map<String, dynamic> remoteValue;
+      try {
+        remoteValue = await podcastIndexClient.loadRemoteItemValue(
+          podcastGuid: remoteItem.feedGuid,
+          episodeGuid: remoteItem.itemGuid,
+        );
+      } catch (err) {
+        _log.warning("Failed to load remote item value", err);
+        return baseValue;
+      }
+      if (remoteItem == null) {
+        _log.warning("Loaded remote item value is null");
+        return baseValue;
+      }
+
+      if (remoteValue["value"] == null || remoteValue["value"] is! Map<String, dynamic>) {
+        _log.warning("Loaded remote item value is invalid $remoteValue");
+        return baseValue;
+      }
+      final remoteModel = remoteValue["value"]["model"];
+      if (remoteModel == null ||
+          remoteModel is! Map<String, dynamic> ||
+          remoteModel["type"] != "lightning" ||
+          remoteModel["method"] != "keysend") {
+        _log.warning("Loaded remote item value model is invalid $remoteModel");
+        return baseValue;
+      }
+
+      final remoteDestinations = remoteValue["value"]["destinations"];
+      if (remoteDestinations == null || remoteDestinations is! List<dynamic>) {
+        _log.warning("Loaded remote item value destinations is invalid $remoteDestinations");
+        return baseValue;
+      }
+
+      for (var remoteDestination in remoteDestinations) {
+        if (remoteDestination == null || remoteDestination is! Map<String, dynamic>) {
+          _log.warning("Loaded remote item value destination is invalid $remoteDestination, ignoring it");
+          continue;
+        }
+        timeSplitDestinations.add(ValueDestination.fromJson(remoteDestination));
+      }
+    } else {
+      _log.warning("Invalid time split: ${timeSplit.toMap()}");
+      return baseValue;
+    }
+
+    if (timeSplitDestinations.isEmpty) {
+      _log.warning("No valid destinations in time split");
+      return baseValue;
+    }
+
+    double basePercentage = 100.0 - timeSplitPercentage;
+    _log.info("Get payment value: timeSplitPercentage = $timeSplitPercentage, "
+        "timeSplitDestinations ${timeSplitDestinations.length}, "
+        "basePercentage = $basePercentage, baseDestinations ${baseValue.recipients.length}");
+    _log.info("Not merged splits:");
+    for (var recipient in baseValue.recipients) {
+      _log.info("Base recipient ${recipient.name} ${recipient.address} ${recipient.split}");
+    }
+    for (var recipient in timeSplitDestinations) {
+      _log.info("Time split recipient ${recipient.name} ${recipient.address} ${recipient.split}");
+    }
+    final mergedValue = baseValue.copyWith(
+      recipients: [
+        ...baseValue.recipients.map((d) => d.copyWith(split: d.split * (basePercentage / 100.0))),
+        ...timeSplitDestinations.map((d) => d.copyWith(split: d.split * (timeSplitPercentage / 100.0))),
+      ],
+    );
+    _log.info("Merged splits:");
+    for (var recipient in mergedValue.recipients) {
+      _log.info("Merged recipient ${recipient.name} ${recipient.address} ${recipient.split}");
+    }
+    return mergedValue;
+  }
+
+  String _getPodcastGroupKey(anytimeEpisode.Episode episode) {
     final info = <String, dynamic>{};
     info["content_url"] = episode.contentUrl;
     final metadata = episode?.metadata;
@@ -398,7 +597,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     String customKey,
     String customValue,
     String boostMessage,
-    Episode episode,
+    anytimeEpisode.Episode episode,
     PositionState position,
     int msatTotal,
     String senderName,
@@ -426,7 +625,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return records;
   }
 
-  String _getPodcastTitle(Episode episode) {
+  String _getPodcastTitle(anytimeEpisode.Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       return metadata["feed"]["title"];
@@ -434,7 +633,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     return "";
   }
 
-  int _getPodcastIndexID(Episode episode) {
+  int _getPodcastIndexID(anytimeEpisode.Episode episode) {
     final metadata = episode?.metadata;
     if (metadata != null && metadata["feed"] != null) {
       var id = metadata["feed"]["id"];
@@ -457,7 +656,10 @@ class Value {
   final ValueModel model;
   final List<ValueDestination> recipients;
 
-  Value._({this.model, this.recipients});
+  Value._({
+    this.model,
+    this.recipients,
+  });
 
   factory Value.fromJson(Map<String, dynamic> map) {
     if (map == null) {
@@ -473,7 +675,9 @@ class Value {
     }
 
     return Value._(
-        model: ValueModel.fromJson(map['model']), recipients: recipients);
+      model: ValueModel.fromJson(map['model']),
+      recipients: recipients,
+    );
   }
 
   Map<String, dynamic> toJson() {
@@ -481,6 +685,16 @@ class Value {
       'model': model.toJson(),
       'recipients': recipients.map((d) => d.toJson()).toList()
     };
+  }
+
+  Value copyWith({
+    ValueModel model,
+    List<ValueDestination> recipients,
+  }) {
+    return Value._(
+      model: model ?? this.model,
+      recipients: recipients ?? this.recipients,
+    );
   }
 }
 
@@ -519,13 +733,14 @@ class ValueDestination {
   final dynamic customKey;
   final dynamic customValue;
 
-  ValueDestination(
-      {this.name,
-      this.address,
-      this.type,
-      this.split,
-      this.customKey,
-      this.customValue});
+  ValueDestination({
+    this.name,
+    this.address,
+    this.type,
+    this.split,
+    this.customKey,
+    this.customValue,
+  });
 
   static ValueDestination fromJson(Map<String, dynamic> json) {
     var rawSplit = json['split'];
@@ -553,5 +768,23 @@ class ValueDestination {
       'customKey': customKey,
       'customValue': customValue,
     };
+  }
+
+  ValueDestination copyWith({
+    String name,
+    String address,
+    String type,
+    double split,
+    dynamic customKey,
+    dynamic customValue,
+  }) {
+    return ValueDestination(
+      name: name ?? this.name,
+      address: address ?? this.address,
+      type: type ?? this.type,
+      split: split ?? this.split,
+      customKey: customKey ?? this.customKey,
+      customValue: customValue ?? this.customValue,
+    );
   }
 }
