@@ -32,23 +32,13 @@ class SlotBalancePage extends StatefulWidget {
 class SlotBalancePageState extends State<SlotBalancePage> {
   SatscardBloc _satscardBloc;
   AddressInfo _addressInfo;
+  String _recentError;
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
-
-    // We need to know the balance and UTXO's associated with the slot
-    final action = GetAddressInfo(widget._slot.address);
-    _satscardBloc.actionsSink.add(action);
-    action.future.then((result) {
-      final newInfo = result as AddressInfo;
-      if (mounted) {
-        setState(() => _addressInfo = newInfo);
-      }
-    }).onError((error, stackTrace) {
-      bool here = true; // TODO: Handle errors when retrieving balance
-    });
+    _retrieveBalance();
   }
 
   @override
@@ -68,9 +58,14 @@ class SlotBalancePageState extends State<SlotBalancePage> {
             padding: const EdgeInsets.only(top: 10),
             child: SingleButtonBottomBar(
               stickToBottom: true,
-              text: texts.satscard_balance_button_label,
+              text: _recentError.isNotEmpty
+                  ? texts.satscard_balance_button_retry_label
+                  : texts.satscard_balance_button_label,
               onPressed: () {
-                if (!canSweep) {
+                if (_recentError.isNotEmpty) {
+                  _retrieveBalance();
+                  return;
+                } else if (!canSweep) {
                   promptError(
                       context,
                       texts.satscard_balance_warning_no_funds_title,
@@ -78,9 +73,8 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                         texts.satscard_balance_warning_no_funds_body,
                         style: themeData.dialogTheme.contentTextStyle,
                       ));
-                  //return;
+                  return;
                 }
-
                 if (_addressInfo.unconfirmedBalance > 0) {
                   promptAreYouSure(
                     context,
@@ -200,5 +194,17 @@ class SlotBalancePageState extends State<SlotBalancePage> {
       ];
     }
     return [confirmedWidget];
+  }
+
+  void _retrieveBalance() {
+    _recentError = "";
+
+    final action = GetAddressInfo(widget._slot.address);
+    _satscardBloc.actionsSink.add(action);
+    action.future.then((result) {
+      final newInfo = result as AddressInfo;
+      setState(() => _addressInfo = newInfo);
+    }).catchError((e) =>
+        context.texts().satscard_balance_error_address_info(e.toString()));
   }
 }

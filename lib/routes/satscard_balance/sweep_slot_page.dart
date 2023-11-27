@@ -54,6 +54,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   Int64 _lspFee;
   Int64 _receiveAmount;
   int _selectedFeeIndex = 1;
+  String _recentError = "";
 
   UnsignedTransaction get _transaction =>
       _createResponse != null ? _createResponse.txs[_selectedFeeIndex] : null;
@@ -61,44 +62,19 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _recentError = "";
     _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     _addressInfo = widget.getAddressInfo();
 
     // We need a deposit address before we can do anything
-    _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
-    _addFundsBloc.addFundResponseStream.listen((fundResponse) {
-      if (mounted) {
-        // Now we can get the unsigned transactions we need
-        final action =
-            CreateSlotSweepTransactions(_addressInfo, fundResponse.address);
-        _satscardBloc.actionsSink.add(action);
-        action.future.then((result) {
-          if (mounted) {
-            setState(() {
-              _createResponse = result;
-              _feeOptions = List<FeeOption>.generate(
-                _createResponse.txs.length,
-                (i) => FeeOption(
-                  _createResponse.txs[i].fees.toInt(),
-                  _createResponse.txs[i].targetConfirmations,
-                ),
-              );
-            });
-          }
-        });
-        setState(() {
-          _fundResponse = fundResponse;
-        });
-      }
-    });
+    _requestDepositAddress();
   }
 
   @override
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-
     return StreamBuilder<AccountModel>(
       stream: accountBloc.accountStream,
       builder: (context, accSnapshot) => StreamBuilder<LSPStatus>(
@@ -112,7 +88,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
           final isLoading = loaderText != null;
 
           // Update fee/receive parameters so we can construct widgets correctly
-          if (!isLoading) {
+          if (!isLoading && _recentError.isEmpty) {
             _receiveAmount = _transaction.output;
             if (_isSetupFeeRequired(acc)) {
               final lspMinFee =
@@ -126,17 +102,27 @@ class SweepSlotPageState extends State<SweepSlotPage> {
           }
 
           return Scaffold(
-            bottomNavigationBar: isLoading || !_canFundChannel(acc)
+            bottomNavigationBar: isLoading
                 ? null
                 : Padding(
                     padding: const EdgeInsets.all(0),
                     child: SingleButtonBottomBar(
                       stickToBottom: false,
-                      text: texts.satscard_sweep_button_label,
+                      text: _getBottomButtonText(texts, acc),
                       onPressed: isLoading
                           ? null
                           : () {
-                              if (_formKey.currentState.validate()) {
+                              if (_recentError.isNotEmpty) {
+                                if (_fundResponse == null) {
+                                  _requestDepositAddress();
+                                } else if (_createResponse == null) {
+                                  _requestUnsignedTransactions(
+                                      _fundResponse.address);
+                                }
+                                return;
+                              } else if (!_canFundChannel(acc)) {
+                                widget.onBack();
+                              } else if (_formKey.currentState.validate()) {
                                 // TODO: Add SweepSatscard action and open the NFC dialog
                               }
                             },
@@ -153,101 +139,95 @@ class SweepSlotPageState extends State<SweepSlotPage> {
               ),
               title: Text(texts.satscard_sweep_title(widget._slot.index + 1)),
             ),
-            body: isLoading
-                ? _buildLoader(themeData, loaderText)
-                : Form(
-                    key: _formKey,
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                      child: Scrollbar(
-                        child: SingleChildScrollView(
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SpendCodeFormField(
-                                context: context,
-                                texts: texts,
-                                focusNode: _spendCodeFocusNode,
-                                controller: _spendCodeController,
-                                style: theme.FieldTextStyle.textStyle,
-                                validatorFn: (code) {
-                                  if (_incorrectCodes.contains(code)) {
-                                    return texts
-                                        .satscard_spend_code_incorrect_code_hint;
-                                  }
-                                  return null;
-                                },
-                              ),
-                              Padding(
-                                padding:
-                                    const EdgeInsets.only(top: 24, bottom: 24),
-                                child: FeeChooser(
-                                  economyFee: _feeOptions[0],
-                                  regularFee: _feeOptions[1],
-                                  priorityFee: _feeOptions[2],
-                                  selectedIndex: _selectedFeeIndex,
-                                  onSelect: (index) => setState(() {
-                                    _selectedFeeIndex = index;
-                                    if (_spendCodeFocusNode.hasFocus) {
-                                      _spendCodeFocusNode.unfocus();
-                                    }
-                                  }),
-                                ),
-                              ),
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(5.0)),
-                                  border: Border.all(
-                                    color: themeData.colorScheme.onSurface
-                                        .withOpacity(0.4),
+            body: _recentError.isNotEmpty
+                ? _buildErrorBody(themeData, texts)
+                : isLoading
+                    ? _buildLoaderBody(themeData, loaderText)
+                    : Form(
+                        key: _formKey,
+                        child: Padding(
+                          padding:
+                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+                          child: Scrollbar(
+                            child: SingleChildScrollView(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SpendCodeFormField(
+                                    context: context,
+                                    texts: texts,
+                                    focusNode: _spendCodeFocusNode,
+                                    controller: _spendCodeController,
+                                    style: theme.FieldTextStyle.textStyle,
+                                    validatorFn: (code) {
+                                      if (_incorrectCodes.contains(code)) {
+                                        return texts
+                                            .satscard_spend_code_incorrect_code_hint;
+                                      }
+                                      return null;
+                                    },
                                   ),
-                                ),
-                                child: ListView(
-                                  shrinkWrap: true,
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  children: [
-                                    ..._buildSweepSummary(
-                                      context,
-                                      themeData,
-                                      texts,
-                                      acc,
-                                      lsp,
-                                    ).where((w) => w != null).toList()
-                                  ],
-                                ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 24, bottom: 24),
+                                    child: FeeChooser(
+                                      economyFee: _feeOptions[0],
+                                      regularFee: _feeOptions[1],
+                                      priorityFee: _feeOptions[2],
+                                      selectedIndex: _selectedFeeIndex,
+                                      onSelect: (index) => setState(() {
+                                        _selectedFeeIndex = index;
+                                        if (_spendCodeFocusNode.hasFocus) {
+                                          _spendCodeFocusNode.unfocus();
+                                        }
+                                      }),
+                                    ),
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(5.0)),
+                                      border: Border.all(
+                                        color: themeData.colorScheme.onSurface
+                                            .withOpacity(0.4),
+                                      ),
+                                    ),
+                                    child: ListView(
+                                      shrinkWrap: true,
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      children: [
+                                        ..._buildSweepSummary(
+                                          context,
+                                          themeData,
+                                          texts,
+                                          acc,
+                                          lsp,
+                                        ).where((w) => w != null).toList()
+                                      ],
+                                    ),
+                                  ),
+                                  _buildWarningBox(texts, acc, lsp)
+                                ],
                               ),
-                              _buildWarning(texts, acc)
-                            ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  ),
           );
         },
       ),
     );
   }
 
-  Widget _buildLoader(ThemeData themeData, String title) {
-    return Stack(
-      children: <Widget>[
-        Positioned(
-          top: 0.0,
-          bottom: 0.0,
-          left: 0.0,
-          right: 0.0,
-          child: CircularProgress(
-            size: 64,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            color: themeData.progressIndicatorTheme.color,
-            title: title,
-          ),
-        ),
-      ],
-    );
+  String _getBottomButtonText(BreezTranslations texts, AccountModel acc) {
+    if (_recentError.isNotEmpty) {
+      return texts.satscard_balance_button_retry_label;
+    }
+    if (_canFundChannel(acc)) {
+      return texts.satscard_sweep_button_cancel_label;
+    }
+    return texts.satscard_sweep_button_confirm_label;
   }
 
   List<Widget> _buildSweepSummary(
@@ -271,6 +251,15 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                 formattedBalance, acc.fiatCurrency.format(_transaction.input)),
         trailingColor: themeData.colorScheme.error,
       ),
+      buildSlotPageTextTile(
+        context,
+        minFont,
+        titleText: texts.satscard_sweep_chain_fee_label,
+        trailingText: texts
+            .satscard_sweep_fee_value(acc.currency.format(_transaction.fees)),
+        titleColor: Colors.white.withOpacity(0.4),
+        trailingColor: Colors.white.withOpacity(0.4),
+      ),
       !_isSetupFeeRequired(acc)
           ? null
           : buildSlotPageTextTile(
@@ -282,15 +271,6 @@ class SweepSlotPageState extends State<SweepSlotPage> {
               titleColor: Colors.white.withOpacity(0.4),
               trailingColor: Colors.white.withOpacity(0.4),
             ),
-      buildSlotPageTextTile(
-        context,
-        minFont,
-        titleText: texts.satscard_sweep_chain_fee_label,
-        trailingText: texts
-            .satscard_sweep_fee_value(acc.currency.format(_transaction.fees)),
-        titleColor: Colors.white.withOpacity(0.4),
-        trailingColor: Colors.white.withOpacity(0.4),
-      ),
       buildSlotPageTextTile(
         context,
         minFont,
@@ -334,25 +314,127 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     ];
   }
 
-  Widget _buildWarning(BreezTranslations texts, AccountModel acc) {
+  Widget _buildWarningBox(
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
     if (_isSetupFeeRequired(acc)) {
-      return WarningBox(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              _canFundChannel(acc)
-                  ? texts.satscard_sweep_warning_lsp_fee_label(
-                      acc.currency.format(acc.maxInboundLiquidity))
-                  : texts.satscard_sweep_warning_not_valid,
-              style: Theme.of(context).textTheme.titleLarge,
-              textAlign: TextAlign.center,
-            ),
-          ],
+      final propFee =
+          (lsp.currentLSP.cheapestOpeningFeeParams.proportional / 10000)
+              .toString();
+      final minFee = acc.currency
+          .format(lsp.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000);
+      final liquidity = acc.currency
+          .format(acc.connected ? acc.maxInboundLiquidity : Int64(0));
+
+      String contentText;
+      if (!_canFundChannel(acc)) {
+        contentText = texts.satscard_sweep_warning_not_valid;
+      } else if (!acc.connected || acc.maxInboundLiquidity == 0) {
+        contentText = texts.satscard_sweep_warning_lsp_fee_no_liquidity_label(
+            minFee, propFee);
+      } else {
+        contentText = texts.satscard_sweep_warning_lsp_fee_label(
+            minFee, propFee, liquidity);
+      }
+      return Padding(
+        padding: const EdgeInsets.only(top: 12),
+        child: WarningBox(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                contentText,
+                style: Theme.of(context).textTheme.titleLarge,
+                textAlign: TextAlign.left,
+              ),
+            ],
+          ),
         ),
       );
     }
     return const SizedBox.shrink();
+  }
+
+  Widget _buildErrorBody(ThemeData themeData, BreezTranslations texts) {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              WarningBox(
+                child: Text(
+                  _recentError,
+                  style: themeData.textTheme.titleLarge,
+                  textAlign: TextAlign.left,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildLoaderBody(ThemeData themeData, String title) {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+          child: CircularProgress(
+            size: 64,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            color: themeData.progressIndicatorTheme.color,
+            title: title,
+          ),
+        ),
+      ],
+    );
+  }
+
+  void _requestDepositAddress() {
+    _fundResponse = null;
+
+    final addFundsAction = AddFundsInfo(true, false);
+    _addFundsBloc.addFundRequestSink.add(addFundsAction);
+    _addFundsBloc.addFundResponseStream
+        .handleError((e) => _recentError =
+            context.texts().satscard_sweep_error_deposit_address(e.toString()))
+        .listen((fundResponse) {
+      if (mounted) {
+        // Now we can construct our unsigned transactions
+        _requestUnsignedTransactions(fundResponse.address);
+
+        setState(() {
+          _fundResponse = fundResponse;
+        });
+      }
+    });
+  }
+
+  void _requestUnsignedTransactions(String depositAddress) {
+    _createResponse = null;
+
+    final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
+    _satscardBloc.actionsSink.add(action);
+    action.future.then((result) {
+      if (mounted) {
+        setState(() {
+          _createResponse = result;
+          _feeOptions = List<FeeOption>.generate(
+            _createResponse.txs.length,
+            (i) => FeeOption(
+              _createResponse.txs[i].fees.toInt(),
+              _createResponse.txs[i].targetConfirmations,
+            ),
+          );
+        });
+      }
+    }).catchError((e) => _recentError = _recentError =
+        context.texts().satscard_sweep_error_create_transactions(e.toString()));
   }
 
   String _getLoaderText(
