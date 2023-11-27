@@ -17,6 +17,7 @@ import 'package:breez/bloc/podcast_payments/podcast_payments_bloc.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/logger.dart';
 import 'package:breez/routes/initial_walkthrough/loaders/loader_indicator.dart';
+import 'package:breez/routes/podcast/podcast_loader.dart';
 import 'package:breez/routes/podcast/podcast_page.dart';
 import 'package:breez/services/breezlib/breez_bridge.dart';
 import 'package:breez/services/injector.dart';
@@ -56,11 +57,13 @@ void main() async {
               Provider<PodcastPaymentsBloc>(
                 lazy: false,
                 create: (ctx) => PodcastPaymentsBloc(
-                    blocs.userProfileBloc,
-                    blocs.accountBloc,
-                    Provider.of<SettingsBloc>(ctx, listen: false),
-                    Provider.of<AudioBloc>(ctx, listen: false),
-                    repository),
+                  blocs.userProfileBloc,
+                  blocs.accountBloc,
+                  Provider.of<SettingsBloc>(ctx, listen: false),
+                  Provider.of<AudioBloc>(ctx, listen: false),
+                  repository,
+                  PodcastIndexClient(),
+                ),
                 dispose: (_, value) => value.dispose(),
                 child: PlayerControlsBuilder(
                     builder: playerBuilder,

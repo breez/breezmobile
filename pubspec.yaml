@@ -101,7 +101,7 @@ dependencies:
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
+      ref: c30de552580d8e64233c4372a7e438b0550de64e
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
@@ -113,7 +113,7 @@ dependencies:
   podcast_search:
     git:
       url: https://github.com/breez/podcast_search.git
-      ref: 5bd8e96728291b11dbc4b1fbac123681000be07d
+      ref: a2dfc441a6ba3c506ef15b1dd881a03d15254ccf
   nfc_in_flutter:
     git:
       url: https://github.com/breez/nfc_in_flutter.git
@@ -128,10 +128,6 @@ dependency_overrides:
     git:
       url: https://github.com/breez/flutter_downloader.git
       ref: c9cbc56c6d1c8bb434301757be84ac1e65d046c6
-  podcast_search:
-    git:
-      url: https://github.com/breez/podcast_search.git
-      ref: 5bd8e96728291b11dbc4b1fbac123681000be07d
 
 dev_dependencies:
   flutter_test:

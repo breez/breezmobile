@@ -4,11 +4,13 @@ class PayBoost extends AsyncAction {
   final int sats;
   final String boostMessage;
   final String senderName;
+  final double time;
 
   PayBoost(
     this.sats, {
     this.boostMessage,
     this.senderName,
+    this.time,
   });
 }
 

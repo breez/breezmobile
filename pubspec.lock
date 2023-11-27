@@ -37,8 +37,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
-      resolved-ref: f8eb92fb61165b1eb018d928adcf689f0bc9e554
+      ref: c30de552580d8e64233c4372a7e438b0550de64e
+      resolved-ref: c30de552580d8e64233c4372a7e438b0550de64e
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
@@ -403,15 +403,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.6"
-  dart_rss:
-    dependency: transitive
-    description:
-      path: "."
-      ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
-      resolved-ref: dc20ec54b484ff2ba4956c86b936ab664a36483c
-      url: "https://github.com/breez/dart-rss"
-    source: git
-    version: "2.0.1-breez"
   dart_style:
     dependency: transitive
     description:
@@ -1512,11 +1503,11 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "5bd8e96728291b11dbc4b1fbac123681000be07d"
-      resolved-ref: "5bd8e96728291b11dbc4b1fbac123681000be07d"
+      ref: a2dfc441a6ba3c506ef15b1dd881a03d15254ccf
+      resolved-ref: a2dfc441a6ba3c506ef15b1dd881a03d15254ccf
       url: "https://github.com/breez/podcast_search.git"
     source: git
-    version: "0.5.2"
+    version: "0.5.1"
   pointycastle:
     dependency: transitive
     description:
@@ -2107,6 +2098,15 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.1"
+  webfeed:
+    dependency: transitive
+    description:
+      path: "."
+      ref: "0586eb3d169d5e84bc467261214262e628a8057e"
+      resolved-ref: "0586eb3d169d5e84bc467261214262e628a8057e"
+      url: "https://github.com/breez/dart-rss"
+    source: git
+    version: "2.0.1-breez"
   webkit_inspection_protocol:
     dependency: transitive
     description:
