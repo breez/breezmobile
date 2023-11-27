@@ -23,6 +23,7 @@ import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 
 class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
@@ -49,8 +50,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
 
   AddressInfo _addressInfo;
   AddFundResponse _fundResponse;
+  CreateSlotSweepResponse _createResponse;
   List<FeeOption> _feeOptions;
-  int _selectedFee = 1;
+  int _selectedFeeIndex = 1;
 
   @override
   void didChangeDependencies() {
@@ -61,26 +63,30 @@ class SweepSlotPageState extends State<SweepSlotPage> {
 
     // We need a deposit address before we can do anything
     _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));
-    _addFundsBloc.addFundResponseStream.listen((response) {
+    _addFundsBloc.addFundResponseStream.listen((fundResponse) {
       if (mounted) {
+        // Now we can get the unsigned transactions we need
+        final action =
+            CreateSlotSweepTransactions(_addressInfo, fundResponse.address);
+        _satscardBloc.actionsSink.add(action);
+        action.future.then((result) {
+          if (mounted) {
+            setState(() {
+              _createResponse = result;
+              _feeOptions = List<FeeOption>.generate(
+                _createResponse.txs.length,
+                (i) => FeeOption(
+                  _createResponse.txs[i].fees.toInt(),
+                  _createResponse.txs[i].targetConfirmations,
+                ),
+              );
+            });
+          }
+        });
         setState(() {
-          _fundResponse = response;
+          _fundResponse = fundResponse;
         });
       }
-    });
-
-    // Get the fee options
-    final getFeeRates = GetFeeRates();
-    _satscardBloc.actionsSink.add(getFeeRates);
-    getFeeRates.future.then((result) {
-      final rates = result as MempoolFeeRates;
-      final options = List<FeeOption>.filled(3, null);
-      options[0] = FeeOption(rates.hour.toInt(), 6);
-      options[1] = FeeOption(rates.halfHour.toInt(), 3);
-      options[2] = FeeOption(rates.fastest.toInt(), 1);
-      setState(() {
-        _feeOptions = options;
-      });
     });
   }
 
@@ -140,7 +146,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     key: _formKey,
                     child: Padding(
                       padding:
-                          const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 40.0),
+                          const EdgeInsets.fromLTRB(16.0, 24.0, 16.0, 10.0),
                       child: Scrollbar(
                         child: SingleChildScrollView(
                           child: Column(
@@ -167,9 +173,13 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                                   economyFee: _feeOptions[0],
                                   regularFee: _feeOptions[1],
                                   priorityFee: _feeOptions[2],
-                                  selectedIndex: _selectedFee,
-                                  onSelect: (index) =>
-                                      setState(() => _selectedFee = index),
+                                  selectedIndex: _selectedFeeIndex,
+                                  onSelect: (index) => setState(() {
+                                    _selectedFeeIndex = index;
+                                    if (_spendCodeFocusNode.hasFocus) {
+                                      _spendCodeFocusNode.unfocus();
+                                    }
+                                  }),
                                 ),
                               ),
                               Container(
@@ -183,6 +193,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                                 ),
                                 child: ListView(
                                   shrinkWrap: true,
+                                  physics: const NeverScrollableScrollPhysics(),
                                   children: [
                                     ..._buildSweepSummary(
                                       context,
@@ -233,16 +244,56 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     AccountModel acc,
     LSPStatus lsp,
   ) {
+    final transaction = _createResponse.txs[_selectedFeeIndex];
+    final lspMinFee = lsp.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000;
+    final lspPropFee = transaction.output *
+        lsp.currentLSP.cheapestOpeningFeeParams.proportional ~/
+        1000000;
+    final lspFee = lspMinFee > lspPropFee ? lspMinFee : lspPropFee;
+    final receive = transaction.output - lspFee;
+
+    final formattedBalance = acc.currency.format(transaction.input);
+    final formattedChainFee = acc.currency.format(transaction.fees);
+    final formattedLspFee = acc.currency.format(lspFee);
+    final formattedReceive = acc.currency.format(receive);
     final minFont = MinFontSize(context);
-    final balance = acc.currency.format(_addressInfo.confirmedBalance);
     return [
-      buildSlotPageTextTile(context, minFont,
-          titleText: texts.satscard_sweep_balance_label,
-          trailingText: acc.fiatCurrency == null
-              ? texts.satscard_balance_value_no_fiat(balance)
-              : texts.satscard_balance_value_with_fiat(balance,
-                  acc.fiatCurrency.format(_addressInfo.confirmedBalance)),
-          trailingColor: themeData.colorScheme.error),
+      buildSlotPageTextTile(
+        context,
+        minFont,
+        titleText: texts.satscard_sweep_balance_label,
+        trailingText: acc.fiatCurrency == null
+            ? texts.satscard_balance_value_no_fiat(formattedBalance)
+            : texts.satscard_balance_value_with_fiat(
+                formattedBalance, acc.fiatCurrency.format(transaction.input)),
+        trailingColor: themeData.colorScheme.error,
+      ),
+      buildSlotPageTextTile(
+        context,
+        minFont,
+        titleText: texts.satscard_sweep_chain_fee_label,
+        trailingText: texts.satscard_sweep_fee_value(formattedChainFee),
+        titleColor: Colors.white.withOpacity(0.4),
+        trailingColor: Colors.white.withOpacity(0.4),
+      ),
+      buildSlotPageTextTile(
+        context,
+        minFont,
+        titleText: texts.satscard_sweep_lsp_fee_label,
+        trailingText: texts.satscard_sweep_fee_value(formattedLspFee),
+        titleColor: Colors.white.withOpacity(0.4),
+        trailingColor: Colors.white.withOpacity(0.4),
+      ),
+      buildSlotPageTextTile(
+        context,
+        minFont,
+        titleText: texts.satscard_sweep_receive_label,
+        trailingText: acc.fiatCurrency == null
+            ? texts.satscard_balance_value_no_fiat(formattedReceive)
+            : texts.satscard_balance_value_with_fiat(
+                formattedReceive, acc.fiatCurrency.format(receive)),
+        trailingColor: themeData.colorScheme.error,
+      ),
     ];
   }
 
@@ -257,7 +308,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
       return texts.satscard_sweep_awaiting_lsp_label;
     } else if (_fundResponse == null) {
       return texts.satscard_sweep_awaiting_deposit_label;
-    } else if (_feeOptions == null) {
+    } else if (_feeOptions == null || _createResponse == null) {
       return texts.satscard_sweep_awaiting_fees_label;
     }
 

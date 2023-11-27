@@ -925,15 +925,24 @@ class BreezBridge {
   }
 
   Future<AddressInfo> getMempoolAddressInfo(String address) {
-    return _invokeMethodImmediate(
-            'getMempoolAddressInfo', {'argument': address})
+    return _invokeMethodWhenReady(
+            "getMempoolAddressInfo", {"argument": address})
         .then((res) => AddressInfo()..mergeFromBuffer(res ?? []));
   }
 
   Future<MempoolFeeRates> getMempoolRecommendedFees() {
-    return _invokeMethodImmediate(
-        'getMempoolRecommendedFees')
+    return _invokeMethodWhenReady("getMempoolRecommendedFees")
         .then((res) => MempoolFeeRates()..mergeFromBuffer(res ?? []));
+  }
+
+  Future<CreateSlotSweepResponse> createSlotSweepTransactions(
+      AddressInfo slot, String recipient) {
+    var request = CreateSlotSweepRequest()
+      ..slot = slot
+      ..recipient = recipient;
+    return _invokeMethodWhenReady("createSlotSweepTransactions", {
+      "argument": request.writeToBuffer()
+    }).then((res) => CreateSlotSweepResponse()..mergeFromBuffer(res ?? []));
   }
 
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {

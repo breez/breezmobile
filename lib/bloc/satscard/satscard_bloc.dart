@@ -29,6 +29,7 @@ class SatscardBloc with AsyncActionsHandler {
       : _breezLib = ServiceInjector().breezBridge,
         _nfc = ServiceInjector().nfc {
     registerAsyncHandlers({
+      CreateSlotSweepTransactions: _createSlotSweepTransactions,
       DisableListening: _disableListening,
       EnableListening: _enableListening,
       GetAddressInfo: _getAddressInfo,
@@ -75,6 +76,12 @@ class SatscardBloc with AsyncActionsHandler {
         _log.severe("Reading a satscard failed with an unexpected error", e, s);
       }
     };
+  }
+
+  Future<void> _createSlotSweepTransactions(CreateSlotSweepTransactions action) async {
+    return _breezLib
+        .createSlotSweepTransactions(action.slotInfo, action.recipient)
+        .then((result) => action.resolve(result));
   }
 
   Future<void> _disableListening(DisableListening action) async {
