@@ -114,7 +114,7 @@ class SlotBalancePageState extends State<SlotBalancePage> {
                     isGeneric: true,
                   ),
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 25, 16, 10),
+                    padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
                     child: showIndicator
                         ? Padding(
                             padding: const EdgeInsets.only(top: 25),
