@@ -23,6 +23,7 @@ class SpendCodeFormField extends TextFormField {
     TextStyle style,
   }) : super(
           autocorrect: false,
+          autofillHints: null,
           controller: controller,
           decoration: InputDecoration(
             labelText: texts.satscard_spend_code_label,
