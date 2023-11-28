@@ -1,10 +1,14 @@
+import 'dart:typed_data';
+
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/routes/satscard_balance/broadcast_transaction.dart';
 import 'package:breez/routes/satscard_balance/slot_balance_page.dart';
 import 'package:breez/routes/satscard_balance/sweep_slot_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
@@ -23,6 +27,8 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
   final _pageController = PageController();
 
   AddressInfo _recentAddressInfo;
+  UnsignedTransaction _selectedTransaction;
+  Uint8List _slotPrivateKey;
 
   @override
   void dispose() {
@@ -56,12 +62,49 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             ),
+            onUnsealed: (transaction, privateKey) {
+              _selectedTransaction = transaction;
+              _slotPrivateKey = privateKey;
+              _pageController.nextPage(
+                duration: const Duration(milliseconds: 250),
+                curve: Curves.easeInOut,
+              );
+            },
             getAddressInfo: () => _recentAddressInfo,
+            getCachedPrivateKey: () => _slotPrivateKey,
+          ),
+          BroadcastTransactionPage(
+            onBack: () => _pageController.previousPage(
+              duration: const Duration(milliseconds: 250),
+              curve: Curves.easeInOut,
+            ),
+            onDone: () {
+              // TODO: Report success
+              bool here = true;
+            },
+            getPrivateKey: () => _slotPrivateKey,
+            getTransaction: () => _selectedTransaction,
           ),
         ],
       ),
     );
   }
+}
+
+Widget buildLoaderBody(ThemeData themeData, String title) {
+  return Stack(
+    children: <Widget>[
+      Positioned.fill(
+        child: CircularProgress(
+          size: 64,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          color: themeData.progressIndicatorTheme.color,
+          title: title,
+        ),
+      ),
+    ],
+  );
 }
 
 ListTile buildSlotPageTextTile(

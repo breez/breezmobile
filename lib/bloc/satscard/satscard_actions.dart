@@ -1,7 +1,6 @@
 import 'package:breez/bloc/async_action.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
-
-import 'satscard_model.dart';
+import 'package:cktap_protocol/satscard.dart';
 
 class CreateSlotSweepTransactions extends AsyncAction {
   final AddressInfo slotInfo;
@@ -23,13 +22,16 @@ class GetAddressInfo extends AsyncAction {
 class GetFeeRates extends AsyncAction {}
 
 class InitializeSlot extends AsyncAction {
-  final InitializeSlotModel request;
+  final Satscard satscard;
+  final String spendCode;
+  final String chainCode;
 
-  InitializeSlot(this.request);
+  InitializeSlot(this.satscard, this.spendCode, this.chainCode);
 }
 
-class SweepSatscard extends AsyncAction {
-  final SweepSatscardModel request;
+class UnsealSlot extends AsyncAction {
+  final Satscard satscard;
+  final String spendCode;
 
-  SweepSatscard(this.request);
+  UnsealSlot(this.satscard, this.spendCode);
 }

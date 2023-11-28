@@ -13,8 +13,8 @@ abstract class SatscardOpStatus {
 
   // Success states
 
-  factory SatscardOpStatus.slotInitialized(Satscard card, Slot slot) =>
-      SatscardOpStatusSlotInitialized(card, slot);
+  factory SatscardOpStatus.success(Satscard card, Slot slot) =>
+      SatscardOpStatusSuccess(card, slot);
 
   // Failure states
 
@@ -46,14 +46,10 @@ class SatscardOpStatusWaiting extends SatscardOpStatus {
 }
 
 class SatscardOpStatusSuccess extends SatscardOpStatus {
-  const SatscardOpStatusSuccess();
-}
-
-class SatscardOpStatusSlotInitialized extends SatscardOpStatusSuccess {
   final Satscard card;
   final Slot slot;
 
-  const SatscardOpStatusSlotInitialized(this.card, this.slot);
+  const SatscardOpStatusSuccess(this.card, this.slot);
 }
 
 class SatscardOpStatusBadAuth extends SatscardOpStatus {

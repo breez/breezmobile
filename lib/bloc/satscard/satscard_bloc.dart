@@ -11,6 +11,7 @@ import 'package:cktap_protocol/cktapcard.dart';
 import 'package:cktap_protocol/exceptions.dart';
 import 'package:cktap_protocol/transport.dart';
 import 'package:logging/logging.dart';
+import 'package:nfc_manager/nfc_manager.dart';
 
 final _log = Logger("SatscardBloc");
 
@@ -35,7 +36,7 @@ class SatscardBloc with AsyncActionsHandler {
       GetAddressInfo: _getAddressInfo,
       GetFeeRates: _getFeeRates,
       InitializeSlot: _initializeSlot,
-      SweepSatscard: _sweepSatscard,
+      UnsealSlot: _unsealSlot,
     });
     listenActions();
   }
@@ -78,7 +79,8 @@ class SatscardBloc with AsyncActionsHandler {
     };
   }
 
-  Future<void> _createSlotSweepTransactions(CreateSlotSweepTransactions action) async {
+  Future<void> _createSlotSweepTransactions(
+      CreateSlotSweepTransactions action) async {
     return _breezLib
         .createSlotSweepTransactions(action.slotInfo, action.recipient)
         .then((result) => action.resolve(result));
@@ -110,74 +112,114 @@ class SatscardBloc with AsyncActionsHandler {
   }
 
   Future<void> _initializeSlot(InitializeSlot action) async {
-    final id = action.request.satscard.ident;
-
-    _log.info("_initializeSatscard() registered with NFCService");
+    _log.info("_initializeSlot() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
-      try {
-        _log.info(
-            "Attempting to initialize satscard slot with the following ID: $id");
-        _operationController.add(SatscardOpStatus.inProgress());
+      await _performSatscardOperation(tag, action.satscard,
+          expectedStatus: SlotStatus.unused,
+          func: (card, activeSlot, transport) async {
+        _log.info("Initializing active slot of card ${card.ident}");
 
-        // We need to establish that we are communicating with the correct card
-        final transport = NfcManagerTransport(tag);
-        final card = await Satscard.fromTransport(transport);
-        if (card.ident != id) {
-          _operationController.add(SatscardOpStatus.incorrectCard());
-          return;
-        }
-
-        // Make sure the state of the card matches our previous read
-        if (card.activeSlotIndex != action.request.satscard.activeSlotIndex ||
-            card.isUsedUp) {
-          _operationController.add(SatscardOpStatus.staleCard());
-          return;
-        }
-        final activeSlot = await card.getActiveSlot();
-        if (activeSlot.status != SlotStatus.unused) {
-          _operationController.add(SatscardOpStatus.staleCard());
-          return;
-        }
-
-        // Handle the auth delay
-        final initialDelay = card.authDelay;
-        if (initialDelay > 0) {
-          _operationController
-              .add(SatscardOpStatus.waiting(initialDelay, initialDelay));
-          while (card.authDelay > 0) {
-            final response = await card.wait(transport);
-            if (!response.success) {
-              throw Exception(
-                  "Unexpected failure while awaiting the authentication delay");
-            }
-            _operationController
-                .add(SatscardOpStatus.waiting(card.authDelay, initialDelay));
-          }
-        }
-
-        // Proceed with the initialization
-        _operationController.add(SatscardOpStatus.inProgress());
-        final slot = await card.newSlot(transport, action.request.cvcCode,
-            chainCode: action.request.chainCode);
-        _operationController.add(SatscardOpStatus.slotInitialized(card, slot));
-      } on NfcCommunicationException catch (e) {
-        _log.warning(
-            "Slot initialization failed due to a communication error: $e");
-        _operationController.add(SatscardOpStatus.nfcError());
-      } on TapProtoException catch (e, s) {
-        _log.severe("Slot initialization failed due to a protocol error", e, s);
-        _operationController.add(SatscardOpStatus.protocolError(e));
-      } catch (e, s) {
-        _log.severe(
-            "Slot initialization failed with an unexpected error", e, s);
-        _operationController
-            .add(SatscardOpStatus.unexpectedError(e.toString()));
-      }
+        final slot = await card.newSlot(transport, action.spendCode,
+            chainCode: action.chainCode);
+        _operationController.add(SatscardOpStatus.success(card, slot));
+      });
     };
+    action.resolve(true);
   }
 
-  Future<void> _sweepSatscard(SweepSatscard action) async {
-    return Future.error("SweepSatscard action not implemented");
+  Future<void> _unsealSlot(UnsealSlot action) async {
+    _log.info("_unsealSlot() registered with NFCService");
+    _nfc.onSatscardTag = (tag) async {
+      await _performSatscardOperation(tag, action.satscard,
+          expectedStatus: SlotStatus.sealed,
+          func: (card, activeSlot, transport) async {
+        _log.info("Unsealing active slot of card ${card.ident}");
+
+        final unsealedSlot = await card.unseal(transport, action.spendCode);
+        _operationController.add(SatscardOpStatus.success(card, unsealedSlot));
+      });
+    };
+    action.resolve(true);
+  }
+
+  Future<void> _performSatscardOperation(
+    NfcTag tag,
+    Satscard expectedCard, {
+    SlotStatus expectedStatus,
+    Function(Satscard, Slot, Transport) func,
+  }) async {
+    try {
+      _operationController.add(SatscardOpStatus.inProgress());
+      final transport = NfcManagerTransport(tag);
+      final card = await _createValidatedCard(expectedCard, transport);
+      if (card == null) {
+        return;
+      }
+      final activeSlot = await _getValidatedActiveSlot(
+          card, expectedCard.activeSlotIndex, expectedStatus);
+      if (activeSlot == null) {
+        return;
+      }
+      final authDelay = await _processAuthDelay(card, transport);
+      if (authDelay != 0) {
+        return;
+      }
+
+      // We have a valid card and can perform the operation now!
+      _operationController.add(SatscardOpStatus.inProgress());
+      await func(card, activeSlot, transport);
+    } on NfcCommunicationException catch (e) {
+      _log.warning("Slot operation fail due to a communication error: $e");
+      _operationController.add(SatscardOpStatus.nfcError());
+    } on TapProtoException catch (e, s) {
+      _log.severe("Slot operation failed due to a protocol error", e, s);
+      _operationController.add(SatscardOpStatus.protocolError(e));
+    } catch (e, s) {
+      _log.severe("Slot operation failed with an unexpected error", e, s);
+      _operationController.add(SatscardOpStatus.unexpectedError(e.toString()));
+    }
+  }
+
+  Future<Satscard> _createValidatedCard(
+      Satscard expected, Transport transport) async {
+    final card = await Satscard.fromTransport(transport);
+    if (card.ident != expected.ident) {
+      _operationController.add(SatscardOpStatus.incorrectCard());
+      return null;
+    }
+    return card;
+  }
+
+  Future<Slot> _getValidatedActiveSlot(
+      Satscard card, int expectedIndex, SlotStatus expectedStatus) async {
+    if (card.activeSlotIndex != expectedIndex) {
+      _operationController.add(SatscardOpStatus.staleCard());
+      return null;
+    }
+    final activeSlot = await card.getActiveSlot();
+    if (activeSlot.status != expectedStatus) {
+      _operationController.add(SatscardOpStatus.staleCard());
+      return null;
+    }
+    return activeSlot;
+  }
+
+  Future<int> _processAuthDelay(Satscard card, Transport transport) async {
+    final initialDelay = card.authDelay;
+    if (initialDelay > 0) {
+      _operationController
+          .add(SatscardOpStatus.waiting(initialDelay, initialDelay));
+      while (card.authDelay > 0) {
+        final response = await card.wait(transport);
+        if (!response.success) {
+          throw Exception(
+              "Unexpected failure while awaiting the authentication delay");
+        }
+        _operationController
+            .add(SatscardOpStatus.waiting(card.authDelay, initialDelay));
+      }
+    }
+    return card.authDelay;
   }
 
   @override

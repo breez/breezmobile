@@ -9,6 +9,16 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+Future<T> showSatscardOperationDialog<T>(
+    BuildContext context, SatscardBloc bloc, String cardId) {
+  return showDialog(
+    useRootNavigator: false,
+    barrierDismissible: false,
+    context: context,
+    builder: (_) => SatscardOperationDialog(bloc, cardId),
+  );
+}
+
 class SatscardOperationDialog extends StatefulWidget {
   final SatscardBloc _bloc;
   final String _cardId;
@@ -224,7 +234,7 @@ class SatscardOperationDialogState extends State<SatscardOperationDialog>
   void _handleExitConditions(SatscardOpStatus status) {
     if (_isClosing == true) {
       return;
-    } else if (status is SatscardOpStatusSlotInitialized) {
+    } else if (status is SatscardOpStatusSuccess) {
       _onFinish(status, delay: 1.5);
     } else if (status is SatscardOpStatusBadAuth) {
       _onFinish(status, delay: 1.5);

@@ -1,4 +1,5 @@
 import 'dart:collection';
+import 'dart:typed_data';
 
 import 'package:breez/bloc/account/account_bloc.dart';
 import 'package:breez/bloc/account/account_model.dart';
@@ -9,13 +10,14 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_op_status.dart';
 import 'package:breez/routes/satscard_balance/satscard_balance_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/fee_chooser.dart';
+import 'package:breez/widgets/satscard/satscard_operation_dialog.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez/widgets/warning_box.dart';
@@ -29,10 +31,15 @@ class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
+  final Function(UnsignedTransaction, Uint8List) onUnsealed;
   final AddressInfo Function() getAddressInfo;
+  final Uint8List Function() getCachedPrivateKey;
 
   const SweepSlotPage(this._card, this._slot,
-      {this.onBack, this.getAddressInfo});
+      {this.onBack,
+      this.onUnsealed,
+      this.getAddressInfo,
+      this.getCachedPrivateKey});
 
   @override
   State<StatefulWidget> createState() => SweepSlotPageState();
@@ -109,23 +116,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     child: SingleButtonBottomBar(
                       stickToBottom: false,
                       text: _getBottomButtonText(texts, acc),
-                      onPressed: isLoading
-                          ? null
-                          : () {
-                              if (_recentError.isNotEmpty) {
-                                if (_fundResponse == null) {
-                                  _requestDepositAddress();
-                                } else if (_createResponse == null) {
-                                  _requestUnsignedTransactions(
-                                      _fundResponse.address);
-                                }
-                                return;
-                              } else if (!_canFundChannel(acc)) {
-                                widget.onBack();
-                              } else if (_formKey.currentState.validate()) {
-                                // TODO: Add SweepSatscard action and open the NFC dialog
-                              }
-                            },
+                      onPressed: isLoading ? null : () => _onButtonPressed(acc),
                     ),
                   ),
             appBar: AppBar(
@@ -142,78 +133,8 @@ class SweepSlotPageState extends State<SweepSlotPage> {
             body: _recentError.isNotEmpty
                 ? _buildErrorBody(themeData, texts)
                 : isLoading
-                    ? _buildLoaderBody(themeData, loaderText)
-                    : Form(
-                        key: _formKey,
-                        child: Padding(
-                          padding:
-                              const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
-                          child: Scrollbar(
-                            child: SingleChildScrollView(
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SpendCodeFormField(
-                                    context: context,
-                                    texts: texts,
-                                    focusNode: _spendCodeFocusNode,
-                                    controller: _spendCodeController,
-                                    style: theme.FieldTextStyle.textStyle,
-                                    validatorFn: (code) {
-                                      if (_incorrectCodes.contains(code)) {
-                                        return texts
-                                            .satscard_spend_code_incorrect_code_hint;
-                                      }
-                                      return null;
-                                    },
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 24, bottom: 24),
-                                    child: FeeChooser(
-                                      economyFee: _feeOptions[0],
-                                      regularFee: _feeOptions[1],
-                                      priorityFee: _feeOptions[2],
-                                      selectedIndex: _selectedFeeIndex,
-                                      onSelect: (index) => setState(() {
-                                        _selectedFeeIndex = index;
-                                        if (_spendCodeFocusNode.hasFocus) {
-                                          _spendCodeFocusNode.unfocus();
-                                        }
-                                      }),
-                                    ),
-                                  ),
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      borderRadius: const BorderRadius.all(
-                                          Radius.circular(5.0)),
-                                      border: Border.all(
-                                        color: themeData.colorScheme.onSurface
-                                            .withOpacity(0.4),
-                                      ),
-                                    ),
-                                    child: ListView(
-                                      shrinkWrap: true,
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      children: [
-                                        ..._buildSweepSummary(
-                                          context,
-                                          themeData,
-                                          texts,
-                                          acc,
-                                          lsp,
-                                        ).where((w) => w != null).toList()
-                                      ],
-                                    ),
-                                  ),
-                                  _buildWarningBox(texts, acc, lsp)
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
+                    ? buildLoaderBody(themeData, loaderText)
+                    : _buildFormBody(themeData, texts, acc, lsp),
           );
         },
       ),
@@ -224,10 +145,208 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     if (_recentError.isNotEmpty) {
       return texts.satscard_balance_button_retry_label;
     }
-    if (_canFundChannel(acc)) {
+    if (!_canFundChannel(acc)) {
       return texts.satscard_sweep_button_cancel_label;
     }
     return texts.satscard_sweep_button_confirm_label;
+  }
+
+  String _getLoaderText(
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
+    if (acc == null) {
+      return texts.satscard_balance_awaiting_account_label;
+    } else if (lsp == null) {
+      return texts.satscard_sweep_awaiting_lsp_label;
+    } else if (_fundResponse == null) {
+      return texts.satscard_sweep_awaiting_deposit_label;
+    } else if (_feeOptions == null || _createResponse == null) {
+      return texts.satscard_sweep_awaiting_fees_label;
+    }
+
+    return null;
+  }
+
+  void _onButtonPressed(AccountModel acc) {
+    // Handle error retrying
+    if (_recentError.isNotEmpty) {
+      if (_fundResponse == null) {
+        _requestDepositAddress();
+      } else if (_createResponse == null) {
+        _requestUnsignedTransactions(_fundResponse.address);
+      }
+      return;
+    }
+    // Handle cancel
+    if (!_canFundChannel(acc)) {
+      widget.onBack();
+      return;
+    }
+    // Handle re-confirmation
+    Uint8List cachedKey = widget.getCachedPrivateKey();
+    if (cachedKey.isNotEmpty) {
+      widget.onUnsealed(_transaction, cachedKey);
+      return;
+    }
+    // Handle unseal
+    if (_formKey.currentState.validate()) {
+      final action = UnsealSlot(widget._card, _spendCodeController.text);
+      _satscardBloc.actionsSink.add(action);
+      showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
+          .then((result) {
+        if (result is SatscardOpStatusBadAuth) {
+          _incorrectCodes.add(action.spendCode);
+          _formKey.currentState.validate();
+        }
+        if (result is SatscardOpStatusSuccess) {
+          widget.onUnsealed(_transaction, result.slot.privkey);
+        }
+      });
+      return;
+    }
+  }
+
+  void _requestDepositAddress() {
+    _fundResponse = null;
+
+    final addFundsAction = AddFundsInfo(true, false);
+    _addFundsBloc.addFundRequestSink.add(addFundsAction);
+    _addFundsBloc.addFundResponseStream
+        .handleError((e) => _recentError =
+            context.texts().satscard_sweep_error_deposit_address(e.toString()))
+        .listen((fundResponse) {
+      if (mounted) {
+        // Now we can construct our unsigned transactions
+        _requestUnsignedTransactions(fundResponse.address);
+
+        setState(() {
+          _fundResponse = fundResponse;
+        });
+      }
+    });
+  }
+
+  void _requestUnsignedTransactions(String depositAddress) {
+    _createResponse = null;
+
+    final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
+    _satscardBloc.actionsSink.add(action);
+    action.future.then((result) {
+      if (mounted) {
+        setState(() {
+          _createResponse = result;
+          _feeOptions = List<FeeOption>.generate(
+            _createResponse.txs.length,
+            (i) => FeeOption(
+              _createResponse.txs[i].fees.toInt(),
+              _createResponse.txs[i].targetConfirmations,
+            ),
+          );
+        });
+      }
+    }).catchError((e) => _recentError = _recentError =
+        context.texts().satscard_sweep_error_create_transactions(e.toString()));
+  }
+
+  bool _canFundChannel(AccountModel acc) {
+    return acc != null &&
+        !_isBalanceTooHigh(acc) &&
+        !_isBalanceTooLow(acc) &&
+        _isReserveMet(acc);
+  }
+
+  bool _isSetupFeeRequired(AccountModel acc) {
+    return acc != null && _transaction.output > acc.maxInboundLiquidity;
+  }
+
+  bool _isBalanceTooHigh(AccountModel acc) {
+    return _isSetupFeeRequired(acc) &&
+        _transaction.output > _fundResponse.maxAllowedDeposit;
+  }
+
+  bool _isBalanceTooLow(AccountModel acc) {
+    return _isSetupFeeRequired(acc) &&
+        _transaction.output < _fundResponse.minAllowedDeposit;
+  }
+
+  bool _isReserveMet(acc) {
+    return !_isSetupFeeRequired(acc) ||
+        _receiveAmount >= _fundResponse.requiredReserve;
+  }
+
+  Widget _buildFormBody(
+    ThemeData themeData,
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16.0, 0.0, 16.0, 10.0),
+        child: Scrollbar(
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SpendCodeFormField(
+                  context: context,
+                  texts: texts,
+                  focusNode: _spendCodeFocusNode,
+                  controller: _spendCodeController,
+                  style: theme.FieldTextStyle.textStyle,
+                  validatorFn: (code) {
+                    if (_incorrectCodes.contains(code)) {
+                      return texts.satscard_spend_code_incorrect_code_hint;
+                    }
+                    return null;
+                  },
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 24, bottom: 24),
+                  child: FeeChooser(
+                    economyFee: _feeOptions[0],
+                    regularFee: _feeOptions[1],
+                    priorityFee: _feeOptions[2],
+                    selectedIndex: _selectedFeeIndex,
+                    onSelect: (index) => setState(() {
+                      _selectedFeeIndex = index;
+                      if (_spendCodeFocusNode.hasFocus) {
+                        _spendCodeFocusNode.unfocus();
+                      }
+                    }),
+                  ),
+                ),
+                Container(
+                  decoration: BoxDecoration(
+                    borderRadius: const BorderRadius.all(Radius.circular(5.0)),
+                    border: Border.all(
+                      color: themeData.colorScheme.onSurface.withOpacity(0.4),
+                    ),
+                  ),
+                  child: ListView(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: [
+                      ..._buildSweepSummary(
+                        context,
+                        themeData,
+                        texts,
+                        acc,
+                        lsp,
+                      ).where((w) => w != null).toList()
+                    ],
+                  ),
+                ),
+                _buildWarningBox(texts, acc, lsp)
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
   }
 
   List<Widget> _buildSweepSummary(
@@ -377,107 +496,5 @@ class SweepSlotPageState extends State<SweepSlotPage> {
         ),
       ],
     );
-  }
-
-  Widget _buildLoaderBody(ThemeData themeData, String title) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: CircularProgress(
-            size: 64,
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            color: themeData.progressIndicatorTheme.color,
-            title: title,
-          ),
-        ),
-      ],
-    );
-  }
-
-  void _requestDepositAddress() {
-    _fundResponse = null;
-
-    final addFundsAction = AddFundsInfo(true, false);
-    _addFundsBloc.addFundRequestSink.add(addFundsAction);
-    _addFundsBloc.addFundResponseStream
-        .handleError((e) => _recentError =
-            context.texts().satscard_sweep_error_deposit_address(e.toString()))
-        .listen((fundResponse) {
-      if (mounted) {
-        // Now we can construct our unsigned transactions
-        _requestUnsignedTransactions(fundResponse.address);
-
-        setState(() {
-          _fundResponse = fundResponse;
-        });
-      }
-    });
-  }
-
-  void _requestUnsignedTransactions(String depositAddress) {
-    _createResponse = null;
-
-    final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
-    _satscardBloc.actionsSink.add(action);
-    action.future.then((result) {
-      if (mounted) {
-        setState(() {
-          _createResponse = result;
-          _feeOptions = List<FeeOption>.generate(
-            _createResponse.txs.length,
-            (i) => FeeOption(
-              _createResponse.txs[i].fees.toInt(),
-              _createResponse.txs[i].targetConfirmations,
-            ),
-          );
-        });
-      }
-    }).catchError((e) => _recentError = _recentError =
-        context.texts().satscard_sweep_error_create_transactions(e.toString()));
-  }
-
-  String _getLoaderText(
-    BreezTranslations texts,
-    AccountModel acc,
-    LSPStatus lsp,
-  ) {
-    if (acc == null) {
-      return texts.satscard_balance_awaiting_account_label;
-    } else if (lsp == null) {
-      return texts.satscard_sweep_awaiting_lsp_label;
-    } else if (_fundResponse == null) {
-      return texts.satscard_sweep_awaiting_deposit_label;
-    } else if (_feeOptions == null || _createResponse == null) {
-      return texts.satscard_sweep_awaiting_fees_label;
-    }
-
-    return null;
-  }
-
-  bool _isSetupFeeRequired(AccountModel acc) {
-    return acc != null && _transaction.output > acc.maxInboundLiquidity;
-  }
-
-  bool _isBalanceTooHigh(AccountModel acc) {
-    return _isSetupFeeRequired(acc) &&
-        _transaction.output > _fundResponse.maxAllowedDeposit;
-  }
-
-  bool _isBalanceTooLow(AccountModel acc) {
-    return _isSetupFeeRequired(acc) &&
-        _transaction.output < _fundResponse.minAllowedDeposit;
-  }
-
-  bool _isReserveMet(acc) {
-    return !_isSetupFeeRequired(acc) ||
-        _receiveAmount >= _fundResponse.requiredReserve;
-  }
-
-  bool _canFundChannel(AccountModel acc) {
-    return acc != null &&
-        !_isBalanceTooHigh(acc) &&
-        !_isBalanceTooLow(acc) &&
-        _isReserveMet(acc);
   }
 }

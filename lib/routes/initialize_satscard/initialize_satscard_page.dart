@@ -5,7 +5,6 @@ import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
-import 'package:breez/bloc/satscard/satscard_model.dart';
 import 'package:breez/bloc/satscard/satscard_op_status.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -55,20 +54,16 @@ class InitializeSatscardPage extends StatelessWidget {
             onPressed: () {
               if (_formKey.currentState.validate()) {
                 final bloc = AppBlocsProvider.of<SatscardBloc>(context);
-                final request = InitializeSlotModel(_card,
-                    _spendCodeController.text, _chainCodeController.text);
-                bloc.actionsSink.add(InitializeSlot(request));
-                showDialog(
-                        useRootNavigator: false,
-                        barrierDismissible: false,
-                        context: context,
-                        builder: (_) =>
-                            SatscardOperationDialog(bloc, _card.ident))
+                final action = InitializeSlot(_card, _spendCodeController.text,
+                    _chainCodeController.text);
+                bloc.actionsSink.add(action);
+
+                showSatscardOperationDialog(context, bloc, _card.ident)
                     .then((result) {
                   if (result is SatscardOpStatusBadAuth) {
-                    _incorrectCodes.add(request.cvcCode);
+                    _incorrectCodes.add(action.spendCode);
                     _formKey.currentState.validate();
-                  } else if (result is SatscardOpStatusSlotInitialized) {
+                  } else if (result is SatscardOpStatusSuccess) {
                     Navigator.of(context).pushReplacementNamed(
                         "/satscard_balance",
                         result: false,
