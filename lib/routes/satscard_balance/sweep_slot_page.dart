@@ -69,10 +69,10 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    _recentError = "";
     _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     _addressInfo = widget.getAddressInfo();
+    _recentError = "";
 
     // We need a deposit address before we can do anything
     _requestDepositAddress();
@@ -222,6 +222,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
         _requestUnsignedTransactions(fundResponse.address);
 
         setState(() {
+          _recentError = "";
           _fundResponse = fundResponse;
         });
       }
@@ -236,6 +237,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     action.future.then((result) {
       if (mounted) {
         setState(() {
+          _recentError = "";
           _createResponse = result;
           _feeOptions = List<FeeOption>.generate(
             _createResponse.txs.length,
