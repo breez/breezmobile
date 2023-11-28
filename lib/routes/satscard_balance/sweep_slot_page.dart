@@ -116,7 +116,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     child: SingleButtonBottomBar(
                       stickToBottom: false,
                       text: _getBottomButtonText(texts, acc),
-                      onPressed: isLoading ? null : () => _onButtonPressed(acc),
+                      onPressed: isLoading ? null : () => _onBottomButtonPressed(acc),
                     ),
                   ),
             appBar: AppBar(
@@ -141,21 +141,11 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     );
   }
 
-  String _getBottomButtonText(BreezTranslations texts, AccountModel acc) {
-    if (_recentError.isNotEmpty) {
-      return texts.satscard_balance_button_retry_label;
-    }
-    if (!_canFundChannel(acc)) {
-      return texts.satscard_sweep_button_cancel_label;
-    }
-    return texts.satscard_sweep_button_confirm_label;
-  }
-
   String _getLoaderText(
-    BreezTranslations texts,
-    AccountModel acc,
-    LSPStatus lsp,
-  ) {
+      BreezTranslations texts,
+      AccountModel acc,
+      LSPStatus lsp,
+      ) {
     if (acc == null) {
       return texts.satscard_balance_awaiting_account_label;
     } else if (lsp == null) {
@@ -169,7 +159,17 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     return null;
   }
 
-  void _onButtonPressed(AccountModel acc) {
+  String _getBottomButtonText(BreezTranslations texts, AccountModel acc) {
+    if (_recentError.isNotEmpty) {
+      return texts.satscard_balance_button_retry_label;
+    }
+    if (!_canFundChannel(acc)) {
+      return texts.satscard_sweep_button_cancel_label;
+    }
+    return texts.satscard_sweep_button_confirm_label;
+  }
+
+  void _onBottomButtonPressed(AccountModel acc) {
     // Handle error retrying
     if (_recentError.isNotEmpty) {
       if (_fundResponse == null) {
@@ -186,7 +186,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     }
     // Handle re-confirmation
     Uint8List cachedKey = widget.getCachedPrivateKey();
-    if (cachedKey.isNotEmpty) {
+    if (cachedKey != null && cachedKey.isNotEmpty) {
       widget.onUnsealed(_transaction, cachedKey);
       return;
     }
