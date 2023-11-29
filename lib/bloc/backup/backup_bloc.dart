@@ -626,7 +626,7 @@ class BackupBloc with AsyncActionsHandler {
       _log.info("Backup Now requested: $action");
       bool signInNeeded = _backupServiceNeedLoginController.value;
       final backupProviderName =
-          action.updateBackupSettings.settings.backupProvider.displayName;
+          action.updateBackupSettings.settings.backupProvider?.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
       _log.info("Does backup service need relogin $signInNeeded");

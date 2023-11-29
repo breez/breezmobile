@@ -51,7 +51,7 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
 
           final backupSettings = snapshot.data;
           bool isRemoteServer = (backupSettings != null &&
-              backupSettings.backupProvider.isRemoteServer);
+              backupSettings.backupProvider?.isRemoteServer == true);
 
           return AlertDialog(
             titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
@@ -189,7 +189,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    bool isRemoteServer = widget.backupSettings.backupProvider?.isRemoteServer;
+    bool isRemoteServer = widget.backupSettings?.backupProvider?.isRemoteServer == true;
 
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
@@ -207,7 +207,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
 
         return TextButton(
           onPressed: () async {
-            final currentProvider = widget.backupSettings.backupProvider;
+            final currentProvider = widget.backupSettings?.backupProvider;
 
             /// Trigger backup before prompting the user to select a backup provider
             /// unless there was an authentication failure on previous backup attempt.
