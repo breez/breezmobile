@@ -37,7 +37,7 @@ class _BackupProviderTileState extends State<BackupProviderTile> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     final texts = context.texts();
-    final currentProvider = widget.backupSettings.backupProvider;
+    final currentProvider = widget.backupSettings?.backupProvider;
 
     return ListTile(
       title: AutoSizeText(

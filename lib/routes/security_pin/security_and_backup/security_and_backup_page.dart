@@ -170,7 +170,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
 
                   final backupSettings = backupSnapshot.data;
                   final isRemoteServer = (backupSettings != null &&
-                      backupSettings.backupProvider.isRemoteServer);
+                      backupSettings.backupProvider?.isRemoteServer == true);
 
                   return ListView(
                     children: [
@@ -319,7 +319,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
   }
 
   Future _handleSignInException(SignInFailedException e) async {
-    if (e.provider.isICloud) {
+    if (e.provider?.isICloud == true) {
       final texts = context.texts();
       final themeData = Theme.of(context);
 
@@ -331,7 +331,7 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
           style: themeData.dialogTheme.contentTextStyle,
         ),
       );
-    } else if (e.provider.isGDrive) {
+    } else if (e.provider?.isGDrive == true) {
       showFlushbar(
         context,
         message: "Failed to sign into Google Drive.",

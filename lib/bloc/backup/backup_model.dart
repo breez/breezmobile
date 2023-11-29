@@ -179,7 +179,7 @@ class BackupSettings {
   int get hashCode =>
       promptOnError.hashCode ^
       backupKeyType.hashCode ^
-      backupProvider.hashCode ^
+      (backupProvider?.hashCode ?? 1) ^
       remoteServerAuthData.hashCode;
 
   @override
