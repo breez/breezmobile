@@ -945,6 +945,17 @@ class BreezBridge {
     }).then((res) => CreateSlotSweepResponse()..mergeFromBuffer(res ?? []));
   }
 
+  Future<TransactionDetails> signSlotSweepTransaction(AddressInfo info,
+      RawSlotSweepTransaction transaction, Uint8List privateKey) {
+    var request = SignSlotSweepRequest()
+      ..addressInfo = info
+      ..transaction = transaction
+      ..privateKey = privateKey;
+    return _invokeMethodWhenReady(
+            "signSlotSweepTransaction", {"argument": request.writeToBuffer()})
+        .then((res) => TransactionDetails()..mergeFromBuffer(res ?? []));
+  }
+
   Future _invokeMethodWhenReady(String methodName, [dynamic arguments]) {
     if (methodName != "log") {
       _log.info("before invoking method $methodName");

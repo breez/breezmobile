@@ -31,7 +31,7 @@ class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
   final Slot _slot;
   final Function() onBack;
-  final Function(UnsignedTransaction, Uint8List) onUnsealed;
+  final Function(RawSlotSweepTransaction, Uint8List) onUnsealed;
   final AddressInfo Function() getAddressInfo;
   final Uint8List Function() getCachedPrivateKey;
 
@@ -63,8 +63,14 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   int _selectedFeeIndex = 1;
   String _recentError = "";
 
-  UnsignedTransaction get _transaction =>
+  RawSlotSweepTransaction get _transaction =>
       _createResponse != null ? _createResponse.txs[_selectedFeeIndex] : null;
+
+  void _setError(String errorMessage) {
+    if (context.mounted) {
+      setState(() => _recentError = errorMessage);
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -116,7 +122,8 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     child: SingleButtonBottomBar(
                       stickToBottom: false,
                       text: _getBottomButtonText(texts, acc),
-                      onPressed: isLoading ? null : () => _onBottomButtonPressed(acc),
+                      onPressed:
+                          isLoading ? null : () => _onBottomButtonPressed(acc),
                     ),
                   ),
             appBar: AppBar(
@@ -131,7 +138,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
               title: Text(texts.satscard_sweep_title(widget._slot.index + 1)),
             ),
             body: _recentError.isNotEmpty
-                ? _buildErrorBody(themeData, texts)
+                ? buildErrorBody(themeData, _recentError)
                 : isLoading
                     ? buildLoaderBody(themeData, loaderText)
                     : _buildFormBody(themeData, texts, acc, lsp),
@@ -142,10 +149,10 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   }
 
   String _getLoaderText(
-      BreezTranslations texts,
-      AccountModel acc,
-      LSPStatus lsp,
-      ) {
+    BreezTranslations texts,
+    AccountModel acc,
+    LSPStatus lsp,
+  ) {
     if (acc == null) {
       return texts.satscard_balance_awaiting_account_label;
     } else if (lsp == null) {
@@ -175,7 +182,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
       if (_fundResponse == null) {
         _requestDepositAddress();
       } else if (_createResponse == null) {
-        _requestUnsignedTransactions(_fundResponse.address);
+        _requestRawSlotSweepTransactions(_fundResponse.address);
       }
       return;
     }
@@ -209,28 +216,33 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   }
 
   void _requestDepositAddress() {
-    _fundResponse = null;
+    setState(() {
+      _fundResponse = null;
+      _recentError = "";
+    });
 
     final addFundsAction = AddFundsInfo(true, false);
     _addFundsBloc.addFundRequestSink.add(addFundsAction);
     _addFundsBloc.addFundResponseStream
-        .handleError((e) => _recentError =
-            context.texts().satscard_sweep_error_deposit_address(e.toString()))
+        .handleError((e) => _setError(
+            context.texts().satscard_sweep_error_deposit_address(e.toString())))
         .listen((fundResponse) {
       if (mounted) {
         // Now we can construct our unsigned transactions
         _requestUnsignedTransactions(fundResponse.address);
 
         setState(() {
-          _recentError = "";
           _fundResponse = fundResponse;
         });
       }
     });
   }
 
-  void _requestUnsignedTransactions(String depositAddress) {
-    _createResponse = null;
+  void _requestRawSlotSweepTransactions(String depositAddress) {
+    setState(() {
+      _createResponse = null;
+      _recentError = "";
+    });
 
     final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
     _satscardBloc.actionsSink.add(action);
@@ -248,8 +260,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
           );
         });
       }
-    }).catchError((e) => _recentError = _recentError =
-        context.texts().satscard_sweep_error_create_transactions(e.toString()));
+    }).catchError((e) => _setError(context
+        .texts()
+        .satscard_sweep_error_create_transactions(e.toString())));
   }
 
   bool _canFundChannel(AccountModel acc) {
@@ -476,27 +489,5 @@ class SweepSlotPageState extends State<SweepSlotPage> {
       );
     }
     return const SizedBox.shrink();
-  }
-
-  Widget _buildErrorBody(ThemeData themeData, BreezTranslations texts) {
-    return Stack(
-      children: <Widget>[
-        Positioned.fill(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              WarningBox(
-                child: Text(
-                  _recentError,
-                  style: themeData.textTheme.titleLarge,
-                  textAlign: TextAlign.left,
-                ),
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
   }
 }

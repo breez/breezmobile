@@ -36,6 +36,7 @@ class SatscardBloc with AsyncActionsHandler {
       GetAddressInfo: _getAddressInfo,
       GetFeeRates: _getFeeRates,
       InitializeSlot: _initializeSlot,
+      SignSlotSweepTransaction: _signSlotSweepTransaction,
       UnsealSlot: _unsealSlot,
     });
     listenActions();
@@ -125,6 +126,14 @@ class SatscardBloc with AsyncActionsHandler {
       });
     };
     action.resolve(true);
+  }
+
+  Future<void> _signSlotSweepTransaction(
+      SignSlotSweepTransaction action) async {
+    return _breezLib
+        .signSlotSweepTransaction(
+            action.addressInfo, action.transaction, action.privateKey)
+        .then((value) => action.resolve(value));
   }
 
   Future<void> _unsealSlot(UnsealSlot action) async {

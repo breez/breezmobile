@@ -6403,8 +6403,8 @@ class CreateSlotSweepRequest extends $pb.GeneratedMessage {
   void clearRecipient() => clearField(2);
 }
 
-class UnsignedTransaction extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'UnsignedTransaction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+class RawSlotSweepTransaction extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RawSlotSweepTransaction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
     ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tx', $pb.PbFieldType.OY)
     ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'input')
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'output')
@@ -6414,8 +6414,8 @@ class UnsignedTransaction extends $pb.GeneratedMessage {
     ..hasRequiredFields = false
   ;
 
-  UnsignedTransaction._() : super();
-  factory UnsignedTransaction({
+  RawSlotSweepTransaction._() : super();
+  factory RawSlotSweepTransaction({
     $core.List<$core.int>? tx,
     $fixnum.Int64? input,
     $fixnum.Int64? output,
@@ -6444,26 +6444,26 @@ class UnsignedTransaction extends $pb.GeneratedMessage {
     }
     return _result;
   }
-  factory UnsignedTransaction.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory UnsignedTransaction.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  factory RawSlotSweepTransaction.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RawSlotSweepTransaction.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
   'Will be removed in next major version')
-  UnsignedTransaction clone() => UnsignedTransaction()..mergeFromMessage(this);
+  RawSlotSweepTransaction clone() => RawSlotSweepTransaction()..mergeFromMessage(this);
   @$core.Deprecated(
   'Using this can add significant overhead to your binary. '
   'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
   'Will be removed in next major version')
-  UnsignedTransaction copyWith(void Function(UnsignedTransaction) updates) => super.copyWith((message) => updates(message as UnsignedTransaction)) as UnsignedTransaction; // ignore: deprecated_member_use
+  RawSlotSweepTransaction copyWith(void Function(RawSlotSweepTransaction) updates) => super.copyWith((message) => updates(message as RawSlotSweepTransaction)) as RawSlotSweepTransaction; // ignore: deprecated_member_use
   $pb.BuilderInfo get info_ => _i;
   @$core.pragma('dart2js:noInline')
-  static UnsignedTransaction create() => UnsignedTransaction._();
-  UnsignedTransaction createEmptyInstance() => create();
-  static $pb.PbList<UnsignedTransaction> createRepeated() => $pb.PbList<UnsignedTransaction>();
+  static RawSlotSweepTransaction create() => RawSlotSweepTransaction._();
+  RawSlotSweepTransaction createEmptyInstance() => create();
+  static $pb.PbList<RawSlotSweepTransaction> createRepeated() => $pb.PbList<RawSlotSweepTransaction>();
   @$core.pragma('dart2js:noInline')
-  static UnsignedTransaction getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<UnsignedTransaction>(create);
-  static UnsignedTransaction? _defaultInstance;
+  static RawSlotSweepTransaction getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RawSlotSweepTransaction>(create);
+  static RawSlotSweepTransaction? _defaultInstance;
 
   @$pb.TagNumber(1)
   $core.List<$core.int> get tx => $_getN(0);
@@ -6522,13 +6522,13 @@ class UnsignedTransaction extends $pb.GeneratedMessage {
 
 class CreateSlotSweepResponse extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CreateSlotSweepResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..pc<UnsignedTransaction>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txs', $pb.PbFieldType.PM, subBuilder: UnsignedTransaction.create)
+    ..pc<RawSlotSweepTransaction>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txs', $pb.PbFieldType.PM, subBuilder: RawSlotSweepTransaction.create)
     ..hasRequiredFields = false
   ;
 
   CreateSlotSweepResponse._() : super();
   factory CreateSlotSweepResponse({
-    $core.Iterable<UnsignedTransaction>? txs,
+    $core.Iterable<RawSlotSweepTransaction>? txs,
   }) {
     final _result = create();
     if (txs != null) {
@@ -6558,6 +6558,85 @@ class CreateSlotSweepResponse extends $pb.GeneratedMessage {
   static CreateSlotSweepResponse? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.List<UnsignedTransaction> get txs => $_getList(0);
+  $core.List<RawSlotSweepTransaction> get txs => $_getList(0);
+}
+
+class SignSlotSweepRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SignSlotSweepRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOM<AddressInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'addressInfo', protoName: 'addressInfo', subBuilder: AddressInfo.create)
+    ..aOM<RawSlotSweepTransaction>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'transaction', subBuilder: RawSlotSweepTransaction.create)
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'privateKey', $pb.PbFieldType.OY, protoName: 'privateKey')
+    ..hasRequiredFields = false
+  ;
+
+  SignSlotSweepRequest._() : super();
+  factory SignSlotSweepRequest({
+    AddressInfo? addressInfo,
+    RawSlotSweepTransaction? transaction,
+    $core.List<$core.int>? privateKey,
+  }) {
+    final _result = create();
+    if (addressInfo != null) {
+      _result.addressInfo = addressInfo;
+    }
+    if (transaction != null) {
+      _result.transaction = transaction;
+    }
+    if (privateKey != null) {
+      _result.privateKey = privateKey;
+    }
+    return _result;
+  }
+  factory SignSlotSweepRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SignSlotSweepRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SignSlotSweepRequest clone() => SignSlotSweepRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SignSlotSweepRequest copyWith(void Function(SignSlotSweepRequest) updates) => super.copyWith((message) => updates(message as SignSlotSweepRequest)) as SignSlotSweepRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SignSlotSweepRequest create() => SignSlotSweepRequest._();
+  SignSlotSweepRequest createEmptyInstance() => create();
+  static $pb.PbList<SignSlotSweepRequest> createRepeated() => $pb.PbList<SignSlotSweepRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SignSlotSweepRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignSlotSweepRequest>(create);
+  static SignSlotSweepRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  AddressInfo get addressInfo => $_getN(0);
+  @$pb.TagNumber(1)
+  set addressInfo(AddressInfo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAddressInfo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAddressInfo() => clearField(1);
+  @$pb.TagNumber(1)
+  AddressInfo ensureAddressInfo() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  RawSlotSweepTransaction get transaction => $_getN(1);
+  @$pb.TagNumber(2)
+  set transaction(RawSlotSweepTransaction v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTransaction() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTransaction() => clearField(2);
+  @$pb.TagNumber(2)
+  RawSlotSweepTransaction ensureTransaction() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get privateKey => $_getN(2);
+  @$pb.TagNumber(3)
+  set privateKey($core.List<$core.int> v) { $_setBytes(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPrivateKey() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPrivateKey() => clearField(3);
 }
 

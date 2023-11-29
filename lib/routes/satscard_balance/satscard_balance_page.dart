@@ -10,6 +10,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/flushbar.dart';
+import 'package:breez/widgets/warning_box.dart';
 import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +28,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
   final _pageController = PageController();
 
   AddressInfo _recentAddressInfo;
-  UnsignedTransaction _selectedTransaction;
+  RawSlotSweepTransaction _selectedTransaction;
   Uint8List _slotPrivateKey;
 
   @override
@@ -82,6 +83,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
               // TODO: Report success
               bool here = true;
             },
+            getAddressInfo: () => _recentAddressInfo,
             getPrivateKey: () => _slotPrivateKey,
             getTransaction: () => _selectedTransaction,
           ),
@@ -89,6 +91,28 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
       ),
     );
   }
+}
+
+Widget buildErrorBody(ThemeData themeData, String content) {
+  return Stack(
+    children: <Widget>[
+      Positioned.fill(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            WarningBox(
+              child: Text(
+                content,
+                style: themeData.textTheme.titleLarge,
+                textAlign: TextAlign.left,
+              ),
+            ),
+          ],
+        ),
+      ),
+    ],
+  );
 }
 
 Widget buildLoaderBody(ThemeData themeData, String title) {
