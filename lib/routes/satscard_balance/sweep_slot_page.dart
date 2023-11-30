@@ -229,7 +229,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
         .listen((fundResponse) {
       if (mounted) {
         // Now we can construct our unsigned transactions
-        _requestUnsignedTransactions(fundResponse.address);
+        _requestRawSlotSweepTransactions(fundResponse.address);
 
         setState(() {
           _fundResponse = fundResponse;
