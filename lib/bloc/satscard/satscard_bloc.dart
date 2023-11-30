@@ -47,7 +47,8 @@ class SatscardBloc with AsyncActionsHandler {
     _nfc.onSatscardTag = (tag) async {
       try {
         _log.info("Attempting to read Satscard with the following tag: $tag");
-        final card = await Satscard.fromTransport(NfcManagerTransport(tag));
+        final transport = NfcManagerTransport(tag);
+        final card = await Satscard.fromTransport(transport);
         if (card.isUsedUp) {
           _log.info("Found Satscard with no unused slots: $card");
           _detectedController.add(DetectedSatscardStatus.usedUp(card));

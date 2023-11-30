@@ -1,7 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
-import 'package:breez/routes/satscard_balance/broadcast_transaction.dart';
+import 'package:breez/routes/satscard_balance/broadcast_slot_sweep_transaction.dart';
 import 'package:breez/routes/satscard_balance/slot_balance_page.dart';
 import 'package:breez/routes/satscard_balance/sweep_slot_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
@@ -74,14 +74,13 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
             getAddressInfo: () => _recentAddressInfo,
             getCachedPrivateKey: () => _slotPrivateKey,
           ),
-          BroadcastTransactionPage(
+          BroadcastSlotSweepTransactionPage(
             onBack: () => _pageController.previousPage(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             ),
             onDone: () {
-              // TODO: Report success
-              bool here = true;
+              Navigator.of(context).pop();
             },
             getAddressInfo: () => _recentAddressInfo,
             getPrivateKey: () => _slotPrivateKey,
