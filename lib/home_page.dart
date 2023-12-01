@@ -538,19 +538,11 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       Navigator.popUntil(context, (route) => route.settings.name == "/");
       final texts = context.texts();
       final themeData = Theme.of(context);
-
-      if (status is DetectedUsedUpSatscardStatus) {
-        promptMessage(
-          context,
-          texts.satscard_used_up_prompt_title,
-          Text(
-            texts.satscard_used_up_prompt_body,
-            style: themeData.dialogTheme.contentTextStyle,
-          ),
-        );
+      if (_handleSatscardErrors(themeData, texts, status)) {
         return;
       }
 
+      // Disable listening until we finish operating on the detected card
       widget.satscardBloc.actionsSink.add(DisableListening());
       Future future;
       if (status is DetectedSweepableSatscardStatus) {
@@ -558,15 +550,40 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       } else if (status is DetectedUnusedSatscardStatus) {
         future = _handleUnusedSatscard(themeData, texts, status.card);
       }
+
+      // Pages may choose to enable listening themselves at a later pointer.
+      // E.g. InitializeSatscardPage upon successful slot initialization
       await future.then((result) {
-        // Pages may choose to enable listening themselves at a later pointer.
-        // E.g. InitializeSatscardPage upon successful slot initialization
         final shouldEnableListening = result == null || result == true;
         if (shouldEnableListening) {
           widget.satscardBloc.actionsSink.add(EnableListening());
         }
       });
     });
+  }
+
+  bool _handleSatscardErrors(
+    ThemeData themeData,
+    BreezTranslations texts,
+    DetectedSatscardStatus status,
+  ) {
+    void showPrompt(String title, String body) => promptMessage(context, title,
+        Text(body, style: themeData.dialogTheme.contentTextStyle));
+
+    if (status is DetectedNoSatscardStatus) {
+      showPrompt(texts.satscard_error_nfc_title, texts.satscard_error_nfc_body);
+      return true;
+    } else if (status is DetectedInvalidSatscardStatus) {
+      showPrompt(texts.satscard_error_invalid_title,
+          texts.satscard_error_invalid_body(status.message));
+      return true;
+    }
+    if (status is DetectedUsedUpSatscardStatus) {
+      showPrompt(texts.satscard_error_used_up_title,
+          texts.satscard_error_used_up_body);
+      return true;
+    }
+    return false;
   }
 
   Future _handleSweepableSatscard(Satscard card, Slot slot) =>

@@ -11,7 +11,21 @@ abstract class DetectedSatscardStatus {
 
   factory DetectedSatscardStatus.usedUp(Satscard card) =>
       DetectedUsedUpSatscardStatus(card);
+
+  factory DetectedSatscardStatus.nfcError() =>
+      DetectedNoSatscardStatus();
+
+  factory DetectedSatscardStatus.unknownError(String message) =>
+      DetectedInvalidSatscardStatus(message);
 }
+
+class DetectedInvalidSatscardStatus extends DetectedSatscardStatus {
+  final String message;
+
+  DetectedInvalidSatscardStatus(this.message);
+}
+
+class DetectedNoSatscardStatus extends DetectedSatscardStatus {}
 
 class DetectedSweepableSatscardStatus extends DetectedSatscardStatus {
   final Satscard card;

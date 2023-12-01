@@ -42,6 +42,12 @@ class SatscardBloc with AsyncActionsHandler {
     listenActions();
   }
 
+  @override
+  Future dispose() async {
+    await _detectedController.close();
+    await _operationController.close();
+  }
+
   void _listenSatscards() {
     _log.info("_listenSatscards() registered with NFCService");
     _nfc.onSatscardTag = (tag) async {
@@ -75,14 +81,19 @@ class SatscardBloc with AsyncActionsHandler {
       } on NfcCommunicationException catch (e) {
         _log.warning(
             "Reading a satscard failed due to a communication error: $e");
+        _detectedController.add(DetectedSatscardStatus.nfcError());
       } catch (e, s) {
         _log.severe("Reading a satscard failed with an unexpected error", e, s);
+        _detectedController
+            .add(DetectedSatscardStatus.unknownError(e.toString()));
       }
     };
   }
 
   Future<void> _createSlotSweepTransactions(
       CreateSlotSweepTransactions action) async {
+    _log.info(
+        "_createSlotSweepTransaction() called for ${action.slotInfo.address} to ${action.recipient}");
     return _breezLib
         .createSlotSweepTransactions(action.slotInfo, action.recipient)
         .then((result) => action.resolve(result));
@@ -102,12 +113,14 @@ class SatscardBloc with AsyncActionsHandler {
   }
 
   Future<void> _getAddressInfo(GetAddressInfo action) async {
+    _log.info("_getAddressInfo() called for: ${action.address}");
     return _breezLib
         .getMempoolAddressInfo(action.address)
         .then((result) => action.resolve(result));
   }
 
   Future<void> _getFeeRates(GetFeeRates action) async {
+    _log.info("_getFeeRates() called}");
     return _breezLib
         .getMempoolRecommendedFees()
         .then((result) => action.resolve(result));
@@ -131,6 +144,8 @@ class SatscardBloc with AsyncActionsHandler {
 
   Future<void> _signSlotSweepTransaction(
       SignSlotSweepTransaction action) async {
+    _log.info(
+        "_signSlotSweepTransaction() called for ${action.addressInfo.address} with a balance of ${action.addressInfo.confirmedBalance} sats");
     return _breezLib
         .signSlotSweepTransaction(
             action.addressInfo, action.transaction, action.privateKey)
@@ -179,7 +194,7 @@ class SatscardBloc with AsyncActionsHandler {
       _operationController.add(SatscardOpStatus.inProgress());
       await func(card, activeSlot, transport);
     } on NfcCommunicationException catch (e) {
-      _log.warning("Slot operation fail due to a communication error: $e");
+      _log.warning("Slot operation failed due to a communication error: $e");
       _operationController.add(SatscardOpStatus.nfcError());
     } on TapProtoException catch (e, s) {
       _log.severe("Slot operation failed due to a protocol error", e, s);
@@ -230,11 +245,5 @@ class SatscardBloc with AsyncActionsHandler {
       }
     }
     return card.authDelay;
-  }
-
-  @override
-  Future dispose() async {
-    await _detectedController.close();
-    await _operationController.close();
   }
 }
