@@ -208,6 +208,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
           _formKey.currentState.validate();
         }
         if (result is SatscardOpStatusSuccess) {
+          if (_spendCodeFocusNode.hasFocus) {
+            _spendCodeFocusNode.unfocus();
+          }
           widget.onUnsealed(_transaction, result.slot.privkey);
         }
       });
