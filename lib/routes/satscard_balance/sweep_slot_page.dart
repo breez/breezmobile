@@ -371,18 +371,13 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     AccountModel acc,
     LSPStatus lsp,
   ) {
-    final formattedBalance = acc.currency.format(_transaction.input);
-    final formattedReceive = acc.currency.format(_receiveAmount);
     final minFont = MinFontSize(context);
     return [
       buildSlotPageTextTile(
         context,
         minFont,
         titleText: texts.satscard_sweep_balance_label,
-        trailingText: acc.fiatCurrency == null
-            ? texts.satscard_balance_value_no_fiat(formattedBalance)
-            : texts.satscard_balance_value_with_fiat(
-                formattedBalance, acc.fiatCurrency.format(_transaction.input)),
+        trailingText: formatBalanceValue(texts, acc, _transaction.input),
         trailingColor: themeData.colorScheme.error,
       ),
       buildSlotPageTextTile(
@@ -409,10 +404,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
         context,
         minFont,
         titleText: texts.satscard_sweep_receive_label,
-        trailingText: acc.fiatCurrency == null
-            ? texts.satscard_balance_value_no_fiat(formattedReceive)
-            : texts.satscard_balance_value_with_fiat(
-                formattedReceive, acc.fiatCurrency.format(_receiveAmount)),
+        trailingText: formatBalanceValue(texts, acc, _receiveAmount),
         trailingColor: themeData.colorScheme.error,
       ),
       !_isBalanceTooHigh(acc)

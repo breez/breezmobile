@@ -165,31 +165,26 @@ class SlotBalancePageState extends State<SlotBalancePage> {
     MinFontSize minFont,
     AccountModel acc,
   ) {
-    ListTile build({String title, Int64 sats, Color color}) {
-      final formatted = acc.currency.format(sats);
-      final translated = acc.fiatCurrency == null
-          ? texts.satscard_balance_value_no_fiat(formatted)
-          : texts.satscard_balance_value_with_fiat(
-              formatted, acc.fiatCurrency.format(sats));
-
-      return buildSlotPageTextTile(context, minFont,
-          titleText: title, trailingText: translated, trailingColor: color);
-    }
-
-    final confirmedWidget = build(
-      title: texts.satscard_balance_confirmed_label,
-      sats: _addressInfo.confirmedBalance,
-      color: themeData.colorScheme.error,
+    final confirmedWidget = buildSlotPageTextTile(
+      context,
+      minFont,
+      titleText: texts.satscard_balance_confirmed_label,
+      trailingText:
+          formatBalanceValue(texts, acc, _addressInfo.confirmedBalance),
+      trailingColor: themeData.colorScheme.error,
     );
 
     // Only show unconfirmed balance we have one
     if (_addressInfo.unconfirmedBalance != 0) {
       return [
         confirmedWidget,
-        build(
-          title: texts.satscard_balance_unconfirmed_label,
-          sats: _addressInfo.unconfirmedBalance,
-          color: Colors.white.withOpacity(0.4),
+        buildSlotPageTextTile(
+          context,
+          minFont,
+          titleText: texts.satscard_balance_unconfirmed_label,
+          trailingText:
+              formatBalanceValue(texts, acc, _addressInfo.unconfirmedBalance),
+          trailingColor: Colors.white.withOpacity(0.4),
         ),
       ];
     }

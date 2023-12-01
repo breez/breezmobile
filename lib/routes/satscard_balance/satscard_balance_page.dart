@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:breez/bloc/account/account_model.dart';
 import 'package:breez/routes/satscard_balance/broadcast_slot_sweep_transaction.dart';
 import 'package:breez/routes/satscard_balance/slot_balance_page.dart';
 import 'package:breez/routes/satscard_balance/sweep_slot_page.dart';
@@ -11,7 +12,9 @@ import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/circular_progress.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/warning_box.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:cktap_protocol/cktapcard.dart';
+import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class SatscardBalancePage extends StatefulWidget {
@@ -168,4 +171,18 @@ ListTile buildSlotPageTextTile(
             child: trailing,
           ),
   );
+}
+
+String formatBalanceValue(
+    BreezTranslations texts, AccountModel acc, Int64 sats) {
+  if (acc == null) {
+    return sats.toString();
+  }
+  final satsString = acc.currency.format(sats);
+  if (acc.fiatCurrency == null || sats <= 0) {
+    return texts.satscard_balance_value_no_fiat(satsString);
+  } else {
+    final fiat = acc.fiatCurrency.format(sats);
+    return texts.satscard_balance_value_with_fiat(satsString, fiat);
+  }
 }
