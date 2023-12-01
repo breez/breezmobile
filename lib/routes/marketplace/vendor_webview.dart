@@ -16,15 +16,10 @@ import 'package:webview_flutter_android/webview_flutter_android.dart';
 import 'webln_handlers.dart';
 
 class VendorWebViewPage extends StatefulWidget {
-  final AccountBloc accountBloc;
   final String _url;
   final String _title;
 
-  const VendorWebViewPage(
-    this.accountBloc,
-    this._url,
-    this._title,
-  );
+  const VendorWebViewPage(this._url, this._title);
 
   @override
   State<StatefulWidget> createState() {
@@ -34,6 +29,7 @@ class VendorWebViewPage extends StatefulWidget {
 
 class VendorWebViewPageState extends State<VendorWebViewPage> {
   WebLNHandlers _weblnHandlers;
+  AccountBloc _accountBloc;
   InvoiceBloc _invoiceBloc;
   bool _isInit = false;
   NostrEventHandler _nostrEventHandler;
@@ -43,8 +39,9 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   @override
   void didChangeDependencies() {
     if (!_isInit) {
+      _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
-      _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
+      _weblnHandlers = WebLNHandlers(context, _accountBloc, _invoiceBloc);
       _webViewController = setWebViewController(
         url: widget._url,
         onPageFinished: _onPageFinished,

@@ -6,7 +6,8 @@
     "displayName": "LN Markets",
     "url": "https://lnmarkets.com/login/breez",
     "endpointURI": "https://api.lnmarkets.com/v1/lnurl/auth",
-    "responseID": "lnurl"
+    "responseID": "lnurl",
+    "webLN": true
   },
   "Wavlake": {
     "url": "http://player.wavlake.com/"
@@ -21,7 +22,8 @@
     "displayName": "The Bitcoin Company",
     "url": "https://app.thebitcoincompany.com",
     "endpointURI": "https://api.thebitcoincompany.com/auth/auth-lnurl?flatResponse=true",
-    "responseID": "lnurl"
+    "responseID": "lnurl",
+    "webLN": true
   },
   "Azteco": {
     "url": "https://azte.co/bitcoin-vouchers/breez"
@@ -52,6 +54,7 @@
   "Kollider": {
     "url": "https://light.kollider.xyz/auth/login",
     "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
-    "onlyShowLogo" : false
+    "onlyShowLogo" : false,
+    "webLN": true
   }
 }

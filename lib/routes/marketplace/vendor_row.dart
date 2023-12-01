@@ -1,6 +1,4 @@
 import 'package:breez/bloc/account/account_bloc.dart';
-import 'package:breez/bloc/blocs_provider.dart';
-import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/lnurl_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
@@ -21,7 +19,6 @@ class VendorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     Color vendorFgColor =
         theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ??
             Colors.transparent;
@@ -57,15 +54,8 @@ class VendorRow extends StatelessWidget {
           if (defaultTargetPlatform == TargetPlatform.iOS) {
             try {
               var url = _vendor.url;
-              if (_vendor.id == "lnmarkets" || _vendor.id == "Kollider") {
-                final endpointURI = _vendor.id == "lnmarkets"
-                    ? Uri.https("api.lnmarkets.com", "v1/lnurl/auth")
-                    : Uri.https(
-                        "api.kollider.xyz", "v1/auth/external/lnurl_auth");
-                var responseID =
-                    _vendor.id == "lnmarkets" ? "lnurl" : "lnurl_auth";
-                var jwtToken = await handleLNUrlAuth(
-                    context, _vendor, endpointURI, lnurlBloc, responseID);
+              if (_vendor.webLN) {
+                var jwtToken = await handleLNUrlAuth(context, vendor: _vendor);
                 url = "$url?token=$jwtToken";
               }
               launchUrl(Uri.parse(url));
@@ -79,17 +69,14 @@ class VendorRow extends StatelessWidget {
           Navigator.push(context, FadeInRoute(
             builder: (_) {
               if (_vendor.endpointURI != null) {
-                var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
                 return LNURLWebViewPage(
-                  accountBloc: accountBloc,
                   vendorModel: _vendor,
-                  lnurlBloc: lnurlBloc,
-                  endpointURI: Uri.tryParse(_vendor.endpointURI),
-                  responseID: _vendor.responseID,
                 );
               }
               return VendorWebViewPage(
-                  accountBloc, _vendor.url, _vendor.displayName);
+                _vendor.url,
+                _vendor.displayName,
+              );
             },
           ));
         },
@@ -128,8 +115,10 @@ class VendorRow extends StatelessWidget {
       return <Widget>[
         vendorLogo,
         const Padding(padding: EdgeInsets.only(left: 8.0)),
-        Text(_vendor.displayName,
-            style: theme.vendorTitleStyle.copyWith(color: vendorTextColor)),
+        Text(
+          _vendor.displayName,
+          style: theme.vendorTitleStyle.copyWith(color: vendorTextColor),
+        ),
       ];
     }
   }

@@ -17,6 +17,7 @@ class VendorModel {
   final bool onlyShowLogo;
   final String endpointURI;
   final String responseID;
+  final bool webLN;
 
   const VendorModel(
     this.id,
@@ -25,6 +26,7 @@ class VendorModel {
     this.onlyShowLogo,
     this.endpointURI,
     this.responseID,
+    this.webLN,
   });
 
   String get logo => 'src/icon/vendors/${id.toLowerCase()}_logo_lg.png';
@@ -39,5 +41,6 @@ class VendorModel {
           responseID: json["endpointURI"] != null && json["responseID"] != null
               ? json["responseID"]
               : "lnurl_auth",
+          webLN: json["webLN"] ?? false,
         );
 }
