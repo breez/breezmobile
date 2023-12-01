@@ -3,6 +3,7 @@ import 'package:breez/bloc/marketplace/vendor_model.dart';
 import 'package:breez/routes/marketplace/lnurl_auth.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/error_dialog.dart';
+import 'package:breez/widgets/loader.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -49,61 +50,66 @@ class VendorRow extends StatelessWidget {
         : Container();
 
     final vendorCard = GestureDetector(
-        onTap: () async {
-          // iOS only
-          if (defaultTargetPlatform == TargetPlatform.iOS) {
-            try {
-              var url = _vendor.url;
-              if (_vendor.webLN) {
-                var jwtToken = await handleLNUrlAuth(context, vendor: _vendor);
-                url = "$url?token=$jwtToken";
-              }
-              launchUrl(Uri.parse(url));
-            } catch (err) {
-              promptError(context, "Error", Text(err.toString()));
+      onTap: () async {
+        // iOS only
+        if (defaultTargetPlatform == TargetPlatform.iOS) {
+          final navigator = Navigator.of(context);
+          var loaderRoute = createLoaderRoute(context);
+          try {
+            navigator.push(loaderRoute);
+            var url = _vendor.url;
+            if (_vendor.webLN) {
+              var jwtToken = await handleLNUrlAuth(context, vendor: _vendor);
+              url = "$url?token=$jwtToken";
             }
-            return;
+            launchUrl(Uri.parse(url));
+          } catch (err) {
+            promptError(context, "Error", Text(err.toString()));
+          } finally {
+            if (loaderRoute.isActive) {
+              navigator.removeRoute(loaderRoute);
+            }
           }
+          return;
+        }
 
-          // non iOS
-          Navigator.push(context, FadeInRoute(
-            builder: (_) {
-              if (_vendor.endpointURI != null) {
-                return LNURLWebViewPage(
-                  vendorModel: _vendor,
-                );
-              }
-              return VendorWebViewPage(
-                _vendor.url,
-                _vendor.displayName,
-              );
-            },
-          ));
-        },
-        child: Container(
-          margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
-          constraints: const BoxConstraints.expand(),
-          decoration: BoxDecoration(
-              color: vendorBgColor,
-              boxShadow: [
-                BoxShadow(
-                  color: theme.BreezColors.grey[600],
-                  blurRadius: 8.0,
-                )
-              ],
-              border: Border.all(
-                  color: vendorBgColor == Colors.white
-                      ? Theme.of(context).highlightColor
-                      : Colors.transparent,
-                  style: BorderStyle.solid,
-                  width: 1.0),
-              borderRadius: BorderRadius.circular(14.0)),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: _buildLogo(vendorLogo, vendorTextColor),
+        // non iOS
+        Navigator.push(
+          context,
+          FadeInRoute(
+            builder: (_) => (_vendor.endpointURI != null)
+                ? LNURLWebViewPage(vendorModel: _vendor)
+                : VendorWebViewPage(_vendor.url, _vendor.displayName),
           ),
-        ));
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.fromLTRB(32.0, 8.0, 32.0, 8.0),
+        constraints: const BoxConstraints.expand(),
+        decoration: BoxDecoration(
+          color: vendorBgColor,
+          boxShadow: [
+            BoxShadow(
+              color: theme.BreezColors.grey[600],
+              blurRadius: 8.0,
+            )
+          ],
+          border: Border.all(
+            color: vendorBgColor == Colors.white
+                ? Theme.of(context).highlightColor
+                : Colors.transparent,
+            style: BorderStyle.solid,
+            width: 1.0,
+          ),
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: _buildLogo(vendorLogo, vendorTextColor),
+        ),
+      ),
+    );
 
     return vendorCard;
   }
