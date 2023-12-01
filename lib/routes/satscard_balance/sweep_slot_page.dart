@@ -111,9 +111,11 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                   1000000;
               _lspFee = lspMinFee > lspPropFee ? lspMinFee : lspPropFee;
               _receiveAmount -= _lspFee;
+              if (_receiveAmount < 0) {
+                _receiveAmount = Int64(0);
+              }
             }
           }
-
           return Scaffold(
             bottomNavigationBar: isLoading
                 ? null
@@ -170,7 +172,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     if (_recentError.isNotEmpty) {
       return texts.satscard_balance_button_retry_label;
     }
-    if (!_canFundChannel(acc)) {
+    if (!_canFundChannel(acc) || _receiveAmount == 0) {
       return texts.satscard_sweep_button_cancel_label;
     }
     return texts.satscard_sweep_button_confirm_label;
@@ -187,7 +189,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
       return;
     }
     // Handle cancel
-    if (!_canFundChannel(acc)) {
+    if (!_canFundChannel(acc) || _receiveAmount == 0) {
       widget.onBack();
       return;
     }
