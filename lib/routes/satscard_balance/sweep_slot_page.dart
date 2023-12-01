@@ -16,6 +16,7 @@ import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/satscard/satscard_operation_dialog.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
@@ -124,8 +125,10 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     child: SingleButtonBottomBar(
                       stickToBottom: false,
                       text: _getBottomButtonText(texts, acc),
-                      onPressed:
-                          isLoading ? null : () => _onBottomButtonPressed(acc),
+                      onPressed: isLoading
+                          ? null
+                          : () => _onBottomButtonPressed(
+                              context, texts, themeData, acc),
                     ),
                   ),
             appBar: AppBar(
@@ -178,7 +181,12 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     return texts.satscard_sweep_button_confirm_label;
   }
 
-  void _onBottomButtonPressed(AccountModel acc) {
+  Future<void> _onBottomButtonPressed(
+    BuildContext context,
+    BreezTranslations texts,
+    ThemeData themeData,
+    AccountModel acc,
+  ) async {
     // Handle error retrying
     if (_recentError.isNotEmpty) {
       if (_fundResponse == null) {
@@ -201,22 +209,38 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     }
     // Handle unseal
     if (_formKey.currentState.validate()) {
-      final action = UnsealSlot(widget._card, _spendCodeController.text);
-      _satscardBloc.actionsSink.add(action);
-      showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
-          .then((result) {
-        if (result is SatscardOpStatusBadAuth) {
-          _incorrectCodes.add(action.spendCode);
-          _formKey.currentState.validate();
+      // Ensure the user doesn't accidentally pay excessive fees of > 10%
+      if ((_transaction.input - _receiveAmount) >= _transaction.input ~/ 10) {
+        final result = await promptAreYouSure(
+            context,
+            texts.satscard_sweep_high_fee_title,
+            Text(
+              texts.satscard_sweep_high_fee_body,
+              style: themeData.dialogTheme.contentTextStyle,
+            ));
+        if (!result) {
+          return;
         }
-        if (result is SatscardOpStatusSuccess) {
-          if (_spendCodeFocusNode.hasFocus) {
-            _spendCodeFocusNode.unfocus();
+      }
+
+      if (context.mounted) {
+        final action = UnsealSlot(widget._card, _spendCodeController.text);
+        _satscardBloc.actionsSink.add(action);
+        showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
+            .then((result) {
+          if (result is SatscardOpStatusBadAuth) {
+            _incorrectCodes.add(action.spendCode);
+            _formKey.currentState.validate();
           }
-          widget.onUnsealed(_transaction, result.slot.privkey);
-        }
-      });
-      return;
+          if (result is SatscardOpStatusSuccess) {
+            if (_spendCodeFocusNode.hasFocus) {
+              _spendCodeFocusNode.unfocus();
+            }
+            widget.onUnsealed(_transaction, result.slot.privkey);
+          }
+        });
+        return;
+      }
     }
   }
 

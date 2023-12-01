@@ -14,7 +14,6 @@ import 'package:breez/widgets/single_button_bottom_bar.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:cktap_protocol/cktapcard.dart';
-import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class SlotBalancePage extends StatefulWidget {
