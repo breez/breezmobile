@@ -64,7 +64,7 @@ class BroadcastSlotSweepTransactionPageState
               padding: const EdgeInsets.only(top: 10),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
-                text: texts.satscard_broadcast_retry_button,
+                text: texts.satscard_balance_button_retry_label,
                 onPressed: () => _requestBroadcastTransaction(),
               ),
             ),

@@ -6405,7 +6405,7 @@ class CreateSlotSweepRequest extends $pb.GeneratedMessage {
 
 class RawSlotSweepTransaction extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RawSlotSweepTransaction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'tx', $pb.PbFieldType.OY)
+    ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'msgTx', $pb.PbFieldType.OY, protoName: 'msgTx')
     ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'input')
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'output')
     ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vbytes', $pb.PbFieldType.OD)
@@ -6416,7 +6416,7 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
 
   RawSlotSweepTransaction._() : super();
   factory RawSlotSweepTransaction({
-    $core.List<$core.int>? tx,
+    $core.List<$core.int>? msgTx,
     $fixnum.Int64? input,
     $fixnum.Int64? output,
     $core.double? vbytes,
@@ -6424,8 +6424,8 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
     $core.int? targetConfirmations,
   }) {
     final _result = create();
-    if (tx != null) {
-      _result.tx = tx;
+    if (msgTx != null) {
+      _result.msgTx = msgTx;
     }
     if (input != null) {
       _result.input = input;
@@ -6466,13 +6466,13 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
   static RawSlotSweepTransaction? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.List<$core.int> get tx => $_getN(0);
+  $core.List<$core.int> get msgTx => $_getN(0);
   @$pb.TagNumber(1)
-  set tx($core.List<$core.int> v) { $_setBytes(0, v); }
+  set msgTx($core.List<$core.int> v) { $_setBytes(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasTx() => $_has(0);
+  $core.bool hasMsgTx() => $_has(0);
   @$pb.TagNumber(1)
-  void clearTx() => clearField(1);
+  void clearMsgTx() => clearField(1);
 
   @$pb.TagNumber(2)
   $fixnum.Int64 get input => $_getI64(1);
