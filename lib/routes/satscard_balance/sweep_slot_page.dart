@@ -209,38 +209,22 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     }
     // Handle unseal
     if (_formKey.currentState.validate()) {
-      // Ensure the user doesn't accidentally pay excessive fees of > 10%
-      if ((_transaction.input - _receiveAmount) >= _transaction.input ~/ 10) {
-        final result = await promptAreYouSure(
-            context,
-            texts.satscard_sweep_high_fee_title,
-            Text(
-              texts.satscard_sweep_high_fee_body,
-              style: themeData.dialogTheme.contentTextStyle,
-            ));
-        if (!result) {
-          return;
+      final action = UnsealSlot(widget._card, _spendCodeController.text);
+      _satscardBloc.actionsSink.add(action);
+      showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
+          .then((result) {
+        if (result is SatscardOpStatusBadAuth) {
+          _incorrectCodes.add(action.spendCode);
+          _formKey.currentState.validate();
         }
-      }
-
-      if (context.mounted) {
-        final action = UnsealSlot(widget._card, _spendCodeController.text);
-        _satscardBloc.actionsSink.add(action);
-        showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
-            .then((result) {
-          if (result is SatscardOpStatusBadAuth) {
-            _incorrectCodes.add(action.spendCode);
-            _formKey.currentState.validate();
+        if (result is SatscardOpStatusSuccess) {
+          if (_spendCodeFocusNode.hasFocus) {
+            _spendCodeFocusNode.unfocus();
           }
-          if (result is SatscardOpStatusSuccess) {
-            if (_spendCodeFocusNode.hasFocus) {
-              _spendCodeFocusNode.unfocus();
-            }
-            widget.onUnsealed(_transaction, result.slot.privkey);
-          }
-        });
-        return;
-      }
+          widget.onUnsealed(_transaction, result.slot.privkey);
+        }
+      });
+      return;
     }
   }
 
