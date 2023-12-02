@@ -11,12 +11,13 @@ import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/satscard/satscard_op_status.dart';
+import 'package:breez/routes/add_funds/conditional_deposit.dart';
 import 'package:breez/routes/satscard_balance/satscard_balance_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/min_font_size.dart';
+import 'package:breez/utils/stream_builder_extensions.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
-import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/satscard/satscard_operation_dialog.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
@@ -89,13 +90,15 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   Widget build(BuildContext context) {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
-    return StreamBuilder<AccountModel>(
-      stream: accountBloc.accountStream,
-      builder: (context, accSnapshot) => StreamBuilder<LSPStatus>(
-        stream: lspBloc.lspStatusStream,
-        builder: (context, lspSnapshot) {
+    final texts = context.texts();
+    final displayIndex = widget._slot.index + 1;
+    return ConditionalDeposit(
+      title: texts.satscard_sweep_title(displayIndex),
+      enabledChild: StreamBuilder2(
+        streamA: accountBloc.accountStream,
+        streamB: lspBloc.lspStatusStream,
+        builder: (context, accSnapshot, lspSnapshot) {
           final themeData = Theme.of(context);
-          final texts = context.texts();
           final acc = accSnapshot.data;
           final lsp = lspSnapshot.data;
           final loaderText = _getLoaderText(texts, acc, lsp);
@@ -140,7 +143,7 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                   widget.onBack();
                 },
               ),
-              title: Text(texts.satscard_sweep_title(widget._slot.index + 1)),
+              title: Text(texts.satscard_sweep_title(displayIndex)),
             ),
             body: _recentError.isNotEmpty
                 ? buildErrorBody(themeData, _recentError)
