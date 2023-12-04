@@ -82,9 +82,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
             ),
-            onDone: () {
-              Navigator.of(context).pop();
-            },
+            onDone: () => Navigator.of(context).pop(),
             getAddressInfo: () => _recentAddressInfo,
             getPrivateKey: () => _slotPrivateKey,
             getTransaction: () => _selectedTransaction,
@@ -103,13 +101,7 @@ Widget buildErrorBody(ThemeData themeData, String content) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            WarningBox(
-              child: Text(
-                content,
-                style: themeData.textTheme.titleLarge,
-                textAlign: TextAlign.left,
-              ),
-            ),
+            buildWarning(themeData, title: content),
           ],
         ),
       ),
@@ -121,15 +113,19 @@ Widget buildLoaderBody(ThemeData themeData, String title) {
   return Stack(
     children: <Widget>[
       Positioned.fill(
-        child: CircularProgress(
-          size: 64,
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          color: themeData.progressIndicatorTheme.color,
-          title: title,
-        ),
+        child: buildIndicator(themeData, title: title),
       ),
     ],
+  );
+}
+
+Widget buildIndicator(ThemeData themeData, {String title}) {
+  return CircularProgress(
+    size: 64,
+    mainAxisAlignment: MainAxisAlignment.center,
+    crossAxisAlignment: CrossAxisAlignment.center,
+    color: themeData.progressIndicatorTheme.color,
+    title: title,
   );
 }
 
@@ -170,6 +166,16 @@ ListTile buildSlotPageTextTile(
             },
             child: trailing,
           ),
+  );
+}
+
+Widget buildWarning(ThemeData themeData, {String title}) {
+  return WarningBox(
+    child: Text(
+      title,
+      style: themeData.textTheme.titleLarge,
+      textAlign: TextAlign.left,
+    ),
   );
 }
 
