@@ -40,45 +40,36 @@ class InitializeSatscardPage extends StatelessWidget {
     final texts = context.texts();
     return Scaffold(
       key: _scaffoldKey,
-      bottomNavigationBar: Padding(
-          padding: EdgeInsets.only(
-            bottom: Platform.isIOS &&
-                    (_spendCodeFocusNode.hasFocus ||
-                        _chainCodeFocusNode.hasFocus)
-                ? 40.0
-                : 0.0,
-          ),
-          child: SingleButtonBottomBar(
-            stickToBottom: true,
-            text: texts.satscard_initialize_button_label,
-            onPressed: () {
-              if (_formKey.currentState.validate()) {
-                final bloc = AppBlocsProvider.of<SatscardBloc>(context);
-                final action = InitializeSlot(_card, _spendCodeController.text,
-                    _chainCodeController.text);
-                bloc.actionsSink.add(action);
-
-                showSatscardOperationDialog(context, bloc, _card.ident)
-                    .then((result) {
-                  if (result is SatscardOpStatusBadAuth) {
-                    _incorrectCodes.add(action.spendCode);
-                    _formKey.currentState.validate();
-                  } else if (result is SatscardOpStatusSuccess) {
-                    Navigator.of(context).pushReplacementNamed(
-                        "/satscard_balance",
-                        result: false,
-                        arguments: {
-                          "card": result.card,
-                          "slot": result.slot
-                        }).then((_) => bloc.actionsSink.add(EnableListening()));
-                  }
-                });
-              }
-            },
-          )),
       appBar: AppBar(
         leading: const backBtn.BackButton(),
         title: Text(texts.satscard_initialize_title(_activeSlot)),
+      ),
+      bottomNavigationBar: SingleButtonBottomBar(
+        stickToBottom: true,
+        text: texts.satscard_initialize_button_label,
+        onPressed: () {
+          if (_formKey.currentState.validate()) {
+            final bloc = AppBlocsProvider.of<SatscardBloc>(context);
+            final action = InitializeSlot(
+                _card, _spendCodeController.text, _chainCodeController.text);
+            bloc.actionsSink.add(action);
+
+            showSatscardOperationDialog(context, bloc, _card.ident)
+                .then((result) {
+              if (result is SatscardOpStatusBadAuth) {
+                _incorrectCodes.add(action.spendCode);
+                _formKey.currentState.validate();
+              } else if (result is SatscardOpStatusSuccess) {
+                Navigator.of(context).pushReplacementNamed("/satscard_balance",
+                    result: false,
+                    arguments: {
+                      "card": result.card,
+                      "slot": result.slot
+                    }).then((_) => bloc.actionsSink.add(EnableListening()));
+              }
+            });
+          }
+        },
       ),
       body: Form(
         key: _formKey,
