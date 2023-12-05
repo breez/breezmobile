@@ -61,7 +61,6 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
           ),
           SweepSlotPage(
             widget._card,
-            widget._slot,
             onBack: () => _pageController.previousPage(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
@@ -93,7 +92,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
   }
 }
 
-Widget buildErrorBody(ThemeData themeData, String content) {
+Widget buildErrorBody(ThemeData themeData, String title) {
   return Stack(
     children: <Widget>[
       Positioned.fill(
@@ -101,7 +100,7 @@ Widget buildErrorBody(ThemeData themeData, String content) {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            buildWarning(themeData, title: content),
+            buildWarning(themeData, title: title),
           ],
         ),
       ),

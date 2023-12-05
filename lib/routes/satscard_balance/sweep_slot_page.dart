@@ -22,26 +22,25 @@ import 'package:breez/widgets/fee_chooser.dart';
 import 'package:breez/widgets/satscard/satscard_operation_dialog.dart';
 import 'package:breez/widgets/satscard/spend_code_field.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
-import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:cktap_protocol/cktapcard.dart';
+import 'package:collection/collection.dart';
 import 'package:fixnum/fixnum.dart';
 import 'package:flutter/material.dart';
 
 class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
-  final Slot _slot;
   final Function() onBack;
   final Function(RawSlotSweepTransaction, Uint8List) onUnsealed;
   final AddressInfo Function() getAddressInfo;
   final Uint8List Function() getCachedPrivateKey;
 
-  const SweepSlotPage(this._card, this._slot,
-      {this.onBack,
-      this.onUnsealed,
-      this.getAddressInfo,
-      this.getCachedPrivateKey});
+  const SweepSlotPage(this._card,
+      {@required this.onBack,
+      @required this.onUnsealed,
+      @required this.getAddressInfo,
+      @required this.getCachedPrivateKey});
 
   @override
   State<StatefulWidget> createState() => SweepSlotPageState();
@@ -57,22 +56,14 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   AddFundsBloc _addFundsBloc;
   SatscardBloc _satscardBloc;
   AddressInfo _addressInfo;
+  Future _transactionFuture;
+  Object _fundError;
   AddFundResponse _fundResponse;
   CreateSlotSweepResponse _createResponse;
-  List<FeeOption> _feeOptions;
-  Int64 _lspFee;
-  Int64 _receiveAmount;
   int _selectedFeeIndex = 1;
-  String _recentError = "";
 
   RawSlotSweepTransaction get _transaction =>
       _createResponse != null ? _createResponse.txs[_selectedFeeIndex] : null;
-
-  void _setError(String errorMessage) {
-    if (context.mounted) {
-      setState(() => _recentError = errorMessage);
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -80,9 +71,6 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     _satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     _addressInfo = widget.getAddressInfo();
-    _recentError = "";
-
-    // We need a deposit address before we can do anything
     _requestDepositAddress();
   }
 
@@ -91,228 +79,64 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final texts = context.texts();
-    final displayIndex = widget._slot.index + 1;
+    final displayIndex = widget._card.activeSlotIndex + 1;
     return ConditionalDeposit(
       title: texts.satscard_sweep_title(displayIndex),
-      enabledChild: StreamBuilder2(
-        streamA: accountBloc.accountStream,
-        streamB: lspBloc.lspStatusStream,
-        builder: (context, accSnapshot, lspSnapshot) {
-          final themeData = Theme.of(context);
-          final acc = accSnapshot.data;
-          final lsp = lspSnapshot.data;
-          final loaderText = _getLoaderText(texts, acc, lsp);
-          final isLoading = loaderText != null;
+      enabledChild: FutureBuilder(
+        future: _transactionFuture,
+        builder: (context, futureSnapshot) => StreamBuilder2(
+          streamA: accountBloc.accountStream,
+          streamB: lspBloc.lspStatusStream,
+          builder: (context, accSnapshot, lspSnapshot) {
+            _createResponse = futureSnapshot.data;
 
-          // Update fee/receive parameters so we can construct widgets correctly
-          if (!isLoading && _recentError.isEmpty) {
-            _receiveAmount = _transaction.output;
-            if (_isSetupFeeRequired(acc)) {
-              final lspMinFee =
-                  lsp.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000;
-              final lspPropFee = _transaction.output *
-                  lsp.currentLSP.cheapestOpeningFeeParams.proportional ~/
-                  1000000;
-              _lspFee = lspMinFee > lspPropFee ? lspMinFee : lspPropFee;
-              _receiveAmount -= _lspFee;
-              if (_receiveAmount < 0) {
-                _receiveAmount = Int64(0);
-              }
-            }
-          }
-          return Scaffold(
-            bottomNavigationBar: isLoading
-                ? null
-                : Padding(
-                    padding: const EdgeInsets.all(0),
-                    child: SingleButtonBottomBar(
-                      stickToBottom: false,
-                      text: _getBottomButtonText(texts, acc),
-                      onPressed: isLoading
-                          ? null
-                          : () => _onBottomButtonPressed(
-                              context, texts, themeData, acc),
-                    ),
-                  ),
-            appBar: AppBar(
-              leading: backBtn.BackButton(
-                onPressed: () {
-                  if (_spendCodeFocusNode.hasFocus) {
-                    _spendCodeFocusNode.unfocus();
-                  }
-                  widget.onBack();
-                },
+            // Handle logic separately
+            final texts = context.texts();
+            final info = _BuildInfo.create(
+              texts,
+              accSnapshot.data,
+              lspSnapshot.data,
+              _fundResponse,
+              _createResponse,
+              _selectedFeeIndex,
+              error: futureSnapshot.error ??
+                  _fundError ??
+                  lspSnapshot.error ??
+                  accSnapshot.error,
+            );
+
+            return Scaffold(
+              appBar: AppBar(
+                leading: backBtn.BackButton(
+                  onPressed: () {
+                    if (_spendCodeFocusNode.hasFocus) {
+                      _spendCodeFocusNode.unfocus();
+                    }
+                    widget.onBack();
+                  },
+                ),
+                title: Text(texts.satscard_sweep_title(displayIndex)),
               ),
-              title: Text(texts.satscard_sweep_title(displayIndex)),
-            ),
-            body: _recentError.isNotEmpty
-                ? buildErrorBody(themeData, _recentError)
-                : isLoading
-                    ? buildLoaderBody(themeData, loaderText)
-                    : _buildFormBody(themeData, texts, acc, lsp),
-          );
-        },
+              body: _buildBody(context, texts, accSnapshot.data, info),
+              bottomNavigationBar: _buildButton(context, texts, info),
+            );
+          },
+        ),
       ),
     );
   }
 
-  String _getLoaderText(
-    BreezTranslations texts,
-    AccountModel acc,
-    LSPStatus lsp,
-  ) {
-    if (acc == null) {
-      return texts.satscard_balance_awaiting_account_label;
-    } else if (lsp == null) {
-      return texts.satscard_sweep_awaiting_lsp_label;
-    } else if (_fundResponse == null) {
-      return texts.satscard_sweep_awaiting_deposit_label;
-    } else if (_feeOptions == null || _createResponse == null) {
-      return texts.satscard_sweep_awaiting_fees_label;
+  Widget _buildBody(BuildContext context, BreezTranslations texts,
+      AccountModel acc, _BuildInfo info) {
+    final feeOptions = _getFeeOptions();
+    final themeData = Theme.of(context);
+    final minFont = MinFontSize(context);
+
+    if (info.showError) {
+      return buildErrorBody(themeData, info.outText);
+    } else if (info.showLoader) {
+      return buildLoaderBody(themeData, info.outText);
     }
-
-    return null;
-  }
-
-  String _getBottomButtonText(BreezTranslations texts, AccountModel acc) {
-    if (_recentError.isNotEmpty) {
-      return texts.satscard_balance_button_retry_label;
-    }
-    if (!_canFundChannel(acc) || _receiveAmount == 0) {
-      return texts.satscard_sweep_button_cancel_label;
-    }
-    return texts.satscard_sweep_button_confirm_label;
-  }
-
-  Future<void> _onBottomButtonPressed(
-    BuildContext context,
-    BreezTranslations texts,
-    ThemeData themeData,
-    AccountModel acc,
-  ) async {
-    // Handle error retrying
-    if (_recentError.isNotEmpty) {
-      if (_fundResponse == null) {
-        _requestDepositAddress();
-      } else if (_createResponse == null) {
-        _requestRawSlotSweepTransactions(_fundResponse.address);
-      }
-      return;
-    }
-    // Handle cancel
-    if (!_canFundChannel(acc) || _receiveAmount == 0) {
-      widget.onBack();
-      return;
-    }
-    // Handle re-confirmation
-    Uint8List cachedKey = widget.getCachedPrivateKey();
-    if (cachedKey != null && cachedKey.isNotEmpty) {
-      widget.onUnsealed(_transaction, cachedKey);
-      return;
-    }
-    // Handle unseal
-    if (_formKey.currentState.validate()) {
-      final action = UnsealSlot(widget._card, _spendCodeController.text);
-      _satscardBloc.actionsSink.add(action);
-      showSatscardOperationDialog(context, _satscardBloc, widget._card.ident)
-          .then((result) {
-        if (result is SatscardOpStatusBadAuth) {
-          _incorrectCodes.add(action.spendCode);
-          _formKey.currentState.validate();
-        }
-        if (result is SatscardOpStatusSuccess) {
-          if (_spendCodeFocusNode.hasFocus) {
-            _spendCodeFocusNode.unfocus();
-          }
-          widget.onUnsealed(_transaction, result.slot.privkey);
-        }
-      });
-      return;
-    }
-  }
-
-  void _requestDepositAddress() {
-    setState(() {
-      _fundResponse = null;
-      _recentError = "";
-    });
-
-    final addFundsAction = AddFundsInfo(true, false);
-    _addFundsBloc.addFundRequestSink.add(addFundsAction);
-    _addFundsBloc.addFundResponseStream
-        .handleError((e) => _setError(
-            context.texts().satscard_sweep_error_deposit_address(e.toString())))
-        .listen((fundResponse) {
-      if (mounted) {
-        // Now we can construct our unsigned transactions
-        _requestRawSlotSweepTransactions(fundResponse.address);
-
-        setState(() {
-          _fundResponse = fundResponse;
-        });
-      }
-    });
-  }
-
-  void _requestRawSlotSweepTransactions(String depositAddress) {
-    setState(() {
-      _createResponse = null;
-      _recentError = "";
-    });
-
-    final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
-    _satscardBloc.actionsSink.add(action);
-    action.future.then((result) {
-      if (mounted) {
-        setState(() {
-          _recentError = "";
-          _createResponse = result;
-          _feeOptions = List<FeeOption>.generate(
-            _createResponse.txs.length,
-            (i) => FeeOption(
-              _createResponse.txs[i].fees.toInt(),
-              _createResponse.txs[i].targetConfirmations,
-            ),
-          );
-        });
-      }
-    }).catchError((e) => _setError(context
-        .texts()
-        .satscard_sweep_error_create_transactions(e.toString())));
-  }
-
-  bool _canFundChannel(AccountModel acc) {
-    return acc != null &&
-        !_isBalanceTooHigh(acc) &&
-        !_isBalanceTooLow(acc) &&
-        _isReserveMet(acc);
-  }
-
-  bool _isSetupFeeRequired(AccountModel acc) {
-    return acc != null && _transaction.output > acc.maxInboundLiquidity;
-  }
-
-  bool _isBalanceTooHigh(AccountModel acc) {
-    return _isSetupFeeRequired(acc) &&
-        _transaction.output > _fundResponse.maxAllowedDeposit;
-  }
-
-  bool _isBalanceTooLow(AccountModel acc) {
-    return _isSetupFeeRequired(acc) &&
-        _transaction.output < _fundResponse.minAllowedDeposit;
-  }
-
-  bool _isReserveMet(acc) {
-    return !_isSetupFeeRequired(acc) ||
-        _receiveAmount >= _fundResponse.requiredReserve;
-  }
-
-  Widget _buildFormBody(
-    ThemeData themeData,
-    BreezTranslations texts,
-    AccountModel acc,
-    LSPStatus lsp,
-  ) {
     return Form(
       key: _formKey,
       child: Padding(
@@ -338,9 +162,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                 Padding(
                   padding: const EdgeInsets.only(top: 24, bottom: 24),
                   child: FeeChooser(
-                    economyFee: _feeOptions[0],
-                    regularFee: _feeOptions[1],
-                    priorityFee: _feeOptions[2],
+                    economyFee: feeOptions[0],
+                    regularFee: feeOptions[1],
+                    priorityFee: feeOptions[2],
                     selectedIndex: _selectedFeeIndex,
                     onSelect: (index) => setState(() {
                       _selectedFeeIndex = index;
@@ -361,17 +185,66 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                     shrinkWrap: true,
                     physics: const NeverScrollableScrollPhysics(),
                     children: [
-                      ..._buildSweepSummary(
+                      buildSlotPageTextTile(
                         context,
-                        themeData,
-                        texts,
-                        acc,
-                        lsp,
-                      ).where((w) => w != null).toList()
-                    ],
+                        minFont,
+                        titleText: texts.satscard_sweep_balance_label,
+                        trailingText:
+                            formatBalanceValue(texts, acc, _transaction.input),
+                        trailingColor: themeData.colorScheme.error,
+                      ),
+                      buildSlotPageTextTile(
+                        context,
+                        minFont,
+                        titleText: texts.satscard_sweep_chain_fee_label,
+                        trailingText: texts.satscard_sweep_fee_value(
+                          acc.currency.format(_transaction.fees),
+                        ),
+                        titleColor: Colors.white.withOpacity(0.4),
+                        trailingColor: Colors.white.withOpacity(0.4),
+                      ),
+                      !info.willOpenChannel
+                          ? null
+                          : buildSlotPageTextTile(
+                              context,
+                              minFont,
+                              titleText: texts.satscard_sweep_lsp_fee_label,
+                              trailingText: texts.satscard_sweep_fee_value(
+                                acc.currency.format(info.lspFee),
+                              ),
+                              titleColor: Colors.white.withOpacity(0.4),
+                              trailingColor: Colors.white.withOpacity(0.4),
+                            ),
+                      buildSlotPageTextTile(
+                        context,
+                        minFont,
+                        titleText: texts.satscard_sweep_receive_label,
+                        trailingText:
+                            formatBalanceValue(texts, acc, info.receiveAmount),
+                        trailingColor: themeData.colorScheme.error,
+                      ),
+                      info.canSweep
+                          ? null
+                          : buildSlotPageTextTile(
+                              context,
+                              minFont,
+                              titleText: info.failureLabel,
+                              trailingText: formatBalanceValue(
+                                  texts, acc, info.failureAmount),
+                              trailingColor: themeData.colorScheme.error,
+                            ),
+                    ].whereNotNull().toList(),
                   ),
                 ),
-                _buildWarningBox(texts, acc, lsp)
+                info.outText.isEmpty
+                    ? const SizedBox.shrink()
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 12),
+                        child: buildWarning(
+                          themeData,
+                          title: info.outText,
+                        ),
+                      ),
               ],
             ),
           ),
@@ -380,122 +253,223 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     );
   }
 
-  List<Widget> _buildSweepSummary(
-    BuildContext context,
-    ThemeData themeData,
-    BreezTranslations texts,
-    AccountModel acc,
-    LSPStatus lsp,
-  ) {
-    final minFont = MinFontSize(context);
-    return [
-      buildSlotPageTextTile(
-        context,
-        minFont,
-        titleText: texts.satscard_sweep_balance_label,
-        trailingText: formatBalanceValue(texts, acc, _transaction.input),
-        trailingColor: themeData.colorScheme.error,
-      ),
-      buildSlotPageTextTile(
-        context,
-        minFont,
-        titleText: texts.satscard_sweep_chain_fee_label,
-        trailingText: texts
-            .satscard_sweep_fee_value(acc.currency.format(_transaction.fees)),
-        titleColor: Colors.white.withOpacity(0.4),
-        trailingColor: Colors.white.withOpacity(0.4),
-      ),
-      !_isSetupFeeRequired(acc)
-          ? null
-          : buildSlotPageTextTile(
+  Widget _buildButton(
+      BuildContext context, BreezTranslations texts, _BuildInfo info) {
+    String text = "";
+    Function() onPressed;
+
+    switch (info.buttonAction) {
+      case _ButtonAction.None:
+        return null;
+
+      case _ButtonAction.Cancel:
+        text = texts.satscard_sweep_button_cancel_label;
+        onPressed = widget.onBack;
+        break;
+
+      case _ButtonAction.Retry:
+        text = texts.satscard_balance_button_retry_label;
+        onPressed = () {
+          if (_fundResponse == null || _fundResponse.errorMessage.isNotEmpty) {
+            _requestDepositAddress();
+          } else {
+            _updateFundResponse(_fundResponse);
+          }
+        };
+        break;
+
+      case _ButtonAction.Sweep:
+        text = texts.satscard_sweep_button_confirm_label;
+        onPressed = () {
+          Uint8List cachedKey = widget.getCachedPrivateKey();
+          if (cachedKey != null && cachedKey.isNotEmpty) {
+            widget.onUnsealed(_transaction, cachedKey);
+            return;
+          }
+          if (_formKey.currentState.validate()) {
+            final action = UnsealSlot(widget._card, _spendCodeController.text);
+            _satscardBloc.actionsSink.add(action);
+            showSatscardOperationDialog(
               context,
-              minFont,
-              titleText: texts.satscard_sweep_lsp_fee_label,
-              trailingText:
-                  texts.satscard_sweep_fee_value(acc.currency.format(_lspFee)),
-              titleColor: Colors.white.withOpacity(0.4),
-              trailingColor: Colors.white.withOpacity(0.4),
-            ),
-      buildSlotPageTextTile(
-        context,
-        minFont,
-        titleText: texts.satscard_sweep_receive_label,
-        trailingText: formatBalanceValue(texts, acc, _receiveAmount),
-        trailingColor: themeData.colorScheme.error,
-      ),
-      !_isBalanceTooHigh(acc)
-          ? null
-          : buildSlotPageTextTile(
-              context,
-              minFont,
-              titleText: texts.satscard_sweep_balance_too_high_label,
-              trailingText: texts.satscard_balance_value_no_fiat(
-                  acc.currency.format(_fundResponse.maxAllowedDeposit)),
-              trailingColor: themeData.colorScheme.error,
-            ),
-      !_isBalanceTooLow(acc)
-          ? null
-          : buildSlotPageTextTile(
-              context,
-              minFont,
-              titleText: texts.satscard_sweep_balance_too_low_label,
-              trailingText: texts.satscard_balance_value_no_fiat(
-                  acc.currency.format(_fundResponse.minAllowedDeposit)),
-              trailingColor: themeData.colorScheme.error,
-            ),
-      _isReserveMet(acc)
-          ? null
-          : buildSlotPageTextTile(
-              context,
-              minFont,
-              titleText: texts.satscard_sweep_balance_reserve_not_met_label,
-              trailingText: texts.satscard_balance_value_no_fiat(
-                  acc.currency.format(_fundResponse.requiredReserve)),
-              trailingColor: themeData.colorScheme.error,
-            ),
-    ];
+              _satscardBloc,
+              widget._card.ident,
+            ).then((r) {
+              if (r is SatscardOpStatusBadAuth) {
+                _incorrectCodes.add(action.spendCode);
+                _formKey.currentState.validate();
+              }
+              if (r is SatscardOpStatusSuccess) {
+                if (_spendCodeFocusNode.hasFocus) {
+                  _spendCodeFocusNode.unfocus();
+                }
+                widget.onUnsealed(_transaction, r.slot.privkey);
+              }
+            });
+          }
+        };
+        break;
+    }
+    return SingleButtonBottomBar(
+      stickToBottom: false,
+      text: text,
+      onPressed: onPressed,
+    );
   }
 
-  Widget _buildWarningBox(
+  List<FeeOption> _getFeeOptions() {
+    if (_createResponse == null) {
+      return List<FeeOption>.empty();
+    }
+    return List<FeeOption>.generate(
+      _createResponse.txs.length,
+      (i) => FeeOption(
+        _createResponse.txs[i].fees.toInt(),
+        _createResponse.txs[i].targetConfirmations,
+      ),
+    );
+  }
+
+  void _requestDepositAddress() {
+    setState(() => _fundError = null);
+
+    final addFundsAction = AddFundsInfo(true, false);
+    _addFundsBloc.addFundRequestSink.add(addFundsAction);
+    _addFundsBloc.addFundResponseStream
+        .listen((response) => _updateFundResponse(response));
+    _addFundsBloc.addFundResponseStream
+        .handleError((e) => setState(() => _fundError = e));
+  }
+
+  Future _requestSlotSweepTransactions(String depositAddress) {
+    final action = CreateSlotSweepTransactions(_addressInfo, depositAddress);
+    _satscardBloc.actionsSink.add(action);
+    return action.future;
+  }
+
+  void _updateFundResponse(AddFundResponse response) {
+    setState(() {
+      _fundResponse = response;
+      if (_fundResponse == null || _fundResponse.errorMessage.isNotEmpty) {
+        _transactionFuture = null;
+      } else {
+        _transactionFuture = _requestSlotSweepTransactions(response.address);
+      }
+    });
+  }
+}
+
+enum _ButtonAction {
+  None,
+  Cancel,
+  Retry,
+  Sweep,
+}
+
+class _BuildInfo {
+  _ButtonAction buttonAction = _ButtonAction.None;
+  bool showError = false;
+  bool showLoader = false;
+  String outText = "";
+  Int64 receiveAmount = Int64.ZERO;
+  Int64 lspFee = Int64.ZERO;
+  String failureLabel = "";
+  Int64 failureAmount = Int64.ZERO;
+
+  bool get canSweep => failureLabel.isEmpty;
+  bool get willOpenChannel => lspFee > 0;
+
+  _BuildInfo.sweepable(this.outText, this.receiveAmount, this.lspFee)
+      : buttonAction = _ButtonAction.Sweep;
+
+  _BuildInfo.failure(this.outText, this.receiveAmount, this.lspFee,
+      this.failureLabel, this.failureAmount)
+      : buttonAction = _ButtonAction.Cancel;
+
+  _BuildInfo.error(this.outText)
+      : buttonAction = _ButtonAction.Retry,
+        showError = true;
+
+  _BuildInfo.loading(this.outText)
+      : buttonAction = _ButtonAction.None,
+        showLoader = true;
+
+  factory _BuildInfo.create(
     BreezTranslations texts,
     AccountModel acc,
     LSPStatus lsp,
-  ) {
-    if (_isSetupFeeRequired(acc)) {
-      final propFee =
+    AddFundResponse fund,
+    CreateSlotSweepResponse sweep,
+    int selectedTxIndex, {
+    Object error,
+  }) {
+    // Handle errors
+    if (error != null) {
+      return _BuildInfo.error(sweep == null
+          ? texts.satscard_sweep_error_create_transactions(error)
+          : texts.satscard_sweep_error_deposit_address(error));
+    } else if (fund != null && fund.errorMessage.isNotEmpty) {
+      return _BuildInfo.error(
+          texts.satscard_sweep_error_deposit_address(fund.errorMessage));
+    }
+
+    // Handle loading
+    if (acc == null) {
+      return _BuildInfo.loading(texts.satscard_balance_awaiting_account_label);
+    } else if (lsp == null) {
+      return _BuildInfo.loading(texts.satscard_sweep_awaiting_lsp_label);
+    } else if (fund == null) {
+      return _BuildInfo.loading(texts.satscard_sweep_awaiting_deposit_label);
+    } else if (sweep == null) {
+      return _BuildInfo.loading(texts.satscard_sweep_awaiting_fees_label);
+    }
+
+    // Figure out if we need a new channel
+    final liquidity = acc.connected ? acc.maxInboundLiquidity : Int64.ZERO;
+    final tx = sweep.txs[selectedTxIndex];
+    var receive = tx.output;
+    var lspFee = Int64.ZERO;
+    var outText = "";
+    if (liquidity < receive) {
+      final minFee = lsp.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000;
+      final propFee = tx.output *
+          lsp.currentLSP.cheapestOpeningFeeParams.proportional ~/
+          1000000;
+      lspFee = minFee > propFee ? minFee : propFee;
+      receive -= lspFee;
+
+      // Format our warning message
+      final sats = acc.currency.format(liquidity);
+      final fee = acc.currency.format(minFee);
+      final percent =
           (lsp.currentLSP.cheapestOpeningFeeParams.proportional / 10000)
               .toString();
-      final minFee = acc.currency
-          .format(lsp.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000);
-      final liquidity = acc.currency
-          .format(acc.connected ? acc.maxInboundLiquidity : Int64(0));
-
-      String contentText;
-      if (!_canFundChannel(acc)) {
-        contentText = texts.satscard_sweep_warning_not_valid;
-      } else if (!acc.connected || acc.maxInboundLiquidity == 0) {
-        contentText = texts.satscard_sweep_warning_lsp_fee_no_liquidity_label(
-            minFee, propFee);
-      } else {
-        contentText = texts.satscard_sweep_warning_lsp_fee_label(
-            minFee, propFee, liquidity);
-      }
-      return Padding(
-        padding: const EdgeInsets.only(top: 12),
-        child: WarningBox(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                contentText,
-                style: Theme.of(context).textTheme.titleLarge,
-                textAlign: TextAlign.left,
-              ),
-            ],
-          ),
-        ),
-      );
+      outText = acc.maxInboundLiquidity == 0
+          ? texts.satscard_sweep_warning_lsp_fee_no_liquidity_label(
+              fee, percent)
+          : texts.satscard_sweep_warning_lsp_fee_label(fee, percent, sats);
     }
-    return const SizedBox.shrink();
+
+    // Verify the sweep meets all the deposit conditions
+    final minimum =
+        fund.minAllowedDeposit > lspFee ? fund.minAllowedDeposit : lspFee;
+    if (tx.output < minimum) {
+      return _BuildInfo.failure(texts.satscard_sweep_warning_not_valid, receive,
+          lspFee, texts.satscard_sweep_balance_too_low_label, minimum);
+    } else if (tx.output > fund.maxAllowedDeposit) {
+      return _BuildInfo.failure(
+          texts.satscard_sweep_warning_not_valid,
+          receive,
+          lspFee,
+          texts.satscard_sweep_balance_too_high_label,
+          fund.maxAllowedDeposit);
+    } else if (receive < fund.requiredReserve) {
+      return _BuildInfo.failure(
+          texts.satscard_sweep_warning_not_valid,
+          receive,
+          lspFee,
+          texts.satscard_sweep_reserve_not_met_label,
+          fund.requiredReserve);
+    }
+    return _BuildInfo.sweepable(outText, receive, lspFee);
   }
 }
