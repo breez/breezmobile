@@ -38,7 +38,7 @@ class BroadcastSlotSweepTransactionPage extends StatefulWidget {
 class BroadcastSlotSweepTransactionPageState
     extends State<BroadcastSlotSweepTransactionPage> {
   TransactionDetails _signedTransaction;
-  Future _future;
+  Future<String> _future;
 
   @override
   void didChangeDependencies() {
@@ -56,6 +56,15 @@ class BroadcastSlotSweepTransactionPageState
           final showError = snapshot.hasError;
           final showDone = !showError && snapshot.hasData;
           return Scaffold(
+            appBar: AppBar(
+              title: Text(
+                texts.satscard_broadcast_title,
+                style: themeData.appBarTheme.titleTextStyle,
+              ),
+              leading: backBtn.BackButton(
+                onPressed: showDone ? widget.onDone : widget.onBack,
+              ),
+            ),
             bottomNavigationBar:
                 !snapshot.hasError || _signedTransaction == null
                     ? null
@@ -67,15 +76,6 @@ class BroadcastSlotSweepTransactionPageState
                           onPressed: () => _broadcastTransaction(context),
                         ),
                       ),
-            appBar: AppBar(
-              title: Text(
-                texts.satscard_broadcast_title,
-                style: themeData.appBarTheme.titleTextStyle,
-              ),
-              leading: backBtn.BackButton(
-                onPressed: showDone ? widget.onDone : widget.onBack,
-              ),
-            ),
             body: _buildBody(themeData, texts, snapshot, showError, showDone),
           );
         });
@@ -95,23 +95,26 @@ class BroadcastSlotSweepTransactionPageState
     }
 
     final txId = snapshot.data;
-    return Column(
-      mainAxisSize: MainAxisSize.max,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        LinkLauncher(
-          linkName: txId,
-          linkAddress: "https://blockstream.info/tx/$txId",
-          onCopy: () {
-            ServiceInjector().device.setClipboardText(txId);
-            showFlushbar(
-              context,
-              message: texts.add_funds_transaction_id_copied,
-              duration: const Duration(seconds: 3),
-            );
-          },
-        ),
-      ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          LinkLauncher(
+            linkName: txId,
+            linkAddress: "https://blockstream.info/tx/$txId",
+            onCopy: () {
+              ServiceInjector().device.setClipboardText(txId);
+              showFlushbar(
+                context,
+                message: texts.add_funds_transaction_id_copied,
+                duration: const Duration(seconds: 3),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 
@@ -156,7 +159,7 @@ class BroadcastSlotSweepTransactionPageState
         return action.future;
       }).then((_) {
         // Close the page automatically after a successful broadcast
-        Future.delayed(const Duration(seconds: 5), () {
+        Future.delayed(const Duration(seconds: 3), () {
           if (context.mounted) {
             widget.onDone();
           }

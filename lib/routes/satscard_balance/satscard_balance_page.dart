@@ -74,7 +74,13 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
               );
             },
             getAddressInfo: () => _recentAddressInfo,
-            getCachedPrivateKey: () => _slotPrivateKey,
+            getCachedPrivateKey: () {
+              // Allow for unsealed slots
+              if (_slotPrivateKey.isEmpty) {
+                return widget._slot.privkey;
+              }
+              return _slotPrivateKey;
+            },
           ),
           BroadcastSlotSweepTransactionPage(
             onBack: () => _pageController.previousPage(

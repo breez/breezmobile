@@ -117,8 +117,8 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                 ),
                 title: Text(texts.satscard_sweep_title(displayIndex)),
               ),
-              body: _buildBody(context, texts, accSnapshot.data, info),
               bottomNavigationBar: _buildButton(context, texts, info),
+              body: _buildBody(context, texts, accSnapshot.data, info),
             );
           },
         ),
