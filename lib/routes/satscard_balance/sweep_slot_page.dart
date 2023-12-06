@@ -343,8 +343,11 @@ class SweepSlotPageState extends State<SweepSlotPage> {
     _addFundsBloc.addFundRequestSink.add(addFundsAction);
     _addFundsBloc.addFundResponseStream
         .listen((response) => _updateFundResponse(response));
-    _addFundsBloc.addFundResponseStream
-        .handleError((e) => setState(() => _fundError = e));
+    _addFundsBloc.addFundResponseStream.handleError((e) {
+      if (context.mounted) {
+        setState(() => _fundError = e);
+      }
+    });
   }
 
   Future _requestSlotSweepTransactions(String depositAddress) {
@@ -354,6 +357,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
   }
 
   void _updateFundResponse(AddFundResponse response) {
+    if (!context.mounted) {
+      return;
+    }
     setState(() {
       _fundResponse = response;
       if (_fundResponse == null || _fundResponse.errorMessage.isNotEmpty) {
