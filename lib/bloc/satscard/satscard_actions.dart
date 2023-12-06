@@ -21,6 +21,14 @@ class GetAddressInfo extends AsyncAction {
   GetAddressInfo(this.address);
 }
 
+class GetSlot extends AsyncAction {
+  final Satscard satscard;
+  final int index;
+  final String spendCode;
+
+  GetSlot(this.satscard, this.index, this.spendCode);
+}
+
 class InitializeSlot extends AsyncAction {
   final Satscard satscard;
   final String spendCode;

@@ -34,6 +34,7 @@ class SatscardBloc with AsyncActionsHandler {
       DisableListening: _disableListening,
       EnableListening: _enableListening,
       GetAddressInfo: _getAddressInfo,
+      GetSlot: _getSlot,
       InitializeSlot: _initializeSlot,
       SignSlotSweepTransaction: _signSlotSweepTransaction,
       UnsealSlot: _unsealSlot,
@@ -116,6 +117,21 @@ class SatscardBloc with AsyncActionsHandler {
     return _breezLib
         .getAddressInfo(action.address)
         .then((result) => action.resolve(result));
+  }
+
+  Future<void> _getSlot(GetSlot action) async {
+    _log.info("getSlot() registered with NFCService");
+    _nfc.onSatscardTag = (tag) async {
+      await _performSatscardOperation(tag, action.satscard,
+          func: (card, activeSlot, transport) async {
+        _log.info("Getting slot ${action.index} of card ${card.ident}");
+
+        final slot = await card.getSlot(transport, action.index,
+            spendCode: action.spendCode);
+        _operationController.add(SatscardOpStatus.success(card, slot));
+      });
+    };
+    action.resolve(true);
   }
 
   Future<void> _initializeSlot(InitializeSlot action) async {
@@ -214,7 +230,7 @@ class SatscardBloc with AsyncActionsHandler {
       return null;
     }
     final activeSlot = await card.getActiveSlot();
-    if (activeSlot.status != expectedStatus) {
+    if (expectedStatus != null && activeSlot.status != expectedStatus) {
       _operationController.add(SatscardOpStatus.staleCard());
       return null;
     }

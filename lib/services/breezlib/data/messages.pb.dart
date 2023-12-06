@@ -6319,7 +6319,7 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
     ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'msgTx', $pb.PbFieldType.OY, protoName: 'msgTx')
     ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'input')
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'output')
-    ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vbytes', $pb.PbFieldType.OD)
+    ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vSize', $pb.PbFieldType.OD, protoName: 'vSize')
     ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fees')
     ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'targetConfirmations', $pb.PbFieldType.O3, protoName: 'targetConfirmations')
     ..hasRequiredFields = false
@@ -6330,7 +6330,7 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
     $core.List<$core.int>? msgTx,
     $fixnum.Int64? input,
     $fixnum.Int64? output,
-    $core.double? vbytes,
+    $core.double? vSize,
     $fixnum.Int64? fees,
     $core.int? targetConfirmations,
   }) {
@@ -6344,8 +6344,8 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
     if (output != null) {
       _result.output = output;
     }
-    if (vbytes != null) {
-      _result.vbytes = vbytes;
+    if (vSize != null) {
+      _result.vSize = vSize;
     }
     if (fees != null) {
       _result.fees = fees;
@@ -6404,13 +6404,13 @@ class RawSlotSweepTransaction extends $pb.GeneratedMessage {
   void clearOutput() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.double get vbytes => $_getN(3);
+  $core.double get vSize => $_getN(3);
   @$pb.TagNumber(4)
-  set vbytes($core.double v) { $_setDouble(3, v); }
+  set vSize($core.double v) { $_setDouble(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasVbytes() => $_has(3);
+  $core.bool hasVSize() => $_has(3);
   @$pb.TagNumber(4)
-  void clearVbytes() => clearField(4);
+  void clearVSize() => clearField(4);
 
   @$pb.TagNumber(5)
   $fixnum.Int64 get fees => $_getI64(4);

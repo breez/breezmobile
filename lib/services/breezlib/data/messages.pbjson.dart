@@ -1118,14 +1118,14 @@ const RawSlotSweepTransaction$json = const {
     const {'1': 'msgTx', '3': 1, '4': 1, '5': 12, '10': 'msgTx'},
     const {'1': 'input', '3': 2, '4': 1, '5': 3, '10': 'input'},
     const {'1': 'output', '3': 3, '4': 1, '5': 3, '10': 'output'},
-    const {'1': 'vbytes', '3': 4, '4': 1, '5': 1, '10': 'vbytes'},
+    const {'1': 'vSize', '3': 4, '4': 1, '5': 1, '10': 'vSize'},
     const {'1': 'fees', '3': 5, '4': 1, '5': 3, '10': 'fees'},
     const {'1': 'targetConfirmations', '3': 6, '4': 1, '5': 5, '10': 'targetConfirmations'},
   ],
 };
 
 /// Descriptor for `RawSlotSweepTransaction`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List rawSlotSweepTransactionDescriptor = $convert.base64Decode('ChdSYXdTbG90U3dlZXBUcmFuc2FjdGlvbhIUCgVtc2dUeBgBIAEoDFIFbXNnVHgSFAoFaW5wdXQYAiABKANSBWlucHV0EhYKBm91dHB1dBgDIAEoA1IGb3V0cHV0EhYKBnZieXRlcxgEIAEoAVIGdmJ5dGVzEhIKBGZlZXMYBSABKANSBGZlZXMSMAoTdGFyZ2V0Q29uZmlybWF0aW9ucxgGIAEoBVITdGFyZ2V0Q29uZmlybWF0aW9ucw==');
+final $typed_data.Uint8List rawSlotSweepTransactionDescriptor = $convert.base64Decode('ChdSYXdTbG90U3dlZXBUcmFuc2FjdGlvbhIUCgVtc2dUeBgBIAEoDFIFbXNnVHgSFAoFaW5wdXQYAiABKANSBWlucHV0EhYKBm91dHB1dBgDIAEoA1IGb3V0cHV0EhQKBXZTaXplGAQgASgBUgV2U2l6ZRISCgRmZWVzGAUgASgDUgRmZWVzEjAKE3RhcmdldENvbmZpcm1hdGlvbnMYBiABKAVSE3RhcmdldENvbmZpcm1hdGlvbnM=');
 @$core.Deprecated('Use createSlotSweepResponseDescriptor instead')
 const CreateSlotSweepResponse$json = const {
   '1': 'CreateSlotSweepResponse',

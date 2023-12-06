@@ -61,6 +61,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
           ),
           SweepSlotPage(
             widget._card,
+            widget._slot,
             onBack: () => _pageController.previousPage(
               duration: const Duration(milliseconds: 250),
               curve: Curves.easeInOut,
@@ -76,7 +77,7 @@ class SatscardBalancePageState extends State<SatscardBalancePage> {
             getAddressInfo: () => _recentAddressInfo,
             getCachedPrivateKey: () {
               // Allow for unsealed slots
-              if (_slotPrivateKey.isEmpty) {
+              if (_slotPrivateKey != null && _slotPrivateKey.isEmpty) {
                 return widget._slot.privkey;
               }
               return _slotPrivateKey;

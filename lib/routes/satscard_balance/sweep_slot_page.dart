@@ -31,12 +31,13 @@ import 'package:flutter/material.dart';
 
 class SweepSlotPage extends StatefulWidget {
   final Satscard _card;
+  final Slot _slot;
   final Function() onBack;
   final Function(RawSlotSweepTransaction, Uint8List) onUnsealed;
   final AddressInfo Function() getAddressInfo;
   final Uint8List Function() getCachedPrivateKey;
 
-  const SweepSlotPage(this._card,
+  const SweepSlotPage(this._card, this._slot,
       {@required this.onBack,
       @required this.onUnsealed,
       @required this.getAddressInfo,
@@ -287,15 +288,21 @@ class SweepSlotPageState extends State<SweepSlotPage> {
             return;
           }
           if (_formKey.currentState.validate()) {
-            final action = UnsealSlot(widget._card, _spendCodeController.text);
-            _satscardBloc.actionsSink.add(action);
+            final spendCode = _spendCodeController.text;
+            if (widget._slot.status == SlotStatus.sealed) {
+              _satscardBloc.actionsSink
+                  .add(UnsealSlot(widget._card, spendCode));
+            } else {
+              _satscardBloc.actionsSink
+                  .add(GetSlot(widget._card, widget._slot.index, spendCode));
+            }
             showSatscardOperationDialog(
               context,
               _satscardBloc,
               widget._card.ident,
             ).then((r) {
               if (r is SatscardOpStatusBadAuth) {
-                _incorrectCodes.add(action.spendCode);
+                _incorrectCodes.add(spendCode);
                 _formKey.currentState.validate();
               }
               if (r is SatscardOpStatusSuccess) {
