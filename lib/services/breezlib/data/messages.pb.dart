@@ -6070,7 +6070,8 @@ class Utxo extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txid')
     ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vout', $pb.PbFieldType.OU3)
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value')
-    ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
+    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pkScript', $pb.PbFieldType.OY, protoName: 'pkScript')
+    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
     ..hasRequiredFields = false
   ;
 
@@ -6079,6 +6080,7 @@ class Utxo extends $pb.GeneratedMessage {
     $core.String? txid,
     $core.int? vout,
     $fixnum.Int64? value,
+    $core.List<$core.int>? pkScript,
     $core.bool? isConfirmed,
   }) {
     final _result = create();
@@ -6090,6 +6092,9 @@ class Utxo extends $pb.GeneratedMessage {
     }
     if (value != null) {
       _result.value = value;
+    }
+    if (pkScript != null) {
+      _result.pkScript = pkScript;
     }
     if (isConfirmed != null) {
       _result.isConfirmed = isConfirmed;
@@ -6145,13 +6150,22 @@ class Utxo extends $pb.GeneratedMessage {
   void clearValue() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.bool get isConfirmed => $_getBF(3);
+  $core.List<$core.int> get pkScript => $_getN(3);
   @$pb.TagNumber(4)
-  set isConfirmed($core.bool v) { $_setBool(3, v); }
+  set pkScript($core.List<$core.int> v) { $_setBytes(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasIsConfirmed() => $_has(3);
+  $core.bool hasPkScript() => $_has(3);
   @$pb.TagNumber(4)
-  void clearIsConfirmed() => clearField(4);
+  void clearPkScript() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.bool get isConfirmed => $_getBF(4);
+  @$pb.TagNumber(5)
+  set isConfirmed($core.bool v) { $_setBool(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasIsConfirmed() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearIsConfirmed() => clearField(5);
 }
 
 class AddressInfo extends $pb.GeneratedMessage {
@@ -6235,109 +6249,6 @@ class AddressInfo extends $pb.GeneratedMessage {
 
   @$pb.TagNumber(4)
   $core.List<Utxo> get utxos => $_getList(3);
-}
-
-class MempoolFeeRates extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'MempoolFeeRates', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
-    ..aInt64(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fastest')
-    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'halfHour', protoName: 'halfHour')
-    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'hour')
-    ..aInt64(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'economy')
-    ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'minimum')
-    ..hasRequiredFields = false
-  ;
-
-  MempoolFeeRates._() : super();
-  factory MempoolFeeRates({
-    $fixnum.Int64? fastest,
-    $fixnum.Int64? halfHour,
-    $fixnum.Int64? hour,
-    $fixnum.Int64? economy,
-    $fixnum.Int64? minimum,
-  }) {
-    final _result = create();
-    if (fastest != null) {
-      _result.fastest = fastest;
-    }
-    if (halfHour != null) {
-      _result.halfHour = halfHour;
-    }
-    if (hour != null) {
-      _result.hour = hour;
-    }
-    if (economy != null) {
-      _result.economy = economy;
-    }
-    if (minimum != null) {
-      _result.minimum = minimum;
-    }
-    return _result;
-  }
-  factory MempoolFeeRates.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory MempoolFeeRates.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  MempoolFeeRates clone() => MempoolFeeRates()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  MempoolFeeRates copyWith(void Function(MempoolFeeRates) updates) => super.copyWith((message) => updates(message as MempoolFeeRates)) as MempoolFeeRates; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static MempoolFeeRates create() => MempoolFeeRates._();
-  MempoolFeeRates createEmptyInstance() => create();
-  static $pb.PbList<MempoolFeeRates> createRepeated() => $pb.PbList<MempoolFeeRates>();
-  @$core.pragma('dart2js:noInline')
-  static MempoolFeeRates getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<MempoolFeeRates>(create);
-  static MempoolFeeRates? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $fixnum.Int64 get fastest => $_getI64(0);
-  @$pb.TagNumber(1)
-  set fastest($fixnum.Int64 v) { $_setInt64(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasFastest() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearFastest() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $fixnum.Int64 get halfHour => $_getI64(1);
-  @$pb.TagNumber(2)
-  set halfHour($fixnum.Int64 v) { $_setInt64(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasHalfHour() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearHalfHour() => clearField(2);
-
-  @$pb.TagNumber(3)
-  $fixnum.Int64 get hour => $_getI64(2);
-  @$pb.TagNumber(3)
-  set hour($fixnum.Int64 v) { $_setInt64(2, v); }
-  @$pb.TagNumber(3)
-  $core.bool hasHour() => $_has(2);
-  @$pb.TagNumber(3)
-  void clearHour() => clearField(3);
-
-  @$pb.TagNumber(4)
-  $fixnum.Int64 get economy => $_getI64(3);
-  @$pb.TagNumber(4)
-  set economy($fixnum.Int64 v) { $_setInt64(3, v); }
-  @$pb.TagNumber(4)
-  $core.bool hasEconomy() => $_has(3);
-  @$pb.TagNumber(4)
-  void clearEconomy() => clearField(4);
-
-  @$pb.TagNumber(5)
-  $fixnum.Int64 get minimum => $_getI64(4);
-  @$pb.TagNumber(5)
-  set minimum($fixnum.Int64 v) { $_setInt64(4, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasMinimum() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearMinimum() => clearField(5);
 }
 
 class CreateSlotSweepRequest extends $pb.GeneratedMessage {

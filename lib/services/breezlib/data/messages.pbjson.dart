@@ -1080,12 +1080,13 @@ const Utxo$json = const {
     const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
     const {'1': 'vout', '3': 2, '4': 1, '5': 13, '10': 'vout'},
     const {'1': 'value', '3': 3, '4': 1, '5': 3, '10': 'value'},
-    const {'1': 'isConfirmed', '3': 4, '4': 1, '5': 8, '10': 'isConfirmed'},
+    const {'1': 'pkScript', '3': 4, '4': 1, '5': 12, '10': 'pkScript'},
+    const {'1': 'isConfirmed', '3': 5, '4': 1, '5': 8, '10': 'isConfirmed'},
   ],
 };
 
 /// Descriptor for `Utxo`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List utxoDescriptor = $convert.base64Decode('CgRVdHhvEhIKBHR4aWQYASABKAlSBHR4aWQSEgoEdm91dBgCIAEoDVIEdm91dBIUCgV2YWx1ZRgDIAEoA1IFdmFsdWUSIAoLaXNDb25maXJtZWQYBCABKAhSC2lzQ29uZmlybWVk');
+final $typed_data.Uint8List utxoDescriptor = $convert.base64Decode('CgRVdHhvEhIKBHR4aWQYASABKAlSBHR4aWQSEgoEdm91dBgCIAEoDVIEdm91dBIUCgV2YWx1ZRgDIAEoA1IFdmFsdWUSGgoIcGtTY3JpcHQYBCABKAxSCHBrU2NyaXB0EiAKC2lzQ29uZmlybWVkGAUgASgIUgtpc0NvbmZpcm1lZA==');
 @$core.Deprecated('Use addressInfoDescriptor instead')
 const AddressInfo$json = const {
   '1': 'AddressInfo',
@@ -1099,20 +1100,6 @@ const AddressInfo$json = const {
 
 /// Descriptor for `AddressInfo`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List addressInfoDescriptor = $convert.base64Decode('CgtBZGRyZXNzSW5mbxIYCgdhZGRyZXNzGAEgASgJUgdhZGRyZXNzEioKEGNvbmZpcm1lZEJhbGFuY2UYAiABKANSEGNvbmZpcm1lZEJhbGFuY2USLgoSdW5jb25maXJtZWRCYWxhbmNlGAMgASgDUhJ1bmNvbmZpcm1lZEJhbGFuY2USIAoFdXR4b3MYBCADKAsyCi5kYXRhLlV0eG9SBXV0eG9z');
-@$core.Deprecated('Use mempoolFeeRatesDescriptor instead')
-const MempoolFeeRates$json = const {
-  '1': 'MempoolFeeRates',
-  '2': const [
-    const {'1': 'fastest', '3': 1, '4': 1, '5': 3, '10': 'fastest'},
-    const {'1': 'halfHour', '3': 2, '4': 1, '5': 3, '10': 'halfHour'},
-    const {'1': 'hour', '3': 3, '4': 1, '5': 3, '10': 'hour'},
-    const {'1': 'economy', '3': 4, '4': 1, '5': 3, '10': 'economy'},
-    const {'1': 'minimum', '3': 5, '4': 1, '5': 3, '10': 'minimum'},
-  ],
-};
-
-/// Descriptor for `MempoolFeeRates`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List mempoolFeeRatesDescriptor = $convert.base64Decode('Cg9NZW1wb29sRmVlUmF0ZXMSGAoHZmFzdGVzdBgBIAEoA1IHZmFzdGVzdBIaCghoYWxmSG91chgCIAEoA1IIaGFsZkhvdXISEgoEaG91chgDIAEoA1IEaG91chIYCgdlY29ub215GAQgASgDUgdlY29ub215EhgKB21pbmltdW0YBSABKANSB21pbmltdW0=');
 @$core.Deprecated('Use createSlotSweepRequestDescriptor instead')
 const CreateSlotSweepRequest$json = const {
   '1': 'CreateSlotSweepRequest',

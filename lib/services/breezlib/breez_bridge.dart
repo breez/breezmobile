@@ -924,15 +924,10 @@ class BreezBridge {
     });
   }
 
-  Future<AddressInfo> getMempoolAddressInfo(String address) {
+  Future<AddressInfo> getAddressInfo(String address) {
     return _invokeMethodWhenReady(
-            "getMempoolAddressInfo", {"argument": address})
+            "getAddressInfo", {"argument": address})
         .then((res) => AddressInfo()..mergeFromBuffer(res ?? []));
-  }
-
-  Future<MempoolFeeRates> getMempoolRecommendedFees() {
-    return _invokeMethodWhenReady("getMempoolRecommendedFees")
-        .then((res) => MempoolFeeRates()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateSlotSweepResponse> createSlotSweepTransactions(
