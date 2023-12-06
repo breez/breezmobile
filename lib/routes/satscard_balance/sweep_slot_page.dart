@@ -296,6 +296,9 @@ class SweepSlotPageState extends State<SweepSlotPage> {
               _satscardBloc.actionsSink
                   .add(GetSlot(widget._card, widget._slot.index, spendCode));
             }
+            if (_spendCodeFocusNode.hasFocus) {
+              _spendCodeFocusNode.unfocus();
+            }
             showSatscardOperationDialog(
               context,
               _satscardBloc,
@@ -306,9 +309,6 @@ class SweepSlotPageState extends State<SweepSlotPage> {
                 _formKey.currentState.validate();
               }
               if (r is SatscardOpStatusSuccess) {
-                if (_spendCodeFocusNode.hasFocus) {
-                  _spendCodeFocusNode.unfocus();
-                }
                 widget.onUnsealed(_transaction, r.slot.privkey);
               }
             });
