@@ -599,6 +599,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         texts.satscard_unused_prompt_body,
         style: themeData.dialogTheme.contentTextStyle,
       ),
+      okText: texts.satscard_dialog_ok,
+      cancelText: texts.satscard_dialog_cancel,
     ).then((result) => result
         ? Navigator.pushNamed(context, "/initialize_satscard", arguments: card)
         : null);

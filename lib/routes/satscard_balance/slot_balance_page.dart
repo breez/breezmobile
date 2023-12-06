@@ -201,12 +201,15 @@ class SlotBalancePageState extends State<SlotBalancePage> {
       return;
     } else if (info.unconfirmedBalance > 0) {
       final confirm = await promptAreYouSure(
-          context,
-          texts.satscard_balance_warning_unconfirmed_title,
-          Text(
-            texts.satscard_balance_warning_unconfirmed_body,
-            style: themeData.dialogTheme.contentTextStyle,
-          ));
+        context,
+        texts.satscard_balance_warning_unconfirmed_title,
+        Text(
+          texts.satscard_balance_warning_unconfirmed_body,
+          style: themeData.dialogTheme.contentTextStyle,
+        ),
+        okText: texts.satscard_dialog_ok,
+        cancelText: texts.satscard_dialog_cancel,
+      );
       if (!confirm) {
         return;
       }
