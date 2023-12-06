@@ -284,9 +284,11 @@ packages:
   cktap_protocol:
     dependency: "direct main"
     description:
-      path: "../cktap-protocol-flutter"
-      relative: true
-    source: path
+      path: "."
+      ref: "release/breez"
+      resolved-ref: "20b4a6a134cca1240c818900bfc0a3c09554ab8d"
+      url: "https://github.com/PeteClubSeven/cktap-protocol-flutter.git"
+    source: git
     version: "0.0.1"
   cli_util:
     dependency: transitive

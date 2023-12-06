@@ -20,7 +20,9 @@ dependencies:
       #ref: cab51c7c70339e5bfdc822df01dc0785498778f4
     path: ../Breez-Translations
   cktap_protocol:
-    path: ../cktap-protocol-flutter/
+    git:
+      url: https://github.com/PeteClubSeven/cktap-protocol-flutter.git
+      ref: release/breez
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0

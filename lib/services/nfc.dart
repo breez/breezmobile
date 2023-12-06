@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:breez/services/device.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/services/supported_schemes.dart';
-import 'package:cktap_protocol/cktap_protocol.dart';
+import 'package:cktap_protocol/cktap.dart';
 import 'package:flutter/services.dart';
 import 'package:logging/logging.dart';
 import 'package:nfc_manager/nfc_manager.dart';
@@ -117,7 +117,7 @@ class NFCService {
   }
 
   Future<bool> _handleSatscard(String payload, NfcTag tag) async {
-    if (CKTapProtocol.isLikelySatscard(payload)) {
+    if (CKTap.isLikelySatscard(payload)) {
       if (onSatscardTag != null) {
         _log.info("nfc broadcasting possible satscard: $payload");
         await onSatscardTag(tag);
