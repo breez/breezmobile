@@ -15,9 +15,9 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/detected_satscard_status.dart';
 import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
-import 'package:breez/bloc/satscard/detected_satscard_status.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/handlers/check_channel_connection_handler.dart';
@@ -551,8 +551,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         future = _handleUnusedSatscard(themeData, texts, status.card);
       }
 
-      // Pages may choose to enable listening themselves at a later pointer.
-      // E.g. InitializeSatscardPage upon successful slot initialization
+      // Pages may choose to enable listening themselves at a later time, e.g.
+      // InitializeSatscardPage upon successful slot initialization
       await future.then((result) {
         final shouldEnableListening = result == null || result == true;
         if (shouldEnableListening) {
