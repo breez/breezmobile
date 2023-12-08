@@ -9,6 +9,7 @@ import 'package:breez/routes/satscard_balance/satscard_balance_page.dart';
 import 'package:breez/services/breezlib/data/messages.pb.dart';
 import 'package:breez/services/injector.dart';
 import 'package:breez/widgets/back_button.dart' as backBtn;
+import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/link_launcher.dart';
 import 'package:breez/widgets/single_button_bottom_bar.dart';
@@ -38,7 +39,7 @@ class BroadcastSlotSweepTransactionPage extends StatefulWidget {
 class BroadcastSlotSweepTransactionPageState
     extends State<BroadcastSlotSweepTransactionPage> {
   TransactionDetails _signedTransaction;
-  Future<String> _future;
+  Future<void> _future;
 
   @override
   void didChangeDependencies() {
@@ -54,7 +55,6 @@ class BroadcastSlotSweepTransactionPageState
           final themeData = Theme.of(context);
           final texts = context.texts();
           final showError = snapshot.hasError;
-          final showDone = !showError && snapshot.hasData;
           return Scaffold(
             appBar: AppBar(
               title: Text(
@@ -62,7 +62,7 @@ class BroadcastSlotSweepTransactionPageState
                 style: themeData.appBarTheme.titleTextStyle,
               ),
               leading: backBtn.BackButton(
-                onPressed: showDone ? widget.onDone : widget.onBack,
+                onPressed: widget.onBack,
               ),
             ),
             bottomNavigationBar:
@@ -76,46 +76,12 @@ class BroadcastSlotSweepTransactionPageState
                           onPressed: () => _broadcastTransaction(context),
                         ),
                       ),
-            body: _buildBody(themeData, texts, snapshot, showError, showDone),
+            body: showError
+                ? buildErrorBody(
+                    themeData, _getErrorText(texts, snapshot.error))
+                : buildLoaderBody(themeData, _getLoaderText(texts)),
           );
         });
-  }
-
-  Widget _buildBody(
-    ThemeData themeData,
-    BreezTranslations texts,
-    AsyncSnapshot<String> snapshot,
-    bool showError,
-    bool showDone,
-  ) {
-    if (showError) {
-      return buildErrorBody(themeData, _getErrorText(texts, snapshot.error));
-    } else if (!showDone) {
-      return buildLoaderBody(themeData, _getLoaderText(texts));
-    }
-
-    final txId = snapshot.data;
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 28, 16, 12),
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          LinkLauncher(
-            linkName: txId,
-            linkAddress: "https://blockstream.info/tx/$txId",
-            onCopy: () {
-              ServiceInjector().device.setClipboardText(txId);
-              showFlushbar(
-                context,
-                message: texts.add_funds_transaction_id_copied,
-                duration: const Duration(seconds: 3),
-              );
-            },
-          ),
-        ],
-      ),
-    );
   }
 
   String _getErrorText(BreezTranslations texts, Object error) {
@@ -158,13 +124,32 @@ class BroadcastSlotSweepTransactionPageState
         accountBloc.userActionsSink.add(action);
         return action.future;
       }).then((_) {
-        // Close the page automatically after a successful broadcast
-        Future.delayed(const Duration(seconds: 3), () {
-          if (context.mounted) {
-            widget.onDone();
-          }
-        });
-        return _signedTransaction.txHash;
+        if (context.mounted) {
+          final texts = context.texts();
+          final tx = _signedTransaction;
+
+          widget.onDone();
+          promptMessage(
+            context,
+            texts.satscard_broadcast_complete_title,
+            Builder(
+              builder: (context) => LinkLauncher(
+                linkName: tx.txHash,
+                linkAddress: "https://blockstream.info/tx/${tx.txHash}",
+                onCopy: () {
+                  ServiceInjector().device.setClipboardText(tx.txHash);
+                  showFlushbar(
+                    context,
+                    message: texts.add_funds_transaction_id_copied,
+                    duration: const Duration(seconds: 3),
+                  );
+                },
+              ),
+            ),
+            contentPadding:
+                const EdgeInsets.symmetric(vertical: 12.0, horizontal: 32.0),
+          );
+        }
       });
     });
   }
