@@ -89,7 +89,11 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 
 ### Prerequisites
 
-Make sure you have Flutter 3 installed on your system before continuing the setup process.
+Make sure you have the following installed:
+1. Flutter 3.7.12, newer versions won't work.
+2. [tap-protocol](https://github.com/nunchuk-io/tap-protocol) dependencies
+   1. Mac: `brew install autoconf automake libtool`
+   2. Ubuntu: `sudo apt install autoconf automake gcc libtool`
 
 ### Setting up for Android
 
