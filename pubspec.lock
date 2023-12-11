@@ -189,9 +189,11 @@ packages:
   breez_translations:
     dependency: "direct main"
     description:
-      path: "../Breez-Translations"
-      relative: true
-    source: path
+      path: "."
+      ref: "1bf53ec0dc6d9d16e789695b90e5914e4005ac3e"
+      resolved-ref: "1bf53ec0dc6d9d16e789695b90e5914e4005ac3e"
+      url: "https://github.com/breez/Breez-Translations.git"
+    source: git
     version: "1.0.0"
   bs58check:
     dependency: transitive
@@ -286,7 +288,7 @@ packages:
     description:
       path: "."
       ref: "release/breez"
-      resolved-ref: "1edabf30d7f68b7ddf8c558b1045e3cf47fbb05a"
+      resolved-ref: "29d1738fff2b93e2f1003a6152ecaff93633ffcd"
       url: "https://github.com/PeteClubSeven/cktap-protocol-flutter.git"
     source: git
     version: "0.0.1"

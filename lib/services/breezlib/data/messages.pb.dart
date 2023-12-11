@@ -6070,8 +6070,7 @@ class Utxo extends $pb.GeneratedMessage {
     ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txid')
     ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vout', $pb.PbFieldType.OU3)
     ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value')
-    ..a<$core.List<$core.int>>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pkScript', $pb.PbFieldType.OY, protoName: 'pkScript')
-    ..aOB(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
+    ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
     ..hasRequiredFields = false
   ;
 
@@ -6080,7 +6079,6 @@ class Utxo extends $pb.GeneratedMessage {
     $core.String? txid,
     $core.int? vout,
     $fixnum.Int64? value,
-    $core.List<$core.int>? pkScript,
     $core.bool? isConfirmed,
   }) {
     final _result = create();
@@ -6092,9 +6090,6 @@ class Utxo extends $pb.GeneratedMessage {
     }
     if (value != null) {
       _result.value = value;
-    }
-    if (pkScript != null) {
-      _result.pkScript = pkScript;
     }
     if (isConfirmed != null) {
       _result.isConfirmed = isConfirmed;
@@ -6150,22 +6145,13 @@ class Utxo extends $pb.GeneratedMessage {
   void clearValue() => clearField(3);
 
   @$pb.TagNumber(4)
-  $core.List<$core.int> get pkScript => $_getN(3);
+  $core.bool get isConfirmed => $_getBF(3);
   @$pb.TagNumber(4)
-  set pkScript($core.List<$core.int> v) { $_setBytes(3, v); }
+  set isConfirmed($core.bool v) { $_setBool(3, v); }
   @$pb.TagNumber(4)
-  $core.bool hasPkScript() => $_has(3);
+  $core.bool hasIsConfirmed() => $_has(3);
   @$pb.TagNumber(4)
-  void clearPkScript() => clearField(4);
-
-  @$pb.TagNumber(5)
-  $core.bool get isConfirmed => $_getBF(4);
-  @$pb.TagNumber(5)
-  set isConfirmed($core.bool v) { $_setBool(4, v); }
-  @$pb.TagNumber(5)
-  $core.bool hasIsConfirmed() => $_has(4);
-  @$pb.TagNumber(5)
-  void clearIsConfirmed() => clearField(5);
+  void clearIsConfirmed() => clearField(4);
 }
 
 class AddressInfo extends $pb.GeneratedMessage {
