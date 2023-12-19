@@ -5,15 +5,14 @@ import "package:intl/intl.dart";
 import 'package:timeago/timeago.dart' as timeago;
 
 class BreezDateUtils {
-  static final DateFormat _monthDateFormat = DateFormat.Md(Platform.localeName);
-  static final DateFormat _yearMonthDayFormat =
-      DateFormat.yMd(Platform.localeName);
+  static final localeName = Platform.localeName ?? "en";
+  static final DateFormat _monthDateFormat = DateFormat.Md(localeName);
+  static final DateFormat _yearMonthDayFormat = DateFormat.yMd(localeName);
   static final DateFormat _yearMonthDayHourMinuteFormat =
-      DateFormat.yMd(Platform.localeName).add_jm();
+      DateFormat.yMd().add_jm();
   static final DateFormat _yearMonthDayHourMinuteSecondFormat =
-      DateFormat.yMd(Platform.localeName).add_Hms();
-  static final DateFormat _hourMinuteDayFormat =
-      DateFormat.jm(Platform.localeName);
+      DateFormat.yMd(localeName).add_Hms();
+  static final DateFormat _hourMinuteDayFormat = DateFormat.jm(localeName);
 
   static String formatMonthDate(DateTime d) => _monthDateFormat.format(d);
   static String formatYearMonthDay(DateTime d) => _yearMonthDayFormat.format(d);
@@ -40,7 +39,8 @@ class BreezDateUtils {
   }
 
   static void setupLocales() {
-    timeago.setLocaleMessages('bg', timeago.EnMessages()); // TODO: add bg locale
+    timeago.setLocaleMessages(
+        'bg', timeago.EnMessages()); // TODO: add bg locale
     timeago.setLocaleMessages('cs', timeago.CsMessages());
     timeago.setLocaleMessages('de', timeago.DeMessages());
     timeago.setLocaleMessages('el', timeago.GrMessages());
@@ -50,7 +50,8 @@ class BreezDateUtils {
     timeago.setLocaleMessages('fr', timeago.FrMessages());
     timeago.setLocaleMessages('it', timeago.ItMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
-    timeago.setLocaleMessages('sk', timeago.EnMessages()); // TODO: add sk locale
+    timeago.setLocaleMessages(
+        'sk', timeago.EnMessages()); // TODO: add sk locale
     timeago.setLocaleMessages('sv', timeago.SvMessages());
   }
 }
