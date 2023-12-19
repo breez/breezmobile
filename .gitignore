@@ -11,10 +11,7 @@ build/
 packages
 .flutter-plugins
 .flutter-plugins-dependencies
-/conf/testnet
-/conf/mainnet
-/conf/local
-/conf/staging
+conf/
 /android/app/src/pos/google-services.json
 /android/app/src/client/google-services.json
 /android/app/libs/breez.aar
