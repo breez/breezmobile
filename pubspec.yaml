@@ -63,7 +63,7 @@ dependencies:
   nfc_manager: ^3.3.0
   nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: <5.0.1 # Requires Flutter 3.10
-  path: ^1.8.3
+  path: <1.9.0 # Requires Flutter 3.10
   path_provider: ^2.1.1
   path_provider_platform_interface: ^2.1.1
   pdf: ^3.10.7
