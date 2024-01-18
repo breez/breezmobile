@@ -831,8 +831,9 @@ class BackupBloc with AsyncActionsHandler {
     }
   }
 
-  Future testAuth(BackupProvider provider, RemoteServerAuthData authData) {
-    return _breezLib
+  Future testAuth(
+      BackupProvider provider, RemoteServerAuthData authData) async {
+    return await _breezLib
         .testBackupAuth(provider.name, json.encode(authData.toJson()))
         .catchError(
       (error) {
