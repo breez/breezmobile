@@ -1073,3 +1073,77 @@ const TorConfig$json = const {
 
 /// Descriptor for `TorConfig`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List torConfigDescriptor = $convert.base64Decode('CglUb3JDb25maWcSGAoHY29udHJvbBgBIAEoCVIHY29udHJvbBISCgRodHRwGAIgASgJUgRodHRwEhQKBXNvY2tzGAMgASgJUgVzb2Nrcw==');
+@$core.Deprecated('Use utxoDescriptor instead')
+const Utxo$json = const {
+  '1': 'Utxo',
+  '2': const [
+    const {'1': 'txid', '3': 1, '4': 1, '5': 9, '10': 'txid'},
+    const {'1': 'vout', '3': 2, '4': 1, '5': 13, '10': 'vout'},
+    const {'1': 'value', '3': 3, '4': 1, '5': 3, '10': 'value'},
+    const {'1': 'isConfirmed', '3': 4, '4': 1, '5': 8, '10': 'isConfirmed'},
+  ],
+};
+
+/// Descriptor for `Utxo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List utxoDescriptor = $convert.base64Decode('CgRVdHhvEhIKBHR4aWQYASABKAlSBHR4aWQSEgoEdm91dBgCIAEoDVIEdm91dBIUCgV2YWx1ZRgDIAEoA1IFdmFsdWUSIAoLaXNDb25maXJtZWQYBCABKAhSC2lzQ29uZmlybWVk');
+@$core.Deprecated('Use addressInfoDescriptor instead')
+const AddressInfo$json = const {
+  '1': 'AddressInfo',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+    const {'1': 'confirmedBalance', '3': 2, '4': 1, '5': 3, '10': 'confirmedBalance'},
+    const {'1': 'unconfirmedBalance', '3': 3, '4': 1, '5': 3, '10': 'unconfirmedBalance'},
+    const {'1': 'utxos', '3': 4, '4': 3, '5': 11, '6': '.data.Utxo', '10': 'utxos'},
+  ],
+};
+
+/// Descriptor for `AddressInfo`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List addressInfoDescriptor = $convert.base64Decode('CgtBZGRyZXNzSW5mbxIYCgdhZGRyZXNzGAEgASgJUgdhZGRyZXNzEioKEGNvbmZpcm1lZEJhbGFuY2UYAiABKANSEGNvbmZpcm1lZEJhbGFuY2USLgoSdW5jb25maXJtZWRCYWxhbmNlGAMgASgDUhJ1bmNvbmZpcm1lZEJhbGFuY2USIAoFdXR4b3MYBCADKAsyCi5kYXRhLlV0eG9SBXV0eG9z');
+@$core.Deprecated('Use createSlotSweepRequestDescriptor instead')
+const CreateSlotSweepRequest$json = const {
+  '1': 'CreateSlotSweepRequest',
+  '2': const [
+    const {'1': 'slot', '3': 1, '4': 1, '5': 11, '6': '.data.AddressInfo', '10': 'slot'},
+    const {'1': 'recipient', '3': 2, '4': 1, '5': 9, '10': 'recipient'},
+  ],
+};
+
+/// Descriptor for `CreateSlotSweepRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List createSlotSweepRequestDescriptor = $convert.base64Decode('ChZDcmVhdGVTbG90U3dlZXBSZXF1ZXN0EiUKBHNsb3QYASABKAsyES5kYXRhLkFkZHJlc3NJbmZvUgRzbG90EhwKCXJlY2lwaWVudBgCIAEoCVIJcmVjaXBpZW50');
+@$core.Deprecated('Use rawSlotSweepTransactionDescriptor instead')
+const RawSlotSweepTransaction$json = const {
+  '1': 'RawSlotSweepTransaction',
+  '2': const [
+    const {'1': 'msgTx', '3': 1, '4': 1, '5': 12, '10': 'msgTx'},
+    const {'1': 'input', '3': 2, '4': 1, '5': 3, '10': 'input'},
+    const {'1': 'output', '3': 3, '4': 1, '5': 3, '10': 'output'},
+    const {'1': 'vSize', '3': 4, '4': 1, '5': 1, '10': 'vSize'},
+    const {'1': 'fees', '3': 5, '4': 1, '5': 3, '10': 'fees'},
+    const {'1': 'targetConfirmations', '3': 6, '4': 1, '5': 5, '10': 'targetConfirmations'},
+  ],
+};
+
+/// Descriptor for `RawSlotSweepTransaction`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List rawSlotSweepTransactionDescriptor = $convert.base64Decode('ChdSYXdTbG90U3dlZXBUcmFuc2FjdGlvbhIUCgVtc2dUeBgBIAEoDFIFbXNnVHgSFAoFaW5wdXQYAiABKANSBWlucHV0EhYKBm91dHB1dBgDIAEoA1IGb3V0cHV0EhQKBXZTaXplGAQgASgBUgV2U2l6ZRISCgRmZWVzGAUgASgDUgRmZWVzEjAKE3RhcmdldENvbmZpcm1hdGlvbnMYBiABKAVSE3RhcmdldENvbmZpcm1hdGlvbnM=');
+@$core.Deprecated('Use createSlotSweepResponseDescriptor instead')
+const CreateSlotSweepResponse$json = const {
+  '1': 'CreateSlotSweepResponse',
+  '2': const [
+    const {'1': 'txs', '3': 1, '4': 3, '5': 11, '6': '.data.RawSlotSweepTransaction', '10': 'txs'},
+  ],
+};
+
+/// Descriptor for `CreateSlotSweepResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List createSlotSweepResponseDescriptor = $convert.base64Decode('ChdDcmVhdGVTbG90U3dlZXBSZXNwb25zZRIvCgN0eHMYASADKAsyHS5kYXRhLlJhd1Nsb3RTd2VlcFRyYW5zYWN0aW9uUgN0eHM=');
+@$core.Deprecated('Use signSlotSweepRequestDescriptor instead')
+const SignSlotSweepRequest$json = const {
+  '1': 'SignSlotSweepRequest',
+  '2': const [
+    const {'1': 'addressInfo', '3': 1, '4': 1, '5': 11, '6': '.data.AddressInfo', '10': 'addressInfo'},
+    const {'1': 'transaction', '3': 2, '4': 1, '5': 11, '6': '.data.RawSlotSweepTransaction', '10': 'transaction'},
+    const {'1': 'privateKey', '3': 3, '4': 1, '5': 12, '10': 'privateKey'},
+  ],
+};
+
+/// Descriptor for `SignSlotSweepRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List signSlotSweepRequestDescriptor = $convert.base64Decode('ChRTaWduU2xvdFN3ZWVwUmVxdWVzdBIzCgthZGRyZXNzSW5mbxgBIAEoCzIRLmRhdGEuQWRkcmVzc0luZm9SC2FkZHJlc3NJbmZvEj8KC3RyYW5zYWN0aW9uGAIgASgLMh0uZGF0YS5SYXdTbG90U3dlZXBUcmFuc2FjdGlvblILdHJhbnNhY3Rpb24SHgoKcHJpdmF0ZUtleRgDIAEoDFIKcHJpdmF0ZUtleQ==');
