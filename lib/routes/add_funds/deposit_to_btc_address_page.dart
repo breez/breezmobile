@@ -126,7 +126,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          AddressWidget(response?.address, response?.backupJson),
+          AddressWidget(response?.address, backupJson: response?.backupJson),
           response == null || lspInfo == null
               ? const SizedBox()
               : WarningBox(

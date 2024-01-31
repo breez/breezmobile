@@ -106,7 +106,13 @@ class FeeChooser extends StatelessWidget {
         border: border,
       ),
       child: TextButton(
-        onPressed: disabled ? null : () => onSelect(index),
+        onPressed: disabled
+            ? null
+            : () {
+                if (onSelect != null) {
+                  onSelect(index);
+                }
+              },
         child: Text(
           text,
           style: themeData.textTheme.labelLarge.copyWith(
