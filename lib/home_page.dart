@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/ui/anytime_podcast_app.dart';
@@ -15,6 +16,8 @@ import 'package:breez/bloc/invoice/invoice_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/detected_satscard_status.dart';
+import 'package:breez/bloc/satscard/satscard_actions.dart';
 import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -50,6 +53,8 @@ import 'package:breez/widgets/lost_card_dialog.dart' as lostCard;
 import 'package:breez/widgets/payment_failed_report_dialog.dart';
 import 'package:breez/widgets/route.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:breez_translations/generated/breez_translations.dart';
+import 'package:cktap_protocol/satscard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -173,6 +178,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     _listenWhitelistPermissionsRequest();
     _listenLSPSelectionPrompt();
     _listenPaymentResults();
+    _listenSatscards();
   }
 
   @override
@@ -525,6 +531,87 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         );
       },
     );
+  }
+
+  void _listenSatscards() {
+    widget.satscardBloc.actionsSink.add(EnableListening());
+    widget.satscardBloc.detectedStream.listen((status) async {
+      Navigator.popUntil(context, (route) => route.settings.name == "/");
+      final nfc = ServiceInjector().nfc;
+      final texts = context.texts();
+      final themeData = Theme.of(context);
+      if (_handleSatscardErrors(themeData, texts, status)) {
+        if (Platform.isIOS) {
+          nfc.stopSession(iosError: texts.satscard_ios_error_label);
+        }
+        return;
+      }
+      if (Platform.isIOS) {
+        nfc.stopSession(iosAlert: texts.satscard_ios_success_label);
+      }
+
+      // Disable listening until we finish operating on the detected card
+      widget.satscardBloc.actionsSink.add(DisableListening());
+      Future future;
+      if (status is DetectedSweepableSatscardStatus) {
+        future = _handleSweepableSatscard(status.card, status.slot);
+      } else if (status is DetectedUnusedSatscardStatus) {
+        future = _handleUnusedSatscard(themeData, texts, status.card);
+      }
+
+      // Pages may choose to enable listening themselves at a later time, e.g.
+      // InitializeSatscardPage upon successful slot initialization
+      await future.then((result) {
+        final shouldEnableListening = result == null || result == true;
+        if (shouldEnableListening) {
+          widget.satscardBloc.actionsSink.add(EnableListening());
+        }
+      });
+    });
+  }
+
+  bool _handleSatscardErrors(
+    ThemeData themeData,
+    BreezTranslations texts,
+    DetectedSatscardStatus status,
+  ) {
+    void showPrompt(String title, String body) => promptMessage(context, title,
+        Text(body, style: themeData.dialogTheme.contentTextStyle));
+
+    if (status is DetectedNoSatscardStatus) {
+      showPrompt(texts.satscard_error_nfc_title, texts.satscard_error_nfc_body);
+      return true;
+    } else if (status is DetectedInvalidSatscardStatus) {
+      showPrompt(texts.satscard_error_invalid_title,
+          texts.satscard_error_invalid_body(status.message));
+      return true;
+    }
+    if (status is DetectedUsedUpSatscardStatus) {
+      showPrompt(texts.satscard_error_used_up_title,
+          texts.satscard_error_used_up_body);
+      return true;
+    }
+    return false;
+  }
+
+  Future _handleSweepableSatscard(Satscard card, Slot slot) =>
+      Navigator.pushNamed(context, "/satscard_balance",
+          arguments: {"card": card, "slot": slot});
+
+  Future _handleUnusedSatscard(
+      ThemeData themeData, BreezTranslations texts, Satscard card) {
+    return promptAreYouSure(
+      context,
+      texts.satscard_unused_prompt_title,
+      Text(
+        texts.satscard_unused_prompt_body,
+        style: themeData.dialogTheme.contentTextStyle,
+      ),
+      okText: texts.satscard_dialog_ok,
+      cancelText: texts.satscard_dialog_cancel,
+    ).then((result) => result
+        ? Navigator.pushNamed(context, "/initialize_satscard", arguments: card)
+        : null);
   }
 
   List<DrawerItemConfig> _filterItems(List<DrawerItemConfig> items) {
