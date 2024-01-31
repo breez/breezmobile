@@ -89,7 +89,13 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 
 ### Prerequisites
 
-Make sure you have Flutter 3 installed on your system before continuing the setup process.
+Make sure you have the following installed:
+1. Flutter 3.7.12, newer versions won't work.
+2. [cktap-protocol-flutter](https://github.com/PeteClubSeven/cktap-protocol-flutter/tree/release/breez) dependencies
+   - macOS 13 or newer
+     - `brew install cmake`
+   - macOS 12 or older
+     - `brew install cmake coreutils`
 
 ### Setting up for Android
 

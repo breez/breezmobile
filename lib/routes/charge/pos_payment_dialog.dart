@@ -166,7 +166,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
               onPressed: Platform.isAndroid
                   ? null
                   : () {
-                      ServiceInjector().nfc.starSession(autoClose: true);
+                      ServiceInjector().nfc.startSession(autoClose: true, lnurlOnly: true);
                     },
             ),
             IconButton(

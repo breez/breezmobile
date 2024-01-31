@@ -98,6 +98,10 @@ fileprivate let calls : [String:BindingExecutor] = [
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
 
+    "getAddressInfo": SingleArgBindingExecutor(f: BindingsGetAddressInfo),
+    "createSlotSweepTransactions": SingleArgBindingExecutor(f: BindingsCreateSlotSweepTransactions),
+    "signSlotSweepTransaction": SingleArgBindingExecutor(f: BindingsSignSlotSweepTransaction),
+
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewSyncJob(NSString* workingDir, NSError** error);
