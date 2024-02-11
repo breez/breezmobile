@@ -11,6 +11,8 @@ PODS:
     - Flutter
   - audio_session (0.0.1):
     - Flutter
+  - cktap_protocol (0.0.1):
+    - Flutter
   - clipboard_watcher (0.0.1):
     - Flutter
   - connectivity_plus (0.0.1):
@@ -70,27 +72,27 @@ PODS:
   - Firebase/Messaging (10.18.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 10.18.0)
-  - firebase_core (2.24.0):
+  - firebase_core (2.24.2):
     - Firebase/CoreOnly (= 10.18.0)
     - Flutter
-  - firebase_database (10.3.6):
+  - firebase_database (10.4.0):
     - Firebase/Database (= 10.18.0)
     - firebase_core
     - Flutter
-  - firebase_dynamic_links (5.4.6):
+  - firebase_dynamic_links (5.4.8):
     - Firebase/DynamicLinks (= 10.18.0)
     - firebase_core
     - Flutter
-  - firebase_messaging (14.7.6):
+  - firebase_messaging (14.7.10):
     - Firebase/Messaging (= 10.18.0)
     - firebase_core
     - Flutter
-  - FirebaseAppCheckInterop (10.18.0)
+  - FirebaseAppCheckInterop (10.20.0)
   - FirebaseCore (10.18.0):
     - FirebaseCoreInternal (~> 10.0)
     - GoogleUtilities/Environment (~> 7.12)
     - GoogleUtilities/Logger (~> 7.12)
-  - FirebaseCoreInternal (10.18.0):
+  - FirebaseCoreInternal (10.20.0):
     - "GoogleUtilities/NSData+zlib (~> 7.8)"
   - FirebaseDatabase (10.18.0):
     - FirebaseAppCheckInterop (~> 10.17)
@@ -99,7 +101,7 @@ PODS:
     - leveldb-library (~> 1.22)
   - FirebaseDynamicLinks (10.18.0):
     - FirebaseCore (~> 10.0)
-  - FirebaseInstallations (10.18.0):
+  - FirebaseInstallations (10.20.0):
     - FirebaseCore (~> 10.0)
     - GoogleUtilities/Environment (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
@@ -113,7 +115,7 @@ PODS:
     - GoogleUtilities/Reachability (~> 7.8)
     - GoogleUtilities/UserDefaults (~> 7.8)
     - nanopb (< 2.30910.0, >= 2.30908.0)
-  - FirebaseSharedSwift (10.18.0)
+  - FirebaseSharedSwift (10.20.0)
   - Flutter (1.0.0)
   - flutter_downloader (0.0.1):
     - Flutter
@@ -227,9 +229,9 @@ PODS:
     - Flutter
   - PromisesObjC (2.3.1)
   - ReachabilitySwift (5.0.0)
-  - SDWebImage (5.18.5):
-    - SDWebImage/Core (= 5.18.5)
-  - SDWebImage/Core (5.18.5)
+  - SDWebImage (5.18.10):
+    - SDWebImage/Core (= 5.18.10)
+  - SDWebImage/Core (5.18.10)
   - share_plus (0.0.1):
     - Flutter
   - shared_preferences_foundation (0.0.1):
@@ -254,6 +256,7 @@ DEPENDENCIES:
   - app_settings (from `.symlinks/plugins/app_settings/ios`)
   - audio_service (from `.symlinks/plugins/audio_service/ios`)
   - audio_session (from `.symlinks/plugins/audio_session/ios`)
+  - cktap_protocol (from `.symlinks/plugins/cktap_protocol/ios`)
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
@@ -333,6 +336,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/audio_service/ios"
   audio_session:
     :path: ".symlinks/plugins/audio_session/ios"
+  cktap_protocol:
+    :path: ".symlinks/plugins/cktap_protocol/ios"
   clipboard_watcher:
     :path: ".symlinks/plugins/clipboard_watcher/ios"
   connectivity_plus:
@@ -407,6 +412,7 @@ SPEC CHECKSUMS:
   AppAuth: 3bb1d1cd9340bd09f5ed189fb00b1cc28e1e8570
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 4f3e461722055d21515cf3261b64c973c062f345
+  cktap_protocol: f0cb9c355c1c41d44b9daef7bf5ab18ba7ea6346
   clipboard_watcher: 86fb70421aca6f4944e0591a8292605da7784666
   connectivity_plus: 07c49e96d7fc92bc9920617b83238c4d178b446a
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
@@ -416,18 +422,18 @@ SPEC CHECKSUMS:
   ffmpeg_kit_flutter_https_gpl: 066ec3b6a89759f1ffb84860e75534c3d3a1b172
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
-  firebase_core: f802c5c1f6caff9b8d38b591a36e7b25f8878936
-  firebase_database: 18b34a683c878f836ac5a403ce29242065d5acd0
-  firebase_dynamic_links: 212953c972f7e952c853f69896dc4da0fa5cb06e
-  firebase_messaging: ca2fc59ddd52ef032d80f1a717d12eae8fa0e994
-  FirebaseAppCheckInterop: 3cd914842ba46f4304050874cd284de82f154ffd
+  firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
+  firebase_database: 5d420ac53c48f3394445c8b83c530a42d149c3d4
+  firebase_dynamic_links: b626a11f5eb02033981ae377377c3f297eb4c1b0
+  firebase_messaging: 90e8a6db84b6e1e876cebce4f30f01dc495e7014
+  FirebaseAppCheckInterop: e81bdb1cdb82f8e0cef353ba5018a8402682032c
   FirebaseCore: 2322423314d92f946219c8791674d2f3345b598f
-  FirebaseCoreInternal: 8eb002e564b533bdcf1ba011f33f2b5c10e2ed4a
+  FirebaseCoreInternal: efeeb171ac02d623bdaefe121539939821e10811
   FirebaseDatabase: ac770bf7525ff0340b105166037036c0e46c2c7e
   FirebaseDynamicLinks: c37307441c53838d66a9650dabca9e0459502527
-  FirebaseInstallations: e842042ec6ac1fd2e37d7706363ebe7f662afea4
+  FirebaseInstallations: 558b1da7d65afeb996fd5c814332f013234ece4e
   FirebaseMessaging: 9bc34a98d2e0237e1b121915120d4d48ddcf301e
-  FirebaseSharedSwift: 62e248642c0582324d0390706cadd314687c116b
+  FirebaseSharedSwift: 2fbf73618288b7a36b2014b957745dcdd781389e
   Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
@@ -462,7 +468,7 @@ SPEC CHECKSUMS:
   printing: 233e1b73bd1f4a05615548e9b5a324c98588640b
   PromisesObjC: c50d2056b5253dadbd6c2bea79b0674bd5a52fa4
   ReachabilitySwift: 985039c6f7b23a1da463388634119492ff86c825
-  SDWebImage: 7ac2b7ddc5e8484c79aa90fc4e30b149d6a2c88f
+  SDWebImage: fc8f2d48bbfd72ef39d70e981bd24a3f3be53fec
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a

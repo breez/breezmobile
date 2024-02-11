@@ -6065,3 +6065,475 @@ class TorConfig extends $pb.GeneratedMessage {
   void clearSocks() => clearField(3);
 }
 
+class Utxo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Utxo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txid')
+    ..a<$core.int>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vout', $pb.PbFieldType.OU3)
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'value')
+    ..aOB(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isConfirmed', protoName: 'isConfirmed')
+    ..hasRequiredFields = false
+  ;
+
+  Utxo._() : super();
+  factory Utxo({
+    $core.String? txid,
+    $core.int? vout,
+    $fixnum.Int64? value,
+    $core.bool? isConfirmed,
+  }) {
+    final _result = create();
+    if (txid != null) {
+      _result.txid = txid;
+    }
+    if (vout != null) {
+      _result.vout = vout;
+    }
+    if (value != null) {
+      _result.value = value;
+    }
+    if (isConfirmed != null) {
+      _result.isConfirmed = isConfirmed;
+    }
+    return _result;
+  }
+  factory Utxo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory Utxo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  Utxo clone() => Utxo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  Utxo copyWith(void Function(Utxo) updates) => super.copyWith((message) => updates(message as Utxo)) as Utxo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static Utxo create() => Utxo._();
+  Utxo createEmptyInstance() => create();
+  static $pb.PbList<Utxo> createRepeated() => $pb.PbList<Utxo>();
+  @$core.pragma('dart2js:noInline')
+  static Utxo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<Utxo>(create);
+  static Utxo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get txid => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set txid($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasTxid() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearTxid() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get vout => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set vout($core.int v) { $_setUnsignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasVout() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearVout() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get value => $_getI64(2);
+  @$pb.TagNumber(3)
+  set value($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasValue() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearValue() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.bool get isConfirmed => $_getBF(3);
+  @$pb.TagNumber(4)
+  set isConfirmed($core.bool v) { $_setBool(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasIsConfirmed() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearIsConfirmed() => clearField(4);
+}
+
+class AddressInfo extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'AddressInfo', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'address')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'confirmedBalance', protoName: 'confirmedBalance')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'unconfirmedBalance', protoName: 'unconfirmedBalance')
+    ..pc<Utxo>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'utxos', $pb.PbFieldType.PM, subBuilder: Utxo.create)
+    ..hasRequiredFields = false
+  ;
+
+  AddressInfo._() : super();
+  factory AddressInfo({
+    $core.String? address,
+    $fixnum.Int64? confirmedBalance,
+    $fixnum.Int64? unconfirmedBalance,
+    $core.Iterable<Utxo>? utxos,
+  }) {
+    final _result = create();
+    if (address != null) {
+      _result.address = address;
+    }
+    if (confirmedBalance != null) {
+      _result.confirmedBalance = confirmedBalance;
+    }
+    if (unconfirmedBalance != null) {
+      _result.unconfirmedBalance = unconfirmedBalance;
+    }
+    if (utxos != null) {
+      _result.utxos.addAll(utxos);
+    }
+    return _result;
+  }
+  factory AddressInfo.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory AddressInfo.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  AddressInfo clone() => AddressInfo()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  AddressInfo copyWith(void Function(AddressInfo) updates) => super.copyWith((message) => updates(message as AddressInfo)) as AddressInfo; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static AddressInfo create() => AddressInfo._();
+  AddressInfo createEmptyInstance() => create();
+  static $pb.PbList<AddressInfo> createRepeated() => $pb.PbList<AddressInfo>();
+  @$core.pragma('dart2js:noInline')
+  static AddressInfo getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<AddressInfo>(create);
+  static AddressInfo? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get address => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set address($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAddress() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAddress() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get confirmedBalance => $_getI64(1);
+  @$pb.TagNumber(2)
+  set confirmedBalance($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasConfirmedBalance() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearConfirmedBalance() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get unconfirmedBalance => $_getI64(2);
+  @$pb.TagNumber(3)
+  set unconfirmedBalance($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasUnconfirmedBalance() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearUnconfirmedBalance() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.List<Utxo> get utxos => $_getList(3);
+}
+
+class CreateSlotSweepRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CreateSlotSweepRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOM<AddressInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'slot', subBuilder: AddressInfo.create)
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'recipient')
+    ..hasRequiredFields = false
+  ;
+
+  CreateSlotSweepRequest._() : super();
+  factory CreateSlotSweepRequest({
+    AddressInfo? slot,
+    $core.String? recipient,
+  }) {
+    final _result = create();
+    if (slot != null) {
+      _result.slot = slot;
+    }
+    if (recipient != null) {
+      _result.recipient = recipient;
+    }
+    return _result;
+  }
+  factory CreateSlotSweepRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CreateSlotSweepRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CreateSlotSweepRequest clone() => CreateSlotSweepRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CreateSlotSweepRequest copyWith(void Function(CreateSlotSweepRequest) updates) => super.copyWith((message) => updates(message as CreateSlotSweepRequest)) as CreateSlotSweepRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CreateSlotSweepRequest create() => CreateSlotSweepRequest._();
+  CreateSlotSweepRequest createEmptyInstance() => create();
+  static $pb.PbList<CreateSlotSweepRequest> createRepeated() => $pb.PbList<CreateSlotSweepRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CreateSlotSweepRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CreateSlotSweepRequest>(create);
+  static CreateSlotSweepRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  AddressInfo get slot => $_getN(0);
+  @$pb.TagNumber(1)
+  set slot(AddressInfo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSlot() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSlot() => clearField(1);
+  @$pb.TagNumber(1)
+  AddressInfo ensureSlot() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  $core.String get recipient => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set recipient($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasRecipient() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearRecipient() => clearField(2);
+}
+
+class RawSlotSweepTransaction extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RawSlotSweepTransaction', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..a<$core.List<$core.int>>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'msgTx', $pb.PbFieldType.OY, protoName: 'msgTx')
+    ..aInt64(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'input')
+    ..aInt64(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'output')
+    ..a<$core.double>(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'vSize', $pb.PbFieldType.OD, protoName: 'vSize')
+    ..aInt64(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'fees')
+    ..a<$core.int>(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'targetConfirmations', $pb.PbFieldType.O3, protoName: 'targetConfirmations')
+    ..hasRequiredFields = false
+  ;
+
+  RawSlotSweepTransaction._() : super();
+  factory RawSlotSweepTransaction({
+    $core.List<$core.int>? msgTx,
+    $fixnum.Int64? input,
+    $fixnum.Int64? output,
+    $core.double? vSize,
+    $fixnum.Int64? fees,
+    $core.int? targetConfirmations,
+  }) {
+    final _result = create();
+    if (msgTx != null) {
+      _result.msgTx = msgTx;
+    }
+    if (input != null) {
+      _result.input = input;
+    }
+    if (output != null) {
+      _result.output = output;
+    }
+    if (vSize != null) {
+      _result.vSize = vSize;
+    }
+    if (fees != null) {
+      _result.fees = fees;
+    }
+    if (targetConfirmations != null) {
+      _result.targetConfirmations = targetConfirmations;
+    }
+    return _result;
+  }
+  factory RawSlotSweepTransaction.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RawSlotSweepTransaction.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RawSlotSweepTransaction clone() => RawSlotSweepTransaction()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RawSlotSweepTransaction copyWith(void Function(RawSlotSweepTransaction) updates) => super.copyWith((message) => updates(message as RawSlotSweepTransaction)) as RawSlotSweepTransaction; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RawSlotSweepTransaction create() => RawSlotSweepTransaction._();
+  RawSlotSweepTransaction createEmptyInstance() => create();
+  static $pb.PbList<RawSlotSweepTransaction> createRepeated() => $pb.PbList<RawSlotSweepTransaction>();
+  @$core.pragma('dart2js:noInline')
+  static RawSlotSweepTransaction getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RawSlotSweepTransaction>(create);
+  static RawSlotSweepTransaction? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<$core.int> get msgTx => $_getN(0);
+  @$pb.TagNumber(1)
+  set msgTx($core.List<$core.int> v) { $_setBytes(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasMsgTx() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearMsgTx() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $fixnum.Int64 get input => $_getI64(1);
+  @$pb.TagNumber(2)
+  set input($fixnum.Int64 v) { $_setInt64(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasInput() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearInput() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $fixnum.Int64 get output => $_getI64(2);
+  @$pb.TagNumber(3)
+  set output($fixnum.Int64 v) { $_setInt64(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasOutput() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearOutput() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.double get vSize => $_getN(3);
+  @$pb.TagNumber(4)
+  set vSize($core.double v) { $_setDouble(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasVSize() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearVSize() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $fixnum.Int64 get fees => $_getI64(4);
+  @$pb.TagNumber(5)
+  set fees($fixnum.Int64 v) { $_setInt64(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasFees() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearFees() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.int get targetConfirmations => $_getIZ(5);
+  @$pb.TagNumber(6)
+  set targetConfirmations($core.int v) { $_setSignedInt32(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasTargetConfirmations() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearTargetConfirmations() => clearField(6);
+}
+
+class CreateSlotSweepResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CreateSlotSweepResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pc<RawSlotSweepTransaction>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'txs', $pb.PbFieldType.PM, subBuilder: RawSlotSweepTransaction.create)
+    ..hasRequiredFields = false
+  ;
+
+  CreateSlotSweepResponse._() : super();
+  factory CreateSlotSweepResponse({
+    $core.Iterable<RawSlotSweepTransaction>? txs,
+  }) {
+    final _result = create();
+    if (txs != null) {
+      _result.txs.addAll(txs);
+    }
+    return _result;
+  }
+  factory CreateSlotSweepResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CreateSlotSweepResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CreateSlotSweepResponse clone() => CreateSlotSweepResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CreateSlotSweepResponse copyWith(void Function(CreateSlotSweepResponse) updates) => super.copyWith((message) => updates(message as CreateSlotSweepResponse)) as CreateSlotSweepResponse; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CreateSlotSweepResponse create() => CreateSlotSweepResponse._();
+  CreateSlotSweepResponse createEmptyInstance() => create();
+  static $pb.PbList<CreateSlotSweepResponse> createRepeated() => $pb.PbList<CreateSlotSweepResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CreateSlotSweepResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CreateSlotSweepResponse>(create);
+  static CreateSlotSweepResponse? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<RawSlotSweepTransaction> get txs => $_getList(0);
+}
+
+class SignSlotSweepRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'SignSlotSweepRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOM<AddressInfo>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'addressInfo', protoName: 'addressInfo', subBuilder: AddressInfo.create)
+    ..aOM<RawSlotSweepTransaction>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'transaction', subBuilder: RawSlotSweepTransaction.create)
+    ..a<$core.List<$core.int>>(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'privateKey', $pb.PbFieldType.OY, protoName: 'privateKey')
+    ..hasRequiredFields = false
+  ;
+
+  SignSlotSweepRequest._() : super();
+  factory SignSlotSweepRequest({
+    AddressInfo? addressInfo,
+    RawSlotSweepTransaction? transaction,
+    $core.List<$core.int>? privateKey,
+  }) {
+    final _result = create();
+    if (addressInfo != null) {
+      _result.addressInfo = addressInfo;
+    }
+    if (transaction != null) {
+      _result.transaction = transaction;
+    }
+    if (privateKey != null) {
+      _result.privateKey = privateKey;
+    }
+    return _result;
+  }
+  factory SignSlotSweepRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory SignSlotSweepRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  SignSlotSweepRequest clone() => SignSlotSweepRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  SignSlotSweepRequest copyWith(void Function(SignSlotSweepRequest) updates) => super.copyWith((message) => updates(message as SignSlotSweepRequest)) as SignSlotSweepRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static SignSlotSweepRequest create() => SignSlotSweepRequest._();
+  SignSlotSweepRequest createEmptyInstance() => create();
+  static $pb.PbList<SignSlotSweepRequest> createRepeated() => $pb.PbList<SignSlotSweepRequest>();
+  @$core.pragma('dart2js:noInline')
+  static SignSlotSweepRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<SignSlotSweepRequest>(create);
+  static SignSlotSweepRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  AddressInfo get addressInfo => $_getN(0);
+  @$pb.TagNumber(1)
+  set addressInfo(AddressInfo v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAddressInfo() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAddressInfo() => clearField(1);
+  @$pb.TagNumber(1)
+  AddressInfo ensureAddressInfo() => $_ensure(0);
+
+  @$pb.TagNumber(2)
+  RawSlotSweepTransaction get transaction => $_getN(1);
+  @$pb.TagNumber(2)
+  set transaction(RawSlotSweepTransaction v) { setField(2, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTransaction() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTransaction() => clearField(2);
+  @$pb.TagNumber(2)
+  RawSlotSweepTransaction ensureTransaction() => $_ensure(1);
+
+  @$pb.TagNumber(3)
+  $core.List<$core.int> get privateKey => $_getN(2);
+  @$pb.TagNumber(3)
+  set privateKey($core.List<$core.int> v) { $_setBytes(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasPrivateKey() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearPrivateKey() => clearField(3);
+}
+
