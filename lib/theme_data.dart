@@ -362,11 +362,6 @@ final VendorTheme fold = VendorTheme(iconBgColor: const Color(0xFFFFCF30));
 final VendorTheme boltz = VendorTheme(iconBgColor: const Color(0xFF001524));
 final VendorTheme lightnite = VendorTheme(iconBgColor: const Color(0xFF530709));
 final VendorTheme spendl = VendorTheme(iconBgColor: const Color(0xFFffffff));
-final VendorTheme kollider = VendorTheme(
-  iconBgColor: const Color.fromRGBO(21, 23, 25, 1),
-  iconFgColor: const Color.fromRGBO(217, 227, 234, 1),
-  textColor: const Color.fromRGBO(217, 227, 234, 1),
-);
 final VendorTheme fastbitcoins = VendorTheme(
     iconBgColor: const Color(0xFFff7c10),
     iconFgColor: const Color(0xFF1f2a44),
@@ -400,7 +395,6 @@ final Map<String, VendorTheme> vendorTheme = {
   "boltz": boltz,
   "lightnite": lightnite,
   "spendl": spendl,
-  "kollider": kollider,
   "fastbitcoins": fastbitcoins,
   "xsats": xsats,
   "geyser": geyser,
