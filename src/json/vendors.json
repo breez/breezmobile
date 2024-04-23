@@ -48,10 +48,5 @@
   },
   "Snort":{
     "url" : "https://snort.social"
-  },
-  "Kollider": {
-    "url": "https://light.kollider.xyz/auth/login",
-    "endpointURI": "https://api.kollider.xyz/v1/auth/external/lnurl_auth",
-    "onlyShowLogo" : false
   }
 }
