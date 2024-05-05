@@ -16,8 +16,16 @@ dependencies:
   bip39: ^1.0.6
   breez_translations:
     git:
-      url: https://github.com/breez/Breez-Translations.git
-      ref: cab51c7c70339e5bfdc822df01dc0785498778f4
+      url: https://github.com/breez/Breez-Translations
+      ref: 866d5599f7d5084658f1c72ccc19bda392e0900f
+  cktap_protocol:
+    git:
+      url: https://github.com/PeteClubSeven/cktap-protocol-flutter.git
+      ref: release/breez
+  cktap_transport_nfc_manager:
+    git:
+      url: https://github.com/PeteClubSeven/cktap-transport-nfc-manager.git
+      ref: release/v3
   clipboard_watcher: ^0.2.0
   collection: ^1.18.0
   confetti: ^0.7.0
@@ -60,10 +68,13 @@ dependencies:
   md5_file_checksum:
     git:
       url: https://github.com/breez/md5_file_checksum.git
-  nfc_manager: ^3.3.0
+  nfc_manager:
+    git:
+      url: https://github.com/PeteClubSeven/flutter-nfc-manager
+      ref: release/v3
   nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: <5.0.1 # Requires Flutter 3.10
-  path: ^1.8.3
+  path: <1.9.0 # Requires Flutter 3.10
   path_provider: ^2.1.1
   path_provider_platform_interface: ^2.1.1
   pdf: ^3.10.7
@@ -72,7 +83,7 @@ dependencies:
   protobuf: <3.0.0 # Requires Flutter 3.10
   provider: ^6.1.1
   meta: ^1.11.0
-  mobile_scanner: ^3.5.5
+  mobile_scanner: <3.5.6 # Requires Android SDK 34
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -123,7 +134,7 @@ dependency_overrides:
   collection: ^1.18.0
   intl: ^0.18.1
   meta: ^1.11.0
-  path: ^1.8.3
+  path: <1.9.0 # Requires Flutter 3.10
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git

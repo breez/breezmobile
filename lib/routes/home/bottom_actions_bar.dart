@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:breez/bloc/account/account_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/lsp/lsp_model.dart';
 import 'package:breez/routes/spontaneous_payment/spontaneous_payment_page.dart';
+import 'package:breez/services/injector.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/utils/dynamic_fees.dart';
 import 'package:breez/utils/exceptions.dart';
@@ -25,6 +27,7 @@ import 'package:breez/widgets/warning_box.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 
 class BottomActionsBar extends StatefulWidget {
   final GlobalKey firstPaymentItemKey;
@@ -293,22 +296,37 @@ class _Action extends StatelessWidget {
 
 class _ActionImage extends StatelessWidget {
   final String iconAssetPath;
+  final String svgAssetPath;
   final bool enabled;
 
   const _ActionImage({
     Key key,
     this.iconAssetPath,
+    this.svgAssetPath,
     this.enabled = true,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final color = enabled ? Colors.white : Theme.of(context).disabledColor;
+    const fit = BoxFit.contain;
+    const height = 24.0;
+    const width = 24.0;
+    if (svgAssetPath != null && svgAssetPath.isNotEmpty) {
+      return SvgPicture.asset(
+        svgAssetPath,
+        colorFilter: ColorFilter.mode(color, BlendMode.srcATop),
+        fit: BoxFit.contain,
+        width: width,
+        height: height,
+      );
+    }
     return Image(
       image: AssetImage(iconAssetPath),
-      color: enabled ? Colors.white : Theme.of(context).disabledColor,
-      fit: BoxFit.contain,
-      width: 24.0,
-      height: 24.0,
+      color: color,
+      fit: fit,
+      width: width,
+      height: height,
     );
   }
 }
@@ -414,6 +432,41 @@ Future showReceiveOptions(
                     );
                   },
                 ).toList();
+
+                // We need an option to scan Satscards on iOS. Unnecessary on Android due to background scanning
+                final nfc = ServiceInjector().nfc;
+                if (Platform.isIOS && nfc.isAvailable) {
+                  children.add(
+                    Column(
+                      children: <Widget>[
+                        Divider(
+                          height: 0.0,
+                          color: themeData.dividerColor.withOpacity(0.2),
+                          indent: 72.0,
+                        ),
+                        ListTile(
+                          leading: const _ActionImage(
+                            enabled: true,
+                            svgAssetPath: "src/icon/nfc.svg",
+                          ),
+                          title: Text(
+                            texts.bottom_action_bar_sweep_satscard,
+                            style: theme.bottomSheetTextStyle,
+                          ),
+                          onTap: () {
+                            Navigator.of(context).pop();
+                            ServiceInjector().nfc.startSession(
+                                  autoClose: false,
+                                  satscardOnly: true,
+                                  iosAlert: texts
+                                      .bottom_action_bar_sweep_satscard_nfc_prompt,
+                                );
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
                 return Column(
                   mainAxisSize: MainAxisSize.min,

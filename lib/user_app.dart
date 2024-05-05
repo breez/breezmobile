@@ -10,6 +10,7 @@ import 'package:breez/bloc/lsp/lsp_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/model.dart';
 import 'package:breez/bloc/reverse_swap/reverse_swap_bloc.dart';
+import 'package:breez/bloc/satscard/satscard_bloc.dart';
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
 import 'package:breez/bloc/user_profile/user_actions.dart';
 import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
@@ -24,6 +25,7 @@ import 'package:breez/routes/dev/dev.dart';
 import 'package:breez/routes/fiat_currencies/fiat_currency_settings.dart';
 import 'package:breez/routes/get_refund/get_refund_page.dart';
 import 'package:breez/routes/initial_walkthrough/initial_walkthrough.dart';
+import 'package:breez/routes/initialize_satscard/initialize_satscard_page.dart';
 import 'package:breez/routes/lsp/select_lsp_page.dart';
 import 'package:breez/routes/marketplace/marketplace.dart';
 import 'package:breez/routes/network/network.dart';
@@ -32,6 +34,7 @@ import 'package:breez/routes/payment_options/payment_options_page.dart';
 import 'package:breez/routes/podcast/theme.dart';
 import 'package:breez/routes/podcast_history/podcast_history.dart';
 import 'package:breez/routes/qr_scan.dart';
+import 'package:breez/routes/satscard_balance/satscard_balance_page.dart';
 import 'package:breez/routes/security_pin/lock_screen.dart';
 import 'package:breez/routes/security_pin/security_and_backup/security_and_backup_page.dart';
 import 'package:breez/routes/settings/pos_settings_page.dart';
@@ -43,6 +46,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:breez/widgets/route.dart';
 import 'package:breez/widgets/static_loader.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
+import 'package:cktap_protocol/cktapcard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -76,6 +80,7 @@ class UserApp extends StatelessWidget {
     var connectPayBloc = AppBlocsProvider.of<ConnectPayBloc>(context);
     var lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     var reverseSwapBloc = AppBlocsProvider.of<ReverseSwapBloc>(context);
+    var satscardBloc = AppBlocsProvider.of<SatscardBloc>(context);
     var lnurlBloc = AppBlocsProvider.of<LNUrlBloc>(context);
     var posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
 
@@ -205,6 +210,7 @@ class UserApp extends StatelessWidget {
                                   backupBloc,
                                   lspBloc,
                                   reverseSwapBloc,
+                                  satscardBloc,
                                   lnurlBloc,
                                 ),
                                 settings: settings,
@@ -362,6 +368,22 @@ class UserApp extends StatelessWidget {
                               return MaterialPageRoute<String>(
                                 fullscreenDialog: true,
                                 builder: (_) => QRScan(),
+                                settings: settings,
+                              );
+                            case '/initialize_satscard':
+                              return FadeInRoute (
+                                builder: (_) =>
+                                    InitializeSatscardPage(settings.arguments as Satscard),
+                                settings: settings,
+                              );
+                            case '/satscard_balance':
+                              return FadeInRoute (
+                                builder: (_) {
+                                  final arguments = settings.arguments as Map;
+                                  final card = arguments["card"] as Satscard;
+                                  final slot = arguments["slot"] as Slot;
+                                  return SatscardBalancePage(card, slot);
+                                },
                                 settings: settings,
                               );
                           }
