@@ -24,12 +24,10 @@ class PodcastClipDetailBottomSheet extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<PodcastClipDetailBottomSheet> createState() =>
-      _PodcastClipDetailBottomSheetState();
+  State<PodcastClipDetailBottomSheet> createState() => _PodcastClipDetailBottomSheetState();
 }
 
-class _PodcastClipDetailBottomSheetState
-    extends State<PodcastClipDetailBottomSheet> {
+class _PodcastClipDetailBottomSheetState extends State<PodcastClipDetailBottomSheet> {
   @override
   Widget build(BuildContext context) {
     final podcastClipBloc = AppBlocsProvider.of<PodcastClipBloc>(context);
@@ -116,28 +114,21 @@ class _PodcastClipDetailBottomSheetState
                           ),
                         ),
                         const Spacer(),
-                        clipDetailSnapshot.data.podcastClipState ==
-                                PodcastClipState.IDLE
+                        clipDetailSnapshot.data.podcastClipState == PodcastClipState.IDLE
                             ? TextButton(
                                 onPressed: () async {
-                                  podcastClipBloc.setPodcastState(
-                                      PodcastClipState.FETCHING_IMAGE);
-                                  Episode e =
-                                      clipDetailSnapshot.data.episodeDetails;
+                                  podcastClipBloc.setPodcastState(PodcastClipState.FETCHING_IMAGE);
+                                  Episode e = clipDetailSnapshot.data.episodeDetails;
                                   var image = NetworkImage(e.imageUrl);
 
-                                  image
-                                      .resolve(const ImageConfiguration())
-                                      .addListener(
+                                  image.resolve(const ImageConfiguration()).addListener(
                                     ImageStreamListener(
                                       (info, call) async {
                                         try {
                                           Uint8List screenShotImage =
-                                              await ScreenshotController()
-                                                  .captureFromWidget(
+                                              await ScreenshotController().captureFromWidget(
                                             _imageWidget(
-                                              episodeDetails: clipDetailSnapshot
-                                                  .data.episodeDetails,
+                                              episodeDetails: clipDetailSnapshot.data.episodeDetails,
                                             ),
                                             context: context,
                                             delay: const Duration(
@@ -271,10 +262,7 @@ class _PodcastClipDetailBottomSheetState
         gradient: LinearGradient(
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
-          colors: [
-            breezTheme.BreezColors.blue[500],
-            breezTheme.BreezColors.blue[500].withOpacity(0.5)
-          ],
+          colors: [breezTheme.BreezColors.blue[500], breezTheme.BreezColors.blue[500].withOpacity(0.5)],
         ),
       ),
       padding: const EdgeInsets.only(left: 20, right: 20, top: 20, bottom: 28),
@@ -349,6 +337,5 @@ class _PodcastClipDetailBottomSheetState
     );
   }
 
-  String _formatDuration(Duration d) =>
-      d.toString().split('.').first.padLeft(8, "0");
+  String _formatDuration(Duration d) => d.toString().split('.').first.padLeft(8, "0");
 }

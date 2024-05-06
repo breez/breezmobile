@@ -20,18 +20,15 @@ const int _initialSeconds = 10;
 const int _maxClipDuration = 120;
 
 class PodcastClipBloc with AsyncActionsHandler {
-  final BehaviorSubject<PodcastClipDetailsModel> _clipDetailsBehaviourSubject =
-      BehaviorSubject();
+  final BehaviorSubject<PodcastClipDetailsModel> _clipDetailsBehaviourSubject = BehaviorSubject();
 
-  Stream<PodcastClipDetailsModel> get clipDetails =>
-      _clipDetailsBehaviourSubject.stream;
+  Stream<PodcastClipDetailsModel> get clipDetails => _clipDetailsBehaviourSubject.stream;
 
 //Used as a flag to disable sharing since ongoing ffmpeg commands can't be terminated.
   bool enableClipSharing = false;
 
   setPodcastClipDetails({PositionState position}) {
-    Duration endTime =
-        position.position + const Duration(seconds: _initialSeconds);
+    Duration endTime = position.position + const Duration(seconds: _initialSeconds);
 
     PodcastClipDetailsModel podcastClipDetails = PodcastClipDetailsModel(
         startTimeStamp: position.position,
@@ -58,21 +55,18 @@ class PodcastClipBloc with AsyncActionsHandler {
     var clipDetails = getCurrentPodcastClipDetails();
 
     // Check if the duration exceeds the episode length
-    if ((clipDetails.startTimeStamp + Duration(seconds: durationInSeconds)) >
-        clipDetails.episodeLength) {
+    if ((clipDetails.startTimeStamp + Duration(seconds: durationInSeconds)) > clipDetails.episodeLength) {
       return;
     }
     //Return if the incremented duration is >=  _maxClipDuration or if the decremented duration is less <=0
-    if ((_maxClipDuration + _initialSeconds - durationInSeconds <= 0) ||
-        (durationInSeconds <= 0)) {
+    if ((_maxClipDuration + _initialSeconds - durationInSeconds <= 0) || (durationInSeconds <= 0)) {
       return;
     }
 
-    Duration clipEndTime =
-        clipDetails.startTimeStamp + Duration(seconds: durationInSeconds);
+    Duration clipEndTime = clipDetails.startTimeStamp + Duration(seconds: durationInSeconds);
 
-    _clipDetailsBehaviourSubject.add(clipDetails.copy(
-        clipDuration: durationInSeconds, endTimeStamp: clipEndTime));
+    _clipDetailsBehaviourSubject
+        .add(clipDetails.copy(clipDuration: durationInSeconds, endTimeStamp: clipEndTime));
   }
 
   incrementDuration() async {
@@ -81,8 +75,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     int incrementedClipDuration = 0;
 
     if (currentClipDuration % 10 != 0) {
-      incrementedClipDuration =
-          currentClipDuration - currentClipDuration % 10 + _initialSeconds;
+      incrementedClipDuration = currentClipDuration - currentClipDuration % 10 + _initialSeconds;
     } else {
       incrementedClipDuration = currentClipDuration + _initialSeconds;
     }
@@ -116,8 +109,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     String clippedAudioCommand =
         '-i "$episodeUrl" -ss ${clipDetails.startTimeStamp.inSeconds} -to ${clipDetails.endTimeStamp.inSeconds}  -acodec copy $audioClipPath';
 
-    FFmpegSession ffpegSessionDetails =
-        await FFmpegKit.execute(clippedAudioCommand);
+    FFmpegSession ffpegSessionDetails = await FFmpegKit.execute(clippedAudioCommand);
 
     final returnCode = await ffpegSessionDetails.getReturnCode();
 
@@ -148,22 +140,17 @@ class PodcastClipBloc with AsyncActionsHandler {
     // https://ffmpeg.org/ffmpeg-filters.html#showwaves
     const showWaveColor = "colors=0xffffff@0.5";
     const mode = "mode=cline";
-    final size =
-        "size=${_forceEven((width * 0.8).toInt())}x${_forceEven((height * 0.3).toInt())}";
+    final size = "size=${_forceEven((width * 0.8).toInt())}x${_forceEven((height * 0.3).toInt())}";
     const scale = "scale=lin";
-    final scaleValue =
-        "[1:v]scale=${_forceEven(width)}:${_forceEven(height)}[bg]";
+    final scaleValue = "[1:v]scale=${_forceEven(width)}:${_forceEven(height)}[bg]";
     const format = "format=yuva420p[v]";
-    final overlay =
-        "[bg][v]overlay=(main_w-overlay_w)/2:${_forceEven((height * 0.7).toInt())}[outv]";
-    final filterComplex =
-        "[0:a]showwaves=$showWaveColor:$mode:$size:$scale,$format;$scaleValue;$overlay";
+    final overlay = "[bg][v]overlay=(main_w-overlay_w)/2:${_forceEven((height * 0.7).toInt())}[outv]";
+    final filterComplex = "[0:a]showwaves=$showWaveColor:$mode:$size:$scale,$format;$scaleValue;$overlay";
     final clippedVideoCommand =
         '-i  $audioClipPath -i $episodeImagePath -filter_complex $filterComplex -map "[outv]" -map 0:a -c:v libx264 -c:a copy $videoClipPath';
     _log.info("ffmpeg command: $clippedVideoCommand");
 
-    FFmpegSession ffpegSessionDetails =
-        await FFmpegKit.execute(clippedVideoCommand);
+    FFmpegSession ffpegSessionDetails = await FFmpegKit.execute(clippedVideoCommand);
 
     final returnCode = await ffpegSessionDetails.getReturnCode();
     if (ReturnCode.isSuccess(returnCode)) {
@@ -179,8 +166,7 @@ class PodcastClipBloc with AsyncActionsHandler {
     var clipDetails = getCurrentPodcastClipDetails();
 
     // Check if there is time to create a clip of minimum 10 secs
-    if ((clipDetails.endTimeStamp + const Duration(seconds: _initialSeconds)) >
-        clipDetails.episodeLength) {
+    if ((clipDetails.endTimeStamp + const Duration(seconds: _initialSeconds)) > clipDetails.episodeLength) {
       return false;
     }
     return true;
@@ -199,16 +185,15 @@ class PodcastClipBloc with AsyncActionsHandler {
 
       String podcastImageWidgetPath = imageFile.path;
 
-      _clipDetailsBehaviourSubject.add(clipDetails.copy(
-          podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
+      _clipDetailsBehaviourSubject
+          .add(clipDetails.copy(podcastClipState: PodcastClipState.FETCHING_AUDIO_CLIP));
       if (!enableClipSharing) {
         return;
       }
 
       String audioClipPath = await _getAudioClipPath(clipDetails: clipDetails);
 
-      _clipDetailsBehaviourSubject.add(
-          clipDetails.copy(podcastClipState: PodcastClipState.GENERATING_CLIP));
+      _clipDetailsBehaviourSubject.add(clipDetails.copy(podcastClipState: PodcastClipState.GENERATING_CLIP));
       if (!enableClipSharing) {
         return;
       }
@@ -229,15 +214,13 @@ class PodcastClipBloc with AsyncActionsHandler {
       _log.warning(e);
       throw "Failed to clip the episode. More details: ${e.toString()}";
     } finally {
-      _clipDetailsBehaviourSubject
-          .add(clipDetails.copy(podcastClipState: PodcastClipState.IDLE));
+      _clipDetailsBehaviourSubject.add(clipDetails.copy(podcastClipState: PodcastClipState.IDLE));
     }
   }
 
   setPodcastState(PodcastClipState clipState) {
     var clipDetails = getCurrentPodcastClipDetails();
-    _clipDetailsBehaviourSubject
-        .add(clipDetails.copy(podcastClipState: clipState));
+    _clipDetailsBehaviourSubject.add(clipDetails.copy(podcastClipState: clipState));
   }
 
   Future<String> initClipDirectory({
@@ -257,8 +240,7 @@ class PodcastClipBloc with AsyncActionsHandler {
       return null;
     }
 
-    var x = await Directory(tempDirectory.path + tempClipPath)
-        .create(recursive: true);
+    var x = await Directory(tempDirectory.path + tempClipPath).create(recursive: true);
 
     finalPath = x.path;
     return finalPath;

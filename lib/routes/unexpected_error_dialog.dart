@@ -139,14 +139,10 @@ void listenUnexpectedError(
               ],
             ),
           ),
-          okText: allowRetry
-              ? texts.unexpected_error_action_try_again
-              : texts.unexpected_error_action_just_exit,
-          okFunc: allowRetry
-              ? () => accountBloc.userActionsSink.add(RestartDaemon())
-              : () => exit(0),
-          optionText:
-              allowRetry ? texts.unexpected_error_action_exit_for_retry : null,
+          okText:
+              allowRetry ? texts.unexpected_error_action_try_again : texts.unexpected_error_action_just_exit,
+          okFunc: allowRetry ? () => accountBloc.userActionsSink.add(RestartDaemon()) : () => exit(0),
+          optionText: allowRetry ? texts.unexpected_error_action_exit_for_retry : null,
           optionFunc: () => exit(0),
           disableBack: true,
         );

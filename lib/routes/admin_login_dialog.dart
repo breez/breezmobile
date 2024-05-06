@@ -84,9 +84,7 @@ class _AdminLoginDialogState extends State<_AdminLoginDialog> {
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
             primary: themeData.textTheme.labelLarge.color,
-            error: theme.themeId == "BLUE"
-                ? Colors.red
-                : themeData.colorScheme.error,
+            error: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
           ),
           primaryColor: themeData.textTheme.labelLarge.color,
         ),

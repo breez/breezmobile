@@ -39,8 +39,7 @@ class NostrBloc with AsyncActionsHandler {
     nostrPrivateKey = await _secureStorage.read(key: "nostrPrivateKey");
   }
 
-  final StreamController<String> _publicKeyController =
-      StreamController<String>.broadcast();
+  final StreamController<String> _publicKeyController = StreamController<String>.broadcast();
   Stream<String> get publicKeyStream => _publicKeyController.stream;
 
   final StreamController<Map<String, dynamic>> _eventController =
@@ -57,8 +56,7 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleSignEvent(SignEvent action) async {
     //  to sign the event
-    Map<String, dynamic> signedEvent =
-        await _signEvent(action.eventObject, action.privateKey);
+    Map<String, dynamic> signedEvent = await _signEvent(action.eventObject, action.privateKey);
 
     _eventController.add(signedEvent);
     action.resolve(signedEvent);
@@ -79,8 +77,7 @@ class NostrBloc with AsyncActionsHandler {
 
   Future<void> _handleNip04Decrypt(Nip04Decrypt action) async {
     // to decrypt the data
-    String decryptedData =
-        await _decryptData(action.encryptedData, action.privateKey);
+    String decryptedData = await _decryptData(action.encryptedData, action.privateKey);
     action.resolve(decryptedData);
   }
 
@@ -100,16 +97,14 @@ class NostrBloc with AsyncActionsHandler {
       nostrPublicKey = nostrKeyPair.substring(index + 1);
 
       // Write value
-      await _secureStorage.write(
-          key: 'nostrPrivateKey', value: nostrPrivateKey);
+      await _secureStorage.write(key: 'nostrPrivateKey', value: nostrPrivateKey);
       await _secureStorage.write(key: 'nostrPublicKey', value: nostrPublicKey);
     }
 
     return nostrPublicKey;
   }
 
-  Future<Map<String, dynamic>> _signEvent(
-      Map<String, dynamic> eventObject, String nostrPrivateKey) async {
+  Future<Map<String, dynamic>> _signEvent(Map<String, dynamic> eventObject, String nostrPrivateKey) async {
     final eventApi = EventApi();
 
     if (eventObject['pubkey'] == null) {
@@ -117,8 +112,7 @@ class NostrBloc with AsyncActionsHandler {
     }
 
     List<dynamic> dynamicList = eventObject['tags'];
-    List<List<String>> stringList =
-        dynamicList.map((innerList) => List<String>.from(innerList)).toList();
+    List<List<String>> stringList = dynamicList.map((innerList) => List<String>.from(innerList)).toList();
 
     final event = Event(
       content: eventObject['content'],

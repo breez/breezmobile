@@ -30,11 +30,9 @@ class GraphDownloader {
       _log.info("GraphDownloader event: ${event.percentage}");
       var tasks = await downloadManager.loadTasks();
       var downloadURL = (await preferences).getString("graph_url");
-      var currentTask = tasks.firstWhere(
-          (t) => t.url == downloadURL && t.taskId == event.id,
-          orElse: () => null);
-      if (currentTask != null &&
-          finalTaskStatuses.contains(currentTask.status)) {
+      var currentTask =
+          tasks.firstWhere((t) => t.url == downloadURL && t.taskId == event.id, orElse: () => null);
+      if (currentTask != null && finalTaskStatuses.contains(currentTask.status)) {
         _log.info("GraphDownloader task status = ${currentTask.status}");
         await _onTaskFinished(currentTask);
       }
@@ -44,9 +42,8 @@ class GraphDownloader {
   Future _onTaskFinished(DownloadTask currentTask) async {
     if (_downloadCompleter != null) {
       if (currentTask.status == DownloadTaskStatus.complete) {
-        _downloadCompleter.complete(File(currentTask.savedDir +
-            Platform.pathSeparator +
-            currentTask.filename));
+        _downloadCompleter
+            .complete(File(currentTask.savedDir + Platform.pathSeparator + currentTask.filename));
       } else {
         _downloadCompleter.completeError("graph sync failed");
       }
@@ -74,15 +71,13 @@ class GraphDownloader {
         }
 
         if (tasks[i].status == DownloadTaskStatus.complete) {
-          _log.info(
-              "Already has a recently completed graph download task, using it");
+          _log.info("Already has a recently completed graph download task, using it");
           _onTaskFinished(tasks[i]);
           return _downloadCompleter.future;
         }
 
         if (tasks[i].status == DownloadTaskStatus.running) {
-          _log.info(
-              "Already has graph download task running, not starting another one");
+          _log.info("Already has graph download task running, not starting another one");
           return _downloadCompleter.future;
         }
       }
@@ -93,8 +88,7 @@ class GraphDownloader {
     var downloadDirPath = '${appDir.path}${Platform.pathSeparator}Download';
     var downloadDir = Directory(downloadDirPath);
     downloadDir.createSync(recursive: true);
-    await downloadManager.enqueTask(
-        downloadURL, downloadDir.path, "channel.db");
+    await downloadManager.enqueTask(downloadURL, downloadDir.path, "channel.db");
     return _downloadCompleter.future;
   }
 

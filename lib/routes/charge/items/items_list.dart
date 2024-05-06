@@ -11,8 +11,7 @@ class ItemsList extends StatelessWidget {
   final List<Item> _items;
   final Function(Item item, GlobalKey avatarKey) _addItem;
 
-  const ItemsList(
-      this.accountModel, this.posCatalogBloc, this._items, this._addItem);
+  const ItemsList(this.accountModel, this.posCatalogBloc, this._items, this._addItem);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +20,8 @@ class ItemsList extends StatelessWidget {
         shrinkWrap: true,
         primary: false,
         itemBuilder: (BuildContext context, int index) {
-          return CatalogItem(accountModel, posCatalogBloc, _items[index],
-              _items.length - 1 == index, _addItem);
+          return CatalogItem(
+              accountModel, posCatalogBloc, _items[index], _items.length - 1 == index, _addItem);
         });
   }
 }

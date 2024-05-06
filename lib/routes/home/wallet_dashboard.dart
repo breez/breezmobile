@@ -70,45 +70,44 @@ class WalletDashboardState extends State<WalletDashboard> {
           Positioned(
             top: 60 - BALANCE_OFFSET_TRANSITION * widget._offsetFactor,
             child: Center(
-              child:
-                  widget._accountModel != null && !widget._accountModel.initial
-                      ? TextButton(
-                          style: _balanceStyle(),
-                          onPressed: () {
-                            if (widget._userModel.hideBalance) {
-                              widget._onPrivacyChange(false);
-                              return;
-                            }
-                            final list = Currency.currencies;
-                            final index = list.indexOf(
-                              widget._accountModel.currency,
-                            );
-                            final nextCurrencyIndex = (index + 1) % list.length;
-                            if (nextCurrencyIndex == 1) {
-                              widget._onPrivacyChange(true);
-                            }
-                            widget._onCurrencyChange(
-                              list[nextCurrencyIndex],
-                            );
-                          },
-                          child: widget._userModel.hideBalance
-                              ? _balanceHide(
+              child: widget._accountModel != null && !widget._accountModel.initial
+                  ? TextButton(
+                      style: _balanceStyle(),
+                      onPressed: () {
+                        if (widget._userModel.hideBalance) {
+                          widget._onPrivacyChange(false);
+                          return;
+                        }
+                        final list = Currency.currencies;
+                        final index = list.indexOf(
+                          widget._accountModel.currency,
+                        );
+                        final nextCurrencyIndex = (index + 1) % list.length;
+                        if (nextCurrencyIndex == 1) {
+                          widget._onPrivacyChange(true);
+                        }
+                        widget._onCurrencyChange(
+                          list[nextCurrencyIndex],
+                        );
+                      },
+                      child: widget._userModel.hideBalance
+                          ? _balanceHide(
+                              startHeaderSize,
+                              endHeaderFontSize,
+                            )
+                          : (widget._offsetFactor > 0.8 &&
+                                  _showFiatCurrency &&
+                                  widget._accountModel.fiatCurrency != null)
+                              ? _balanceText(
                                   startHeaderSize,
                                   endHeaderFontSize,
                                 )
-                              : (widget._offsetFactor > 0.8 &&
-                                      _showFiatCurrency &&
-                                      widget._accountModel.fiatCurrency != null)
-                                  ? _balanceText(
-                                      startHeaderSize,
-                                      endHeaderFontSize,
-                                    )
-                                  : _balanceRichText(
-                                      startHeaderSize,
-                                      endHeaderFontSize,
-                                    ),
-                        )
-                      : const SizedBox(),
+                              : _balanceRichText(
+                                  startHeaderSize,
+                                  endHeaderFontSize,
+                                ),
+                    )
+                  : const SizedBox(),
             ),
           ),
           Positioned(
@@ -152,8 +151,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     return Text(
       widget._accountModel.formattedFiatBalance,
       style: themeData.walletDashboardHeaderTextStyle.copyWith(
-        fontSize: startHeaderSize -
-            (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+        fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
     );
   }
@@ -168,8 +166,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     return RichText(
       text: TextSpan(
         style: headlineMedium.copyWith(
-          fontSize: startHeaderSize -
-              (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+          fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
         ),
         text: widget._accountModel.currency.format(
           widget._accountModel.balance,
@@ -179,9 +176,8 @@ class WalletDashboardState extends State<WalletDashboard> {
           TextSpan(
             text: " ${widget._accountModel.currency.displayName}",
             style: headlineMedium.copyWith(
-              fontSize: startHeaderSize * 0.6 -
-                  (startHeaderSize * 0.6 - endHeaderFontSize) *
-                      widget._offsetFactor,
+              fontSize:
+                  startHeaderSize * 0.6 - (startHeaderSize * 0.6 - endHeaderFontSize) * widget._offsetFactor,
             ),
           ),
         ],
@@ -199,8 +195,7 @@ class WalletDashboardState extends State<WalletDashboard> {
     return Text(
       texts.wallet_dashboard_balance_hide,
       style: themeData.walletDashboardHeaderTextStyle.copyWith(
-        fontSize: startHeaderSize -
-            (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
+        fontSize: startHeaderSize - (startHeaderSize - endHeaderFontSize) * widget._offsetFactor,
       ),
     );
   }

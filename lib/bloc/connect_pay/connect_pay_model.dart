@@ -4,8 +4,7 @@ This model represents the state of the payment session for both sides.
 import 'package:fixnum/fixnum.dart';
 
 class PaymentSessionState {
-  static const Duration connectionEmulationDuration =
-      Duration(milliseconds: 1500);
+  static const Duration connectionEmulationDuration = Duration(milliseconds: 1500);
   final bool payer;
   final String sessionSecret;
   final PayerSessionData payerData;
@@ -15,8 +14,7 @@ class PaymentSessionState {
   final bool paymentFulfilled;
   final int settledAmount;
 
-  bool get remotePartyCancelled =>
-      payer ? payeeData.cancelled : payerData.cancelled;
+  bool get remotePartyCancelled => payer ? payeeData.cancelled : payerData.cancelled;
 
   PaymentSessionState(
     this.payer,
@@ -49,8 +47,7 @@ class PaymentSessionState {
     );
   }
 
-  PaymentSessionState.payerStart(
-      String sessionSecret, String userName, String imageURL)
+  PaymentSessionState.payerStart(String sessionSecret, String userName, String imageURL)
       : this(
           true,
           sessionSecret,
@@ -61,14 +58,12 @@ class PaymentSessionState {
           false,
           0,
         );
-  PaymentSessionState.payeeStart(
-      String sessionSecret, String userName, String imageURL)
+  PaymentSessionState.payeeStart(String sessionSecret, String userName, String imageURL)
       : this(
           false,
           sessionSecret,
           PayerSessionData(null, null, PeerStatus.initial(), null, null),
-          PayeeSessionData(
-              userName, imageURL, PeerStatus.initial(), null, null, false),
+          PayeeSessionData(userName, imageURL, PeerStatus.initial(), null, null, false),
           true,
           true,
           false,
@@ -87,18 +82,11 @@ class PayerSessionData {
   final bool paymentFulfilled;
   final double unconfirmedChannelsProgress;
 
-  PayerSessionData(
-      this.userName, this.imageURL, this.status, this.amount, this.description,
-      {this.error,
-      this.paymentFulfilled = false,
-      this.cancelled = false,
-      this.unconfirmedChannelsProgress});
+  PayerSessionData(this.userName, this.imageURL, this.status, this.amount, this.description,
+      {this.error, this.paymentFulfilled = false, this.cancelled = false, this.unconfirmedChannelsProgress});
   PayerSessionData.fromJson(Map<dynamic, dynamic> json)
-      : status =
-            json['status'] == null ? null : PeerStatus.fromJson(json['status']),
-        amount = json['amount'] != null
-            ? int.parse(json['amount'].toString())
-            : null,
+      : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
+        amount = json['amount'] != null ? int.parse(json['amount'].toString()) : null,
         description = json['description'],
         userName = json["userName"],
         imageURL = json["imageURL"],
@@ -126,8 +114,7 @@ class PayerSessionData {
       error: error ?? this.error,
       paymentFulfilled: paymentFulfilled ?? this.paymentFulfilled,
       cancelled: cancelled ?? cancelled,
-      unconfirmedChannelsProgress:
-          unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress,
+      unconfirmedChannelsProgress: unconfirmedChannelsProgress ?? this.unconfirmedChannelsProgress,
     );
   }
 }
@@ -141,12 +128,11 @@ class PayeeSessionData {
   final bool cancelled;
   bool get invitationAccepted => status.lastChanged != 0;
 
-  PayeeSessionData(this.userName, this.imageURL, this.status,
-      this.paymentRequest, this.error, this.cancelled);
+  PayeeSessionData(
+      this.userName, this.imageURL, this.status, this.paymentRequest, this.error, this.cancelled);
 
   PayeeSessionData.fromJson(Map<dynamic, dynamic> json)
-      : status =
-            json['status'] == null ? null : PeerStatus.fromJson(json['status']),
+      : status = json['status'] == null ? null : PeerStatus.fromJson(json['status']),
         paymentRequest = json['paymentRequest'],
         userName = json["userName"],
         error = json["error"],
@@ -199,8 +185,7 @@ class PaymentSessionError {
   final PaymentSessionErrorType type;
   final String description;
 
-  PaymentSessionError.unknown(this.description)
-      : type = PaymentSessionErrorType.UNKNOWN;
+  PaymentSessionError.unknown(this.description) : type = PaymentSessionErrorType.UNKNOWN;
 
   PaymentSessionError(this.type, this.description);
 }

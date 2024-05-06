@@ -14,8 +14,7 @@ class AccountSynchronizer {
   bool _dismissed = false;
   bool bootstrap = false;
 
-  final Function(int startTimestamp, double progress, bool syncedToChain,
-      bool isBootstrap) onProgress;
+  final Function(int startTimestamp, double progress, bool syncedToChain, bool isBootstrap) onProgress;
   final Function onComplete;
 
   AccountSynchronizer(this._breezLib, {this.onProgress, this.onComplete}) {
@@ -55,12 +54,10 @@ class AccountSynchronizer {
       }
       _breezLib.sendCommand("getinfo").then((info) {
         Map replyJson = json.decode(info);
-        var syncedToTimestamp =
-            int.parse(replyJson["bestHeaderTimestamp"].toString()) * 1000;
+        var syncedToTimestamp = int.parse(replyJson["bestHeaderTimestamp"].toString()) * 1000;
         var syncedToChain = replyJson["syncedToChain"].toString() == "true";
 
-        if (_startPollTimestamp == 0 &&
-            DateTime.now().millisecondsSinceEpoch - syncedToTimestamp > 0) {
+        if (_startPollTimestamp == 0 && DateTime.now().millisecondsSinceEpoch - syncedToTimestamp > 0) {
           _startPollTimestamp = syncedToTimestamp;
         }
         if (_startPollTimestamp > syncedToTimestamp) {
@@ -98,9 +95,7 @@ class AccountSynchronizer {
   void _emitProgress() {
     double progress = _chainProgress;
     if (bootstrap) {
-      progress = _bootstrapProgress * 0.7 +
-          _chainProgress * 0.2 +
-          _openChannelProgress * 0.1;
+      progress = _bootstrapProgress * 0.7 + _chainProgress * 0.2 + _openChannelProgress * 0.1;
     }
     onProgress(_startPollTimestamp, progress, _chainProgress == 1.0, bootstrap);
   }

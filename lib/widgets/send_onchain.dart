@@ -67,9 +67,7 @@ class SendOnchainState extends State<SendOnchain> {
 
   void _updateFee() {
     final account = widget._account;
-    if (!feeUpdated &&
-        _feeController.text.isEmpty &&
-        account.onChainFeeRate != null) {
+    if (!feeUpdated && _feeController.text.isEmpty && account.onChainFeeRate != null) {
       _feeController.text = account.onChainFeeRate.toString();
       feeUpdated = true;
     }
@@ -97,9 +95,7 @@ class SendOnchainState extends State<SendOnchain> {
         hintColor: dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
           primary: themeData.textTheme.labelLarge.color,
-          error: theme.themeId == "BLUE"
-              ? Colors.red
-              : themeData.colorScheme.error,
+          error: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
         ),
         primaryColor: themeData.textTheme.labelLarge.color,
         unselectedWidgetColor: themeData.canvasColor,
@@ -131,9 +127,7 @@ class SendOnchainState extends State<SendOnchain> {
                   onPressed: () => _asyncValidate().then((validated) {
                     if (validated) {
                       _formKey.currentState.save();
-                      widget
-                          ._onBroadcast(_addressValidated, _getFee())
-                          .then((msg) {
+                      widget._onBroadcast(_addressValidated, _getFee()).then((msg) {
                         Navigator.of(context).pop();
                         if (msg != null) {
                           showFlushbar(context, message: msg);
@@ -263,9 +257,7 @@ class SendOnchainState extends State<SendOnchain> {
   }
 
   Int64 _getFee() {
-    return _feeController.text.isNotEmpty
-        ? Int64.parseInt(_feeController.text)
-        : Int64(0);
+    return _feeController.text.isNotEmpty ? Int64.parseInt(_feeController.text) : Int64(0);
   }
 
   Future _scanBarcode() async {

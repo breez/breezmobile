@@ -38,8 +38,7 @@ class AccountPage extends StatefulWidget {
   }
 }
 
-class AccountPageState extends State<AccountPage>
-    with SingleTickerProviderStateMixin {
+class AccountPageState extends State<AccountPage> with SingleTickerProviderStateMixin {
   final currencyList = Currency.currencies.map((c) => c.tickerSymbol).toList();
 
   AccountBloc _accountBloc;
@@ -109,25 +108,19 @@ class AccountPageState extends State<AccountPage>
     final lspBloc = AppBlocsProvider.of<LSPBloc>(context);
     final queryData = MediaQuery.of(context);
 
-    final listHeightSpace = queryData.size.height -
-        DASHBOARD_MIN_HEIGHT -
-        kToolbarHeight -
-        FILTER_MAX_SIZE -
-        25.0;
+    final listHeightSpace =
+        queryData.size.height - DASHBOARD_MIN_HEIGHT - kToolbarHeight - FILTER_MAX_SIZE - 25.0;
     final startDate = paymentsModel?.filter?.startDate;
     final endDate = paymentsModel?.filter?.endDate;
     final dateFilterSpace = startDate != null && endDate != null ? 0.65 : 0.0;
     final payments = paymentsModel.paymentsList;
     final bottomPlaceholderSpace = payments == null || payments.isEmpty
         ? 0.0
-        : (listHeightSpace -
-                (PAYMENT_LIST_ITEM_HEIGHT + 8) *
-                    (payments.length + 1 + dateFilterSpace))
+        : (listHeightSpace - (PAYMENT_LIST_ITEM_HEIGHT + 8) * (payments.length + 1 + dateFilterSpace))
             .clamp(0.0, listHeightSpace);
 
     String message;
-    bool showMessage = account?.syncUIState != SyncUIState.BLOCKING &&
-        (account != null && !account.initial);
+    bool showMessage = account?.syncUIState != SyncUIState.BLOCKING && (account != null && !account.initial);
 
     List<Widget> slivers = [];
     slivers.add(SliverPersistentHeader(

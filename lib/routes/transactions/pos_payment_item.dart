@@ -84,9 +84,7 @@ class PosPaymentItem extends StatelessWidget {
       isSent || isWithdrawal
           ? texts.pos_transactions_item_negative(value)
           : texts.pos_transactions_item_positive(value),
-      style: isSent
-          ? theme.posWithdrawalTransactionAmountStyle
-          : theme.transactionAmountStyle,
+      style: isSent ? theme.posWithdrawalTransactionAmountStyle : theme.transactionAmountStyle,
     );
   }
 

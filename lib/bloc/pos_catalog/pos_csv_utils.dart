@@ -18,8 +18,7 @@ class PosCsvUtils {
 
   Future export() async {
     _log.info("export pos items started");
-    String tmpFilePath =
-        await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
     _log.info("export pos items finished");
     return tmpFilePath;
   }

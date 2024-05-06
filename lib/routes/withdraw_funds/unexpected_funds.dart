@@ -96,8 +96,7 @@ class UnexpectedFundsState extends State<UnexpectedFunds> {
                         _log.info("onConfirm: ${txDetails.txHash}}");
                         var action = PublishTransaction(txDetails.txBytes);
                         accountBloc.userActionsSink.add(action);
-                        return action.future
-                            .then((value) => Navigator.of(context).pop());
+                        return action.future.then((value) => Navigator.of(context).pop());
                       },
                       onPrevious: () {
                         _log.info("onPrevious");

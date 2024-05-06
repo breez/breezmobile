@@ -94,8 +94,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                   }
 
                   // regular lightning invoice.
-                  if (lower.startsWith("lightning:") ||
-                      lower.startsWith("ln")) {
+                  if (lower.startsWith("lightning:") || lower.startsWith("ln")) {
                     _log.finest(
                       "Scanned string is a regular lightning invoice",
                     );
@@ -110,8 +109,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                     _log.finest("Scanned string is a bitcoin address");
                     String requestAmount;
                     if (btcInvoice.satAmount != null) {
-                      final account =
-                          await profileBloc.userStream.take(1).first;
+                      final account = await profileBloc.userStream.take(1).first;
                       requestAmount = account.currency.format(
                         btcInvoice.satAmount,
                         userInput: true,

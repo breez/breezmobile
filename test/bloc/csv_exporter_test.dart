@@ -32,8 +32,7 @@ void main() {
     test('csv file should have header', () async {
       final filePath = await _make().export();
       final lines = await File(filePath).readAsLines();
-      expect(lines[0],
-          "Date & Time,Title,Description,Node ID,Amount,Preimage,TX Hash,Fee,USD");
+      expect(lines[0], "Date & Time,Title,Description,Node ID,Amount,Preimage,TX Hash,Fee,USD");
     });
 
     test('csv file should have item line', () async {

@@ -34,12 +34,9 @@ class InvoiceNotificationsHandler {
 
   _listenPaymentRequests() {
     // show payment request dialog for decoded requests
-    _receivedInvoicesStream
-        .where((payreq) => payreq != null && !_handlingRequest)
-        .listen((payreq) async {
+    _receivedInvoicesStream.where((payreq) => payreq != null && !_handlingRequest).listen((payreq) async {
       final navigator = Navigator.of(_context);
-      var account = await _accountBloc.accountStream
-          .firstWhere((a) => !a.initial, orElse: () => null);
+      var account = await _accountBloc.accountStream.firstWhere((a) => !a.initial, orElse: () => null);
       if (account == null || !account.connected) {
         return;
       }

@@ -56,10 +56,8 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
       _log.info("Sweep all coins response: $r");
       SweepAllCoinsTxs response = r as SweepAllCoinsTxs;
       _sweepAmount = response.amount;
-      List<int> targetConfirmations = response.transactions.keys.toList()
-        ..sort();
-      List<int> trimmedTargetConfirmations =
-          targetConfirmations.reversed.toList();
+      List<int> targetConfirmations = response.transactions.keys.toList()..sort();
+      List<int> trimmedTargetConfirmations = targetConfirmations.reversed.toList();
       _log.info("Sweep all coins amount $_sweepAmount"
           "confirmations: ${trimmedTargetConfirmations.logDescription((e) => e.toString())}");
       if (trimmedTargetConfirmations.length > 3) {
@@ -72,17 +70,13 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
         ];
       }
 
-      transactions = trimmedTargetConfirmations
-          .map((index) => response.transactions[index])
-          .toList();
+      transactions = trimmedTargetConfirmations.map((index) => response.transactions[index]).toList();
       _log.info("Sweep all coins transactions: "
           "${transactions.logDescription((e) => e.txHash)}");
 
-      feeOptions =
-          List.generate(trimmedTargetConfirmations.length, (index) => index)
-              .map((index) => FeeOption(transactions[index].fees.toInt(),
-                  trimmedTargetConfirmations[index]))
-              .toList();
+      feeOptions = List.generate(trimmedTargetConfirmations.length, (index) => index)
+          .map((index) => FeeOption(transactions[index].fees.toInt(), trimmedTargetConfirmations[index]))
+          .toList();
       if (feeOptions.isNotEmpty) {
         setState(() {
           _showConfirm = true;
@@ -132,14 +126,12 @@ class SweepAllCoinsConfirmationState extends State<SweepAllCoinsConfirmation> {
                 );
               }
 
-              if (futureSnapshot.connectionState != ConnectionState.done ||
-                  acc == null) {
+              if (futureSnapshot.connectionState != ConnectionState.done || acc == null) {
                 _log.info("Waiting ${futureSnapshot.connectionState} $acc");
                 return const SizedBox();
               }
 
-              if (feeOptions == null ||
-                  feeOptions.where((f) => f != null).isEmpty) {
+              if (feeOptions == null || feeOptions.where((f) => f != null).isEmpty) {
                 _log.info("No fees");
                 return _ErrorMessage(
                   message: texts.sweep_all_coins_error_amount_small,

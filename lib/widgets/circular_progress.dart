@@ -9,9 +9,7 @@ class CircularProgress extends StatelessWidget {
   final double size;
   final Color color;
 
-  const CircularProgress(
-      {Key key, this.value, this.title, this.size, this.color})
-      : super(key: key);
+  const CircularProgress({Key key, this.value, this.title, this.size, this.color}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

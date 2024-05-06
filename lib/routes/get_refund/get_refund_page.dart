@@ -34,8 +34,7 @@ class GetRefundPage extends StatelessWidget {
           }
           var account = accSnapshot.data;
           return GetRefundList(
-            refundableAddresses:
-                account.swapFundsStatus.maturedRefundableAddresses,
+            refundableAddresses: account.swapFundsStatus.maturedRefundableAddresses,
             currency: account.currency,
             allowRebroadcastRefunds: allowRebroadcastRefunds,
             onRefundPressed: (item) => onRefund(context, account, item),

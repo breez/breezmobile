@@ -48,9 +48,7 @@ class LoadingAnimatedTextState extends State<LoadingAnimatedText> {
             children: textElements
               ..addAll(<TextSpan>[
                 TextSpan(text: loadingDots),
-                TextSpan(
-                    text: paddingDots,
-                    style: const TextStyle(color: Colors.transparent))
+                TextSpan(text: paddingDots, style: const TextStyle(color: Colors.transparent))
               ])),
         textAlign: widget.textAlign ?? TextAlign.center);
   }

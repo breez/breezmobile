@@ -12,8 +12,7 @@ class Currency extends Object {
   const Currency._internal(this.tickerSymbol);
 
   factory Currency.fromTickerSymbol(String tickerSymbol) {
-    return currencies.firstWhere(
-        (c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
+    return currencies.firstWhere((c) => c.tickerSymbol.toUpperCase() == tickerSymbol.toUpperCase(),
         orElse: () => null);
   }
 
@@ -45,8 +44,7 @@ class Currency extends Object {
 
   Int64 toSats(double amount) => _CurrencyFormatter().toSats(amount, this);
 
-  String get displayName =>
-      tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
+  String get displayName => tickerSymbol.toLowerCase() == "sat" ? "sats" : tickerSymbol;
 
   String get symbol {
     switch (tickerSymbol) {
@@ -82,9 +80,7 @@ class _CurrencyFormatter {
   static final formatter = CurrencyFormatter().formatter;
 
   String format(satoshies, Currency currency,
-      {bool addCurrencySuffix = true,
-      bool addCurrencySymbol = false,
-      userInput = false}) {
+      {bool addCurrencySuffix = true, bool addCurrencySymbol = false, userInput = false}) {
     String formattedAmount = formatter.format(satoshies);
     switch (currency) {
       case Currency.BTC:

@@ -46,14 +46,12 @@ class SqliteRepository implements Repository {
 
   @override
   Future<void> deleteAsset(String url) async {
-    return _deleteDBItems(await getDB(), "asset",
-        where: "url = ?", whereArgs: [url]);
+    return _deleteDBItems(await getDB(), "asset", where: "url = ?", whereArgs: [url]);
   }
 
   @override
   Future<List<int>> fetchAssetByURL(String url) async {
-    var assets = await _fetchDBItems(
-        await getDB(), "asset", (e) => Asset.fromMap(e),
+    var assets = await _fetchDBItems(await getDB(), "asset", (e) => Asset.fromMap(e),
         where: "url = ?", whereArgs: [url]);
     return assets.isNotEmpty ? assets[0].data : null;
   }
@@ -68,28 +66,24 @@ class SqliteRepository implements Repository {
 
   @override
   Future<void> updateItem(Item item) async {
-    return _updateDBItem(await getDB(), "item", item.toMap(),
-        where: "id = ?", whereArgs: [item.id]);
+    return _updateDBItem(await getDB(), "item", item.toMap(), where: "id = ?", whereArgs: [item.id]);
   }
 
   @override
   Future<List<Item>> fetchItems({String filter}) async {
     return _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e),
-        where: filter == null ? null : "name LIKE ? OR sku LIKE ?",
-        whereArgs: ['%$filter%', '%$filter%']);
+        where: filter == null ? null : "name LIKE ? OR sku LIKE ?", whereArgs: ['%$filter%', '%$filter%']);
   }
 
   @override
   Future<void> deleteItem(int id) async {
-    return _deleteDBItems(await getDB(), "item",
-        where: "id = ?", whereArgs: [id]);
+    return _deleteDBItems(await getDB(), "item", where: "id = ?", whereArgs: [id]);
   }
 
   @override
   Future<Item> fetchItemByID(int id) async {
-    var items = await _fetchDBItems(
-        await getDB(), "item", (e) => Item.fromMap(e),
-        where: "id = ?", whereArgs: [id]);
+    var items =
+        await _fetchDBItems(await getDB(), "item", (e) => Item.fromMap(e), where: "id = ?", whereArgs: [id]);
     return items.isNotEmpty ? items[0] : null;
   }
 
@@ -126,15 +120,13 @@ class SqliteRepository implements Repository {
 
   @override
   Future<Sale> fetchSaleByID(int id) async {
-    var items = await _fetchDBItems(
-        await getDB(), "sale", (e) => Sale.fromMap(e),
-        where: "id = ?", whereArgs: [id]);
+    var items =
+        await _fetchDBItems(await getDB(), "sale", (e) => Sale.fromMap(e), where: "id = ?", whereArgs: [id]);
     if (items.isEmpty) {
       return null;
     }
     Sale s = items[0];
-    var saleLines = await _fetchDBItems(
-        await getDB(), "sale_line", (e) => SaleLine.fromMap(e),
+    var saleLines = await _fetchDBItems(await getDB(), "sale_line", (e) => SaleLine.fromMap(e),
         where: "sale_id = ?", whereArgs: [s.id]);
     return s.copyWith(saleLines: saleLines);
   }
@@ -142,8 +134,7 @@ class SqliteRepository implements Repository {
   @override
   Future<Sale> fetchSaleByPaymentHash(String paymentHash) async {
     int saleID = await (await getDB()).transaction((txn) async {
-      var salePayment = await txn.query("sale_payments",
-          where: "payment_hash = ?", whereArgs: [paymentHash]);
+      var salePayment = await txn.query("sale_payments", where: "payment_hash = ?", whereArgs: [paymentHash]);
       if (salePayment.isEmpty) {
         return null;
       }
@@ -287,10 +278,7 @@ class SqliteRepository implements Repository {
       String currency = reportMap["currencies"] ?? "";
 
       Map<String, double> fiatValues = {};
-      if (currencies == 1 &&
-          currency != "" &&
-          currency != "BTC" &&
-          currency != "SAT") {
+      if (currencies == 1 && currency != "" && currency != "BTC" && currency != "SAT") {
         fiatValues[currency] = fiatValue;
       }
 

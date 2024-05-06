@@ -220,9 +220,7 @@ GestureDetector _buildThemeSwitch(
                   "src/icon/ic_lightmode.png",
                   height: 24,
                   width: 24,
-                  color: snapshot.data.themeId == "BLUE"
-                      ? Colors.white
-                      : Colors.white30,
+                  color: snapshot.data.themeId == "BLUE" ? Colors.white : Colors.white30,
                 ),
                 const SizedBox(
                   height: 20,
@@ -233,9 +231,7 @@ GestureDetector _buildThemeSwitch(
                 ),
                 ImageIcon(
                   const AssetImage("src/icon/ic_darkmode.png"),
-                  color: snapshot.data.themeId == "DARK"
-                      ? Colors.white
-                      : Colors.white30,
+                  color: snapshot.data.themeId == "DARK" ? Colors.white : Colors.white30,
                   size: 24.0,
                 ),
               ],
@@ -327,9 +323,7 @@ Widget _actionTile(
       decoration: subTile != null
           ? null
           : BoxDecoration(
-              color: action.isSelected
-                  ? themeData.primaryColorLight
-                  : Colors.transparent,
+              color: action.isSelected ? themeData.primaryColorLight : Colors.transparent,
               borderRadius: const BorderRadius.horizontal(
                 right: Radius.circular(32),
               ),

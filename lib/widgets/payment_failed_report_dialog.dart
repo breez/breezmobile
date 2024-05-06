@@ -69,8 +69,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                     padding: const EdgeInsets.only(left: 15.0, right: 12.0),
                     child: Text(
                       texts.payment_failed_report_dialog_message,
-                      style: themeData.primaryTextTheme.displaySmall
-                          .copyWith(fontSize: 16),
+                      style: themeData.primaryTextTheme.displaySmall.copyWith(fontSize: 16),
                     ),
                   ),
                   Padding(
@@ -79,14 +78,11 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                       children: [
                         Theme(
                           data: themeData.copyWith(
-                            unselectedWidgetColor:
-                                themeData.textTheme.labelLarge.color,
+                            unselectedWidgetColor: themeData.textTheme.labelLarge.color,
                           ),
                           child: Checkbox(
                             activeColor: themeData.canvasColor,
-                            value: _doneAsk ??
-                                _settings.failedPaymentBehavior !=
-                                    BugReportBehavior.PROMPT,
+                            value: _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT,
                             onChanged: (v) {
                               setState(() {
                                 _doneAsk = v;
@@ -96,8 +92,7 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                         ),
                         Text(
                           texts.payment_failed_report_dialog_do_not_ask_again,
-                          style:
-                              themeData.primaryTextTheme.displaySmall.copyWith(
+                          style: themeData.primaryTextTheme.displaySmall.copyWith(
                             fontSize: 16,
                           ),
                         ),
@@ -133,13 +128,10 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
   }
 
   void onSubmit(bool yesNo) {
-    var dontAsk =
-        _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT;
+    var dontAsk = _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT;
     if (dontAsk) {
       widget._accountBloc.accountSettingsSink.add(_settings.copyWith(
-          failedPaymentBehavior: yesNo
-              ? BugReportBehavior.SEND_REPORT
-              : BugReportBehavior.IGNORE));
+          failedPaymentBehavior: yesNo ? BugReportBehavior.SEND_REPORT : BugReportBehavior.IGNORE));
     }
   }
 }

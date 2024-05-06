@@ -43,45 +43,33 @@ class BackupBloc with AsyncActionsHandler {
 
   static const _kPaymentOptionOverrideFee = "PAYMENT_OPTIONS_OVERRIDE_FEE";
   static const _kPaymentOptionBaseFee = "PAYMENT_OPTIONS_BASE_FEE";
-  static const _kPaymentOptionProportionalFee =
-      "PAYMENT_OPTIONS_PROPORTIONAL_FEE";
+  static const _kPaymentOptionProportionalFee = "PAYMENT_OPTIONS_PROPORTIONAL_FEE";
 
-  final BehaviorSubject<BackupState> _backupStateController =
-      BehaviorSubject<BackupState>();
+  final BehaviorSubject<BackupState> _backupStateController = BehaviorSubject<BackupState>();
   Stream<BackupState> get backupStateStream => _backupStateController.stream;
 
-  final StreamController<bool> _promptBackupController =
-      BehaviorSubject<bool>.seeded(false);
+  final StreamController<bool> _promptBackupController = BehaviorSubject<bool>.seeded(false);
   Stream<bool> get promptBackupStream => _promptBackupController.stream;
 
-  final StreamController<bool> _backupPromptVisibleController =
-      BehaviorSubject<bool>.seeded(false);
-  Stream<bool> get backupPromptVisibleStream =>
-      _backupPromptVisibleController.stream;
+  final StreamController<bool> _backupPromptVisibleController = BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get backupPromptVisibleStream => _backupPromptVisibleController.stream;
   Sink<bool> get backupPromptVisibleSink => _backupPromptVisibleController.sink;
 
-  final StreamController<bool> _promptBackupDismissedController =
-      BehaviorSubject<bool>.seeded(false);
-  Stream<bool> get promptBackupDismissedStream =>
-      _promptBackupDismissedController.stream;
-  Sink<bool> get promptBackupDismissedSink =>
-      _promptBackupDismissedController.sink;
+  final StreamController<bool> _promptBackupDismissedController = BehaviorSubject<bool>.seeded(false);
+  Stream<bool> get promptBackupDismissedStream => _promptBackupDismissedController.stream;
+  Sink<bool> get promptBackupDismissedSink => _promptBackupDismissedController.sink;
 
   final BehaviorSubject<BackupSettings> _backupSettingsController =
       BehaviorSubject<BackupSettings>.seeded(BackupSettings.initial());
-  Stream<BackupSettings> get backupSettingsStream =>
-      _backupSettingsController.stream;
+  Stream<BackupSettings> get backupSettingsStream => _backupSettingsController.stream;
   Sink<BackupSettings> get backupSettingsSink => _backupSettingsController.sink;
 
   final _backupAppDataController = StreamController<bool>.broadcast();
   Sink<bool> get backupAppDataSink => _backupAppDataController.sink;
 
-  final _restoreLightningFeesController =
-      StreamController<Map<String, dynamic>>.broadcast();
-  Sink<Map<String, dynamic>> get restoreLightningFeesSink =>
-      _restoreLightningFeesController.sink;
-  Stream<Map<String, dynamic>> get restoreLightningFeesStream =>
-      _restoreLightningFeesController.stream;
+  final _restoreLightningFeesController = StreamController<Map<String, dynamic>>.broadcast();
+  Sink<Map<String, dynamic>> get restoreLightningFeesSink => _restoreLightningFeesController.sink;
+  Stream<Map<String, dynamic>> get restoreLightningFeesStream => _restoreLightningFeesController.stream;
 
   final _backupActionsController = StreamController<AsyncAction>.broadcast();
   Sink<AsyncAction> get backupActionsSink => _backupActionsController.sink;
@@ -94,19 +82,14 @@ class BackupBloc with AsyncActionsHandler {
         backupPromptVisibleStream,
         backupStateStream,
         (settings, signInNeeded, dismissed, isVisible, backupState) {
-          return (!backupState.inProgress &&
-                  settings.promptOnError &&
-                  !dismissed &&
-                  !isVisible)
+          return (!backupState.inProgress && settings.promptOnError && !dismissed && !isVisible)
               ? signInNeeded
               : false;
         },
       );
 
-  final BehaviorSubject<bool> _backupServiceNeedLoginController =
-      BehaviorSubject<bool>.seeded(false);
-  StreamSink<bool> get backupServiceNeedLoginSink =>
-      _backupServiceNeedLoginController.sink;
+  final BehaviorSubject<bool> _backupServiceNeedLoginController = BehaviorSubject<bool>.seeded(false);
+  StreamSink<bool> get backupServiceNeedLoginSink => _backupServiceNeedLoginController.sink;
 
   BreezBridge _breezLib;
   BackgroundTaskService _tasksService;
@@ -164,8 +147,7 @@ class BackupBloc with AsyncActionsHandler {
   void _initAppDataPathAndDir() async {
     var appDir = await getApplicationDocumentsDirectory();
     _appDirPath = appDir.path;
-    _backupAppDataDirPath =
-        '$_appDirPath${Platform.pathSeparator}app_data_backup';
+    _backupAppDataDirPath = '$_appDirPath${Platform.pathSeparator}app_data_backup';
     Directory(_backupAppDataDirPath).createSync(recursive: true);
   }
 
@@ -180,8 +162,7 @@ class BackupBloc with AsyncActionsHandler {
 
   void _listenPaidInvoices() {
     _breezLib.notificationStream
-        .where((event) =>
-            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .where((event) => event.type == NotificationEvent_NotificationType.INVOICE_PAID)
         .listen((invoice) => _promptBackupDismissedController.add(false));
   }
 
@@ -199,8 +180,7 @@ class BackupBloc with AsyncActionsHandler {
           _log.info("backup key type continue to be the same");
         }
         if (newSettings.backupProvider != oldSettings.backupProvider ||
-            !oldSettings.remoteServerAuthData
-                .equal(newSettings.remoteServerAuthData)) {
+            !oldSettings.remoteServerAuthData.equal(newSettings.remoteServerAuthData)) {
           _log.info("update backup provider");
           await _updateBackupProvider(newSettings);
         } else {
@@ -240,8 +220,7 @@ class BackupBloc with AsyncActionsHandler {
 
   Future _initializePersistentData() async {
     //last backup time persistency
-    String backupStateJson =
-        _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
+    String backupStateJson = _sharedPreferences.getString(LAST_BACKUP_STATE_PREFERENCE_KEY);
     BackupState backupState = BackupState.initial();
     if (backupStateJson != null) {
       backupState = BackupState.fromJson(json.decode(backupStateJson));
@@ -249,35 +228,28 @@ class BackupBloc with AsyncActionsHandler {
 
     _backupStateController.add(backupState);
     _backupStateController.stream.listen((state) {
-      _sharedPreferences.setString(
-          LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
+      _sharedPreferences.setString(LAST_BACKUP_STATE_PREFERENCE_KEY, json.encode(state.toJson()));
     }, onError: (e) {
       _pushPromptIfNeeded();
     });
 
     //settings persistency
-    var backupSettings =
-        _sharedPreferences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
+    var backupSettings = _sharedPreferences.getString(BACKUP_SETTINGS_PREFERENCES_KEY);
     if (backupSettings != null) {
       Map<String, dynamic> settings = json.decode(backupSettings);
       var backupSettingsModel = BackupSettings.fromJson(settings);
       // For backward compatibility migrate backup provider by assigning "Google Drive"
       // in case we had backup and the provider is not set.
-      if (backupSettingsModel.backupProvider == null &&
-          backupState?.lastBackupTime != null) {
+      if (backupSettingsModel.backupProvider == null && backupState?.lastBackupTime != null) {
         backupSettingsModel = backupSettingsModel.copyWith(
           backupProvider: BackupProvider.googleDrive(),
         );
       }
-      if (backupSettingsModel.backupProvider != null &&
-          backupSettingsModel.backupProvider.isRemoteServer) {
-        String authdata =
-            await _secureStorage.read(key: "remoteServerAuthData");
+      if (backupSettingsModel.backupProvider != null && backupSettingsModel.backupProvider.isRemoteServer) {
+        String authdata = await _secureStorage.read(key: "remoteServerAuthData");
         if (authdata != null) {
-          RemoteServerAuthData auth =
-              RemoteServerAuthData.fromJson(json.decode(authdata));
-          backupSettingsModel =
-              backupSettingsModel.copyWith(remoteServerAuthData: auth);
+          RemoteServerAuthData auth = RemoteServerAuthData.fromJson(json.decode(authdata));
+          backupSettingsModel = backupSettingsModel.copyWith(remoteServerAuthData: auth);
         }
       }
 
@@ -285,11 +257,9 @@ class BackupBloc with AsyncActionsHandler {
     }
 
     _backupSettingsController.stream.listen((settings) async {
-      _sharedPreferences.setString(
-          BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
+      _sharedPreferences.setString(BACKUP_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       if (settings.remoteServerAuthData != null) {
-        String secureValue =
-            json.encode(settings.remoteServerAuthData.toJson());
+        String secureValue = json.encode(settings.remoteServerAuthData.toJson());
         await _secureStorage.write(
             key: "remoteServerAuthData",
             value: secureValue,
@@ -312,39 +282,30 @@ class BackupBloc with AsyncActionsHandler {
 
   Future<void> _compareUserPreferences(BreezUserModel user) async {
     var appDir = await getApplicationDocumentsDirectory();
-    var backupAppDataDirPath =
-        '${appDir.path}${Platform.pathSeparator}app_data_backup';
-    final backupUserPrefsPath =
-        '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
+    var backupAppDataDirPath = '${appDir.path}${Platform.pathSeparator}app_data_backup';
+    final backupUserPrefsPath = '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     // Check if userPreferences file exists
     if (await File(backupUserPrefsPath).exists()) {
       // Compare updated user preferences against stored user preferences
-      BackupUserPreferences userPreferences =
-          BackupUserPreferences.fromJson(user.toJson());
-      BackupUserPreferences storedUserPreferences =
-          await _getSavedUserPreferences(backupUserPrefsPath);
+      BackupUserPreferences userPreferences = BackupUserPreferences.fromJson(user.toJson());
+      BackupUserPreferences storedUserPreferences = await _getSavedUserPreferences(backupUserPrefsPath);
       // Update and trigger backup if user preferences has changed
-      if (userPreferences.toJson().toString() !=
-          storedUserPreferences.toJson().toString()) {
-        await _updateUserPreferences(user)
-            .then((_) => backupAppDataSink.add(true));
+      if (userPreferences.toJson().toString() != storedUserPreferences.toJson().toString()) {
+        await _updateUserPreferences(user).then((_) => backupAppDataSink.add(true));
       }
     } else {
       await _saveUserPreferences();
     }
   }
 
-  Future<BackupUserPreferences> _getSavedUserPreferences(
-      String backupUserPrefsPath) async {
+  Future<BackupUserPreferences> _getSavedUserPreferences(String backupUserPrefsPath) async {
     final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
     return BackupUserPreferences.fromJson(json.decode(backupUserPrefs));
   }
 
   Future<void> _updateUserPreferences(BreezUserModel userModel) async {
-    final backupUserPrefsPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
-    var backupUserPreferences =
-        BackupUserPreferences.fromJson(userModel.toJson());
+    final backupUserPrefsPath = '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
+    var backupUserPreferences = BackupUserPreferences.fromJson(userModel.toJson());
     await File(backupUserPrefsPath)
         .writeAsString(jsonEncode(backupUserPreferences.toJson()))
         .catchError((err) {
@@ -354,15 +315,11 @@ class BackupBloc with AsyncActionsHandler {
 
   // Save BreezUserModel json to backup directory
   Future<void> _saveUserPreferences() async {
-    final backupUserPrefsPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
+    final backupUserPrefsPath = '$_backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     var preferences = await ServiceInjector().sharedPreferences;
-    var userPreferences =
-        preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
-    BreezUserModel userModel =
-        BreezUserModel.fromJson(json.decode(userPreferences));
-    var backupUserPreferences =
-        BackupUserPreferences.fromJson(userModel.toJson());
+    var userPreferences = preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+    BreezUserModel userModel = BreezUserModel.fromJson(json.decode(userPreferences));
+    var backupUserPreferences = BackupUserPreferences.fromJson(userModel.toJson());
     await File(backupUserPrefsPath)
         .writeAsString(json.encode(backupUserPreferences.toJson()))
         .catchError((err) {
@@ -450,8 +407,7 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _insufficientScope ||
-          exception.contains(_insufficientScope)) {
+      } else if (e.code == _insufficientScope || exception.contains(_insufficientScope)) {
         exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
@@ -462,8 +418,7 @@ class BackupBloc with AsyncActionsHandler {
         exception = InvalidCredentialsException();
       } else if (e.message == _signInCancelledMessage) {
         exception = SignInCancelledException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -495,8 +450,7 @@ class BackupBloc with AsyncActionsHandler {
       action.resolve(true);
     } on FileSystemException catch (error) {
       if (error.message.contains("Failed to decode data using encoding")) {
-        _log.warning(
-            "Failed to restore backup. Incorrect mnemonic phrase.", error);
+        _log.warning("Failed to restore backup. Incorrect mnemonic phrase.", error);
         _clearAppData();
         await _resetBackupKey();
         action.resolveError(
@@ -566,8 +520,7 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _insufficientScope ||
-          exception.contains(_insufficientScope)) {
+      } else if (e.code == _insufficientScope || exception.contains(_insufficientScope)) {
         exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
@@ -578,8 +531,7 @@ class BackupBloc with AsyncActionsHandler {
         exception = InvalidCredentialsException();
       } else if (e.code == _signInCancelledMessage) {
         exception = SignInCancelledException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -603,8 +555,7 @@ class BackupBloc with AsyncActionsHandler {
     Completer taskCompleter;
 
     _breezLib.notificationStream.listen((event) {
-      if (taskCompleter == null &&
-          event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
+      if (taskCompleter == null && event.type == NotificationEvent_NotificationType.BACKUP_REQUEST) {
         taskCompleter = Completer();
         _tasksService.runAsTask(taskCompleter.future, () {
           taskCompleter?.complete();
@@ -625,8 +576,7 @@ class BackupBloc with AsyncActionsHandler {
     try {
       _log.info("Backup Now requested: $action");
       bool signInNeeded = _backupServiceNeedLoginController.value;
-      final backupProviderName =
-          action.updateBackupSettings.settings.backupProvider?.displayName;
+      final backupProviderName = action.updateBackupSettings.settings.backupProvider?.displayName;
 
       await _updateBackupSettings(action.updateBackupSettings);
       _log.info("Does backup service need relogin $signInNeeded");
@@ -657,8 +607,7 @@ class BackupBloc with AsyncActionsHandler {
       // not to confuse the two.
       if (e.message == _googleSignNotAvailable) {
         exception = GoogleSignNotAvailableException();
-      } else if (e.code == _insufficientScope ||
-          exception.contains(_insufficientScope)) {
+      } else if (e.code == _insufficientScope || exception.contains(_insufficientScope)) {
         exception = InsufficientScopeException();
       } else if (exception.contains(_invalidCredentials)) {
         // If user revokes Breez permissions from their GDrive account during a
@@ -670,8 +619,7 @@ class BackupBloc with AsyncActionsHandler {
         _promptBackupController.add(true);
       } else if (e.code == _signInCancelledMessage) {
         exception = SignInCancelledException();
-      } else if (e.code == _signInFailedMessage ||
-          e.message == _signInFailedCode) {
+      } else if (e.code == _signInFailedMessage || e.message == _signInFailedCode) {
         exception = SignInFailedException(
           _backupSettingsController.value.backupProvider,
         );
@@ -691,8 +639,7 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   void _listenAppDataBackupRequests(Stream backupAnytimeDBStream) {
-    Rx.merge([backupAnytimeDBStream, _backupAppDataController.stream])
-        .listen((_) => _backupAppData());
+    Rx.merge([backupAnytimeDBStream, _backupAppDataController.stream]).listen((_) => _backupAppData());
   }
 
   Future _backupAppData() async {
@@ -711,12 +658,9 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future<void> _saveLightningFees() async {
-    final lightningFeesPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
+    final lightningFeesPath = '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
     final lightningFeesPreferences = await _getLightningFeesPreferences();
-    await File(lightningFeesPath)
-        .writeAsString(json.encode(lightningFeesPreferences))
-        .catchError((err) {
+    await File(lightningFeesPath).writeAsString(json.encode(lightningFeesPreferences)).catchError((err) {
       throw Exception("Failed to save lightning fees.");
     });
   }
@@ -729,10 +673,9 @@ class BackupBloc with AsyncActionsHandler {
     int baseFee = preferences.containsKey(_kPaymentOptionBaseFee)
         ? preferences.getInt(_kPaymentOptionBaseFee)
         : _kDefaultBaseFee;
-    double proportionalFee =
-        preferences.containsKey(_kPaymentOptionProportionalFee)
-            ? preferences.getDouble(_kPaymentOptionProportionalFee)
-            : _kDefaultProportionalFee;
+    double proportionalFee = preferences.containsKey(_kPaymentOptionProportionalFee)
+        ? preferences.getDouble(_kPaymentOptionProportionalFee)
+        : _kDefaultProportionalFee;
     return {
       _kPaymentOptionOverrideFee: paymentFeeEnabled,
       _kPaymentOptionBaseFee: baseFee,
@@ -746,8 +689,7 @@ class BackupBloc with AsyncActionsHandler {
         '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await databaseExists(posDbPath)) {
       File(posDbPath)
-          .copy(
-              '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
+          .copy('$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db')
           .catchError((err) {
         throw Exception("Failed to copy pos items.");
       });
@@ -758,9 +700,7 @@ class BackupBloc with AsyncActionsHandler {
     // Copy Podcasts library to backup directory
     final anytimeDbPath = '$_appDirPath${Platform.pathSeparator}anytime.db';
     if (await databaseExists(anytimeDbPath)) {
-      File(anytimeDbPath)
-          .copy('$_backupAppDataDirPath${Platform.pathSeparator}anytime.db')
-          .catchError((err) {
+      File(anytimeDbPath).copy('$_backupAppDataDirPath${Platform.pathSeparator}anytime.db').catchError((err) {
         throw Exception("Failed to copy podcast library.");
       });
     }
@@ -831,11 +771,8 @@ class BackupBloc with AsyncActionsHandler {
     }
   }
 
-  Future testAuth(
-      BackupProvider provider, RemoteServerAuthData authData) async {
-    return await _breezLib
-        .testBackupAuth(provider.name, json.encode(authData.toJson()))
-        .catchError(
+  Future testAuth(BackupProvider provider, RemoteServerAuthData authData) async {
+    return await _breezLib.testBackupAuth(provider.name, json.encode(authData.toJson())).catchError(
       (error) {
         _log.info('backupBloc.testAuth caught error: $error');
 
@@ -874,20 +811,16 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future<void> _restoreLightningFees() async {
-    final lightningFeesPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
+    final lightningFeesPath = '$_backupAppDataDirPath${Platform.pathSeparator}lightningFees.txt';
     if (await File(lightningFeesPath).exists()) {
-      final backupLightningFeesPrefs =
-          await File(lightningFeesPath).readAsString();
-      Map<String, dynamic> lightningFeesPrefs =
-          json.decode(backupLightningFeesPrefs);
+      final backupLightningFeesPrefs = await File(lightningFeesPath).readAsString();
+      Map<String, dynamic> lightningFeesPrefs = json.decode(backupLightningFeesPrefs);
       restoreLightningFeesSink.add(lightningFeesPrefs);
     }
   }
 
   Future<void> _restorePosDB() async {
-    final backupPosDbPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db';
+    final backupPosDbPath = '$_backupAppDataDirPath${Platform.pathSeparator}product-catalog.db';
     final posDbPath =
         '${await databaseFactory.getDatabasesPath()}${Platform.pathSeparator}product-catalog.db';
     if (await File(backupPosDbPath).exists()) {
@@ -898,8 +831,7 @@ class BackupBloc with AsyncActionsHandler {
   }
 
   Future<void> _restorePodcastsDB() async {
-    final backupAnytimeDbPath =
-        '$_backupAppDataDirPath${Platform.pathSeparator}anytime.db';
+    final backupAnytimeDbPath = '$_backupAppDataDirPath${Platform.pathSeparator}anytime.db';
     final anytimeDbPath = '$_appDirPath${Platform.pathSeparator}anytime.db';
     if (await File(backupAnytimeDbPath).exists()) {
       await File(backupAnytimeDbPath).copy(anytimeDbPath).catchError((err) {

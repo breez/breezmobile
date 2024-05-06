@@ -19,12 +19,10 @@ class NostrEventHandler {
   final NostrBloc _nostrBloc = NostrBloc();
   NostrEventHandler(this.context, this.appName);
 
-  Future<String> get initNostrProvider =>
-      rootBundle.loadString('src/scripts/nostr-provider.js');
+  Future<String> get initNostrProvider => rootBundle.loadString('src/scripts/nostr-provider.js');
 
   Future<String> handleNostrEventMessage(postMessage) async {
-    Map<String, Future<dynamic> Function(Map<String, dynamic> data)>
-        nostrHandlersMapping = {
+    Map<String, Future<dynamic> Function(Map<String, dynamic> data)> nostrHandlersMapping = {
       "getPublicKey": _getPublicKey,
       "signEvent": _signEvent,
       "getRelays": _getRelays,
@@ -55,8 +53,7 @@ class NostrEventHandler {
     // getting prompt choice
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final nostrSettings =
-        prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+    final nostrSettings = prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
 
     Map<String, dynamic> settings = json.decode(nostrSettings);
     var nostrSettingsModel = NostrSettings.fromJson(settings);
@@ -84,8 +81,7 @@ class NostrEventHandler {
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final nostrSettings =
-        prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
+    final nostrSettings = prefs.getString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY);
 
     Map<String, dynamic> settings = json.decode(nostrSettings);
     var nostrSettingsModel = NostrSettings.fromJson(settings);
@@ -93,8 +89,7 @@ class NostrEventHandler {
     final rememberChoice = nostrSettingsModel.isRememberSignEvent;
 
     if (rememberChoice == false || rememberChoice == null) {
-      final shouldSignEvent = await _showDialogForSignEvent(
-          eventData, eventData['content'], messageKind);
+      final shouldSignEvent = await _showDialogForSignEvent(eventData, eventData['content'], messageKind);
 
       if (!shouldSignEvent) {
         return;
@@ -125,10 +120,9 @@ class NostrEventHandler {
     return Future(() => null);
   }
 
-  Future _showDialogForSignEvent(Map<String, dynamic> eventData,
-      String eventContent, String messageKind) async {
-    String textContent =
-        '$appName requires you to sign this $messageKind with your nostr key.';
+  Future _showDialogForSignEvent(
+      Map<String, dynamic> eventData, String eventContent, String messageKind) async {
+    String textContent = '$appName requires you to sign this $messageKind with your nostr key.';
     return showDialog(
         context: context,
         barrierDismissible: false,

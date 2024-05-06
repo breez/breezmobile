@@ -86,8 +86,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
       }
     });
 
-    _paidInvoiceSubscription =
-        widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
+    _paidInvoiceSubscription = widget._invoiceBloc.paidInvoicesStream.listen((paidRequest) {
       setState(() {
         if (paidRequest.paymentHash == widget.paymentRequest.paymentHash) {
           Navigator.of(context).pop(const PosPaymentResult(paid: true));
@@ -95,8 +94,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
       });
     });
 
-    _nfcInvoiceSubscription =
-        widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
+    _nfcInvoiceSubscription = widget._lnUrlBloc.nfcWithdrawStream.listen(_listenNfcWithdraw);
 
     widget._lnUrlBloc.actionsSink.add(RegisterNfcSaleRequest(
       Int64(widget.satAmount.toInt()),
@@ -188,9 +186,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
               color: themeData.primaryTextTheme.labelLarge.color,
               tooltip: texts.pos_dialog_invoice_copy,
               onPressed: () {
-                ServiceInjector()
-                    .device
-                    .setClipboardText(widget.paymentRequest.rawPayReq);
+                ServiceInjector().device.setClipboardText(widget.paymentRequest.rawPayReq);
                 showFlushbar(
                   context,
                   message: texts.pos_dialog_invoice_copied,
@@ -212,11 +208,8 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
     final texts = context.texts();
 
     final lspFee = widget.paymentRequest.lspFee;
-    var saleCurrency = CurrencyWrapper.fromShortName(
-        widget._user.posCurrencyShortName, account);
-    var userCurrency = (saleCurrency.isFiat)
-        ? CurrencyWrapper.fromBTC(Currency.SAT)
-        : saleCurrency;
+    var saleCurrency = CurrencyWrapper.fromShortName(widget._user.posCurrencyShortName, account);
+    var userCurrency = (saleCurrency.isFiat) ? CurrencyWrapper.fromBTC(Currency.SAT) : saleCurrency;
     var priceInSaleCurrency = "";
     if (saleCurrency.isFiat) {
       String salePrice = saleCurrency.format(
@@ -224,8 +217,7 @@ class PosPaymentDialogState extends State<PosPaymentDialog> {
         includeCurrencySymbol: true,
         removeTrailingZeros: true,
       );
-      priceInSaleCurrency =
-          saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
+      priceInSaleCurrency = saleCurrency.rtl ? "($salePrice) " : " ($salePrice)";
     }
 
     return SingleChildScrollView(

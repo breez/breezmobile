@@ -22,11 +22,9 @@ class ReverseSwapBloc with AsyncActionsHandler {
   final StreamController<InProgressReverseSwaps> _swapsInProgressController =
       BehaviorSubject<InProgressReverseSwaps>();
 
-  Stream<InProgressReverseSwaps> get swapInProgressStream =>
-      _swapsInProgressController.stream;
+  Stream<InProgressReverseSwaps> get swapInProgressStream => _swapsInProgressController.stream;
 
-  final StreamController<void> _broadcastTxStreamController =
-      StreamController<void>.broadcast();
+  final StreamController<void> _broadcastTxStreamController = StreamController<void>.broadcast();
 
   Stream<void> get broadcastTxStream => _broadcastTxStreamController.stream;
 
@@ -86,8 +84,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
   }
 
   Future _getFeeClaimEstimates(GetClaimFeeEstimates action) async {
-    var estimates =
-        await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
+    var estimates = await _breezLib.reverseSwapClaimFeeEstimates(action.claimAddress);
     action.resolve(ReverseSwapClaimFeeEstimates(estimates));
   }
 
@@ -153,8 +150,7 @@ class ReverseSwapBloc with AsyncActionsHandler {
         fee,
       ),
       _paymentsStream
-          .where((payments) => payments.nonFilteredItems
-              .any((element) => element.paymentHash == hash))
+          .where((payments) => payments.nonFilteredItems.any((element) => element.paymentHash == hash))
           .first
     ]).then((_) => onComplete()).catchError((err) {
       onComplete(
@@ -172,19 +168,16 @@ class ReverseSwapBloc with AsyncActionsHandler {
 
   void _listenPushNotification() {
     _notificationsService.notifications
-        .where((message) =>
-            message["title"] == _notificationTitle() &&
-            message["body"] == _notificationBody())
+        .where(
+            (message) => message["title"] == _notificationTitle() && message["body"] == _notificationBody())
         .listen((message) {
       _broadcastTxStreamController.add(null);
     });
   }
 
-  String _notificationTitle() =>
-      getSystemAppLocalizations().reverse_swap_notification_title;
+  String _notificationTitle() => getSystemAppLocalizations().reverse_swap_notification_title;
 
-  String _notificationBody() =>
-      getSystemAppLocalizations().reverse_swap_notification_body;
+  String _notificationBody() => getSystemAppLocalizations().reverse_swap_notification_body;
 
   Future<int> _calculateFee(int amount) async {
     final calculateFee = CalculateFee(amount);

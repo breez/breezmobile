@@ -48,8 +48,7 @@ ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
  ''');
   }
 
-  Future<PodcastHistoryModel> addToPodcastHistoryRecord(
-      PodcastHistoryModel podcastHistory) async {
+  Future<PodcastHistoryModel> addToPodcastHistoryRecord(PodcastHistoryModel podcastHistory) async {
     final db = await instance.database;
     final id = await db.insert(podcastHistoryTable, podcastHistory.toJson());
     return podcastHistory.copy(fieldId: id);
@@ -58,20 +57,16 @@ ${PodcastHistoryFields.durationInMins} 'DECIMAL NOT NULL'
   updatePodcastHistoryTimeRange(String podcastHistoryTimeRangeKey) async {
     final db = await instance.database;
 
-    List<Map<String, Object>> localTimeRangeData =
-        await db.query(podcastHistoryTimeRangeTable);
+    List<Map<String, Object>> localTimeRangeData = await db.query(podcastHistoryTimeRangeTable);
 
     PodcastHistoryTimeRangeDbModel podcastHistoryTimeRangeDbModel =
-        PodcastHistoryTimeRangeDbModel(
-            fieldId: 1, podcastHistoryTimeRangeKey: podcastHistoryTimeRangeKey);
+        PodcastHistoryTimeRangeDbModel(fieldId: 1, podcastHistoryTimeRangeKey: podcastHistoryTimeRangeKey);
 
 //If the data in sqflite is empty we insert else update
     if (localTimeRangeData.isEmpty) {
-      await db.insert(podcastHistoryTimeRangeTable,
-          podcastHistoryTimeRangeDbModel.toJson());
+      await db.insert(podcastHistoryTimeRangeTable, podcastHistoryTimeRangeDbModel.toJson());
     } else {
-      await db.update(
-          podcastHistoryTimeRangeTable, podcastHistoryTimeRangeDbModel.toJson(),
+      await db.update(podcastHistoryTimeRangeTable, podcastHistoryTimeRangeDbModel.toJson(),
           where: '${PodcastHistoryTimeRangeFields.fieldId} = ?',
           whereArgs: [podcastHistoryTimeRangeDbModel.fieldId]);
     }

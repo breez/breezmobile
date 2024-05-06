@@ -28,10 +28,8 @@ enum SyncUIState {
 Map<String, String> paymentErrorsMapping() {
   final texts = getSystemAppLocalizations();
   return {
-    "FAILURE_REASON_INSUFFICIENT_BALANCE":
-        texts.payment_error_insufficient_balance,
-    "FAILURE_REASON_INCORRECT_PAYMENT_DETAILS":
-        texts.payment_error_incorrect_payment_details,
+    "FAILURE_REASON_INSUFFICIENT_BALANCE": texts.payment_error_insufficient_balance,
+    "FAILURE_REASON_INCORRECT_PAYMENT_DETAILS": texts.payment_error_incorrect_payment_details,
     "FAILURE_REASON_ERROR": texts.payment_error_unexpected_error,
     "FAILURE_REASON_NO_ROUTE": texts.payment_error_no_route,
     "FAILURE_REASON_TIMEOUT": texts.payment_error_payment_timeout_exceeded,
@@ -65,8 +63,7 @@ class AccountSettings {
     return AccountSettings(
       ignoreWalletBalance ?? this.ignoreWalletBalance,
       showConnectProgress: showConnectProgress ?? this.showConnectProgress,
-      failedPaymentBehavior:
-          failedPaymentBehavior ?? this.failedPaymentBehavior,
+      failedPaymentBehavior: failedPaymentBehavior ?? this.failedPaymentBehavior,
       isEscherEnabled: isEscherEnabled ?? this.isEscherEnabled,
     );
   }
@@ -76,8 +73,7 @@ class AccountSettings {
       : this(
           json["ignoreWalletBalance"] ?? false,
           showConnectProgress: json["showConnectProgress"] ?? false,
-          failedPaymentBehavior:
-              BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
+          failedPaymentBehavior: BugReportBehavior.values[json["failePaymentBehavior"] ?? 0],
           isEscherEnabled: json["isEscherEnabled"] ?? false,
         );
 
@@ -102,9 +98,7 @@ class SwapFundStatus {
     if (_addedFundsReply == null) {
       return null;
     }
-    var nonBlocking = _addedFundsReply.unConfirmedAddresses
-        .where((a) => a.nonBlocking != true)
-        .toList();
+    var nonBlocking = _addedFundsReply.unConfirmedAddresses.where((a) => a.nonBlocking != true).toList();
     if (nonBlocking.isEmpty) {
       return null;
     }
@@ -112,10 +106,8 @@ class SwapFundStatus {
   }
 
   bool get depositConfirmed {
-    var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses
-        ?.where((a) => a.errorMessage.isEmpty);
-    return waitingPaymentAddresses != null &&
-        waitingPaymentAddresses.isNotEmpty;
+    var waitingPaymentAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isEmpty);
+    return waitingPaymentAddresses != null && waitingPaymentAddresses.isNotEmpty;
   }
 
   // in case of status is error, these fields will be populated.
@@ -125,8 +117,7 @@ class SwapFundStatus {
       return refundAddresses[0].refundableError;
     }
 
-    var errorAddresses = _addedFundsReply?.confirmedAddresses
-        ?.where((a) => a.errorMessage.isNotEmpty);
+    var errorAddresses = _addedFundsReply?.confirmedAddresses?.where((a) => a.errorMessage.isNotEmpty);
     if (errorAddresses == null || errorAddresses.isEmpty) {
       return null;
     }
@@ -135,23 +126,17 @@ class SwapFundStatus {
   }
 
   List<String> get unConfirmedAddresses {
-    var unConfirmedAddresses =
-        _addedFundsReply?.unConfirmedAddresses ?? <SwapAddressInfo>[];
-    return unConfirmedAddresses
-        .where((a) => a.nonBlocking != true)
-        .map((a) => a.address)
-        .toList();
+    var unConfirmedAddresses = _addedFundsReply?.unConfirmedAddresses ?? <SwapAddressInfo>[];
+    return unConfirmedAddresses.where((a) => a.nonBlocking != true).map((a) => a.address).toList();
   }
 
   List<String> get confirmedAddresses {
-    var unConfirmedAddresses =
-        _addedFundsReply?.confirmedAddresses ?? <SwapAddressInfo>[];
+    var unConfirmedAddresses = _addedFundsReply?.confirmedAddresses ?? <SwapAddressInfo>[];
     return unConfirmedAddresses.map((a) => a.address).toList();
   }
 
   List<RefundableAddress> get refundableAddresses {
-    var refundableAddresses =
-        _addedFundsReply?.refundableAddresses ?? <SwapAddressInfo>[];
+    var refundableAddresses = _addedFundsReply?.refundableAddresses ?? <SwapAddressInfo>[];
     return refundableAddresses.map((a) => RefundableAddress(a)).toList();
   }
 
@@ -175,8 +160,7 @@ class RefundableAddress {
 
   Int64 get confirmedAmount => _refundableInfo.confirmedAmount;
 
-  List<String> get confirmedTransactionIds =>
-      _refundableInfo.confirmedTransactionIds;
+  List<String> get confirmedTransactionIds => _refundableInfo.confirmedTransactionIds;
 
   int get lockHeight => _refundableInfo.lockHeight;
 
@@ -298,14 +282,11 @@ class AccountModel {
 
   SwapFundStatus get swapFundsStatus => SwapFundStatus(addedFundsReply);
 
-  bool get disconnected =>
-      _accountResponse.status == Account_AccountStatus.DISCONNECTED;
+  bool get disconnected => _accountResponse.status == Account_AccountStatus.DISCONNECTED;
 
-  bool get processingConnection =>
-      _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
+  bool get processingConnection => _accountResponse.status == Account_AccountStatus.PROCESSING_CONNECTION;
 
-  bool get connected =>
-      _accountResponse.status == Account_AccountStatus.CONNECTED;
+  bool get connected => _accountResponse.status == Account_AccountStatus.CONNECTED;
 
   Int64 get tipHeight => _accountResponse.tipHeight;
 
@@ -319,23 +300,20 @@ class AccountModel {
 
   Currency get currency => _currency;
 
-  FiatConversion get fiatCurrency => _fiatConversionList.firstWhere(
-      (f) => f.currencyData.shortName == _fiatShortName,
-      orElse: () => null);
+  FiatConversion get fiatCurrency =>
+      _fiatConversionList.firstWhere((f) => f.currencyData.shortName == _fiatShortName, orElse: () => null);
 
   List<FiatConversion> get fiatConversionList => _fiatConversionList;
 
-  List<FiatConversion> get preferredFiatConversionList =>
-      List.from(_fiatConversionList.where((fiatConversion) =>
-          preferredCurrencies.contains(fiatConversion.currencyData.shortName)));
+  List<FiatConversion> get preferredFiatConversionList => List.from(_fiatConversionList
+      .where((fiatConversion) => preferredCurrencies.contains(fiatConversion.currencyData.shortName)));
 
   String get posCurrencyShortName => _posCurrencyShortName;
 
   Int64 get maxAllowedToReceive => _accountResponse.maxAllowedToReceive;
 
-  Int64 get maxAllowedToPay => Int64(min(
-      _accountResponse.maxAllowedToPay.toInt(),
-      _accountResponse.maxPaymentAmount.toInt()));
+  Int64 get maxAllowedToPay =>
+      Int64(min(_accountResponse.maxAllowedToPay.toInt(), _accountResponse.maxPaymentAmount.toInt()));
 
   Int64 get reserveAmount => balance - maxAllowedToPay;
 
@@ -381,12 +359,10 @@ class AccountModel {
     return null;
   }
 
-  bool get transferringOnChainDeposit =>
-      swapFundsStatus.depositConfirmed && connected;
+  bool get transferringOnChainDeposit => swapFundsStatus.depositConfirmed && connected;
 
   FiatConversion getFiatCurrencyByShortName(String fiatShortName) {
-    return _fiatConversionList.firstWhere(
-        (f) => f.currencyData.shortName == fiatShortName,
+    return _fiatConversionList.firstWhere((f) => f.currencyData.shortName == fiatShortName,
         orElse: () => null);
   }
 
@@ -610,9 +586,7 @@ class StreamedPaymentInfo implements PaymentInfo {
 
   @override
   String get description {
-    final group = singlePayments
-        .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
-        .paymentGroup;
+    final group = singlePayments.firstWhere((p) => !p.pending, orElse: () => singlePayments[0]).paymentGroup;
 
     var desc = group;
     try {
@@ -654,9 +628,8 @@ class StreamedPaymentInfo implements PaymentInfo {
   String get dialogTitle => paymentGroupName;
 
   @override
-  String get title => singlePayments
-      .firstWhere((p) => !p.pending, orElse: () => singlePayments[0])
-      .paymentGroupName;
+  String get title =>
+      singlePayments.firstWhere((p) => !p.pending, orElse: () => singlePayments[0]).paymentGroupName;
 
   @override
   Int64 get pendingExpirationTimestamp {
@@ -741,17 +714,14 @@ class SinglePaymentInfo implements PaymentInfo {
   String get preimage => _paymentResponse.preimage;
 
   @override
-  String get paymentGroup => _paymentResponse.groupKey?.isNotEmpty == true
-      ? _paymentResponse.groupKey
-      : paymentHash;
+  String get paymentGroup =>
+      _paymentResponse.groupKey?.isNotEmpty == true ? _paymentResponse.groupKey : paymentHash;
 
   @override
   String get paymentGroupName => _paymentResponse.groupName;
 
   @override
-  bool get pending =>
-      _paymentResponse.pendingExpirationHeight > 0 ||
-      _paymentResponse.isChannelPending;
+  bool get pending => _paymentResponse.pendingExpirationHeight > 0 || _paymentResponse.isChannelPending;
 
   @override
   bool get fullPending => pending && _paymentResponse.pendingFull == true;
@@ -796,20 +766,14 @@ class SinglePaymentInfo implements PaymentInfo {
   int get pendingExpirationHeight => _paymentResponse.pendingExpirationHeight;
 
   double get hoursToExpire =>
-      max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(),
-          0) *
-      10 /
-      60;
+      max(_paymentResponse.pendingExpirationHeight - _account.tipHeight.toInt(), 0) * 10 / 60;
 
   @override
-  Int64 get pendingExpirationTimestamp =>
-      _paymentResponse.pendingExpirationTimestamp > 0
-          ? _paymentResponse.pendingExpirationTimestamp
-          : Int64(
-              DateTime.now()
-                  .add(Duration(hours: hoursToExpire.round()))
-                  .millisecondsSinceEpoch,
-            );
+  Int64 get pendingExpirationTimestamp => _paymentResponse.pendingExpirationTimestamp > 0
+      ? _paymentResponse.pendingExpirationTimestamp
+      : Int64(
+          DateTime.now().add(Duration(hours: hoursToExpire.round())).millisecondsSinceEpoch,
+        );
 
   @override
   bool get containsPaymentInfo {
@@ -821,8 +785,7 @@ class SinglePaymentInfo implements PaymentInfo {
   }
 
   @override
-  bool get isTransferRequest =>
-      _paymentResponse?.invoiceMemo?.transferRequest == true;
+  bool get isTransferRequest => _paymentResponse?.invoiceMemo?.transferRequest == true;
 
   @override
   String get description {
@@ -899,8 +862,7 @@ class SinglePaymentInfo implements PaymentInfo {
       return texts.payment_info_title_bitcoin_transfer;
     }
 
-    if (type == PaymentType.WITHDRAWAL &&
-        _paymentResponse.invoiceMemo.description.isEmpty) {
+    if (type == PaymentType.WITHDRAWAL && _paymentResponse.invoiceMemo.description.isEmpty) {
       return texts.payment_info_title_bitcoin_transfer;
     }
 
@@ -916,16 +878,13 @@ class SinglePaymentInfo implements PaymentInfo {
         : _paymentResponse.invoiceMemo?.payerName);
 
     if (result == null || result.isEmpty) {
-      if (_paymentResponse.lnurlPayInfo != null &&
-          _paymentResponse.lnurlPayInfo.host != '') {
+      if (_paymentResponse.lnurlPayInfo != null && _paymentResponse.lnurlPayInfo.host != '') {
         result = _paymentResponse.lnurlPayInfo.host;
       } else {
         result = _paymentResponse.invoiceMemo.description;
       }
     }
-    return (result == null || result.isEmpty)
-        ? texts.payment_info_title_unknown
-        : result;
+    return (result == null || result.isEmpty) ? texts.payment_info_title_unknown : result;
   }
 
   @override
@@ -959,8 +918,7 @@ class SinglePaymentInfo implements PaymentInfo {
     final memo = _paymentResponse.invoiceMemo;
     final info = _paymentResponse.lnurlPayInfo;
 
-    if (memo.description.startsWith("Bitrefill") ||
-        info?.host == 'api-bitrefill.com') {
+    if (memo.description.startsWith("Bitrefill") || info?.host == 'api-bitrefill.com') {
       return PaymentVendor.BITREFILL;
     }
 
@@ -968,8 +926,7 @@ class SinglePaymentInfo implements PaymentInfo {
       return PaymentVendor.LN_PIZZA;
     }
 
-    if (memo.description.startsWith('lightning.gifts') ||
-        info?.host == 'api.lightning.gifts') {
+    if (memo.description.startsWith('lightning.gifts') || info?.host == 'api.lightning.gifts') {
       return PaymentVendor.LIGHTNING_GIFTS;
     }
 
@@ -1033,8 +990,7 @@ class RefundableDepositModel {
 
   Int64 get confirmedAmount => _address.confirmedAmount;
 
-  bool get refundBroadcasted =>
-      _address.lastRefundTxID != null && _address.lastRefundTxID.isNotEmpty;
+  bool get refundBroadcasted => _address.lastRefundTxID != null && _address.lastRefundTxID.isNotEmpty;
 }
 
 class BroadcastRefundRequestModel {
@@ -1092,9 +1048,7 @@ class PaymentError implements Exception {
   final bool ignoreGlobalFeedback;
 
   bool get validationError =>
-      error.toString().contains("rpc error") ||
-      traceReport == null ||
-      traceReport.isEmpty;
+      error.toString().contains("rpc error") || traceReport == null || traceReport.isEmpty;
 
   PaymentError(
     this.request,
@@ -1155,7 +1109,6 @@ class SweepAllCoinsTxs {
   Int64 get amount => _sweepTxs.amt;
 
   Map<int, TxDetail> get transactions {
-    return _sweepTxs.transactions
-        .map((key, value) => MapEntry(key, TxDetail(value)));
+    return _sweepTxs.transactions.map((key, value) => MapEntry(key, TxDetail(value)));
   }
 }

@@ -36,8 +36,7 @@ class AccountRequiredActionsIndicator extends StatefulWidget {
   }
 }
 
-class AccountRequiredActionsIndicatorState
-    extends State<AccountRequiredActionsIndicator> {
+class AccountRequiredActionsIndicatorState extends State<AccountRequiredActionsIndicator> {
   StreamSubscription<dynamic> _promptBackupSubscription;
   bool showingBackupDialog = false;
 
@@ -131,11 +130,8 @@ class AccountRequiredActionsIndicatorState
     int currentTimestamp = DateTime.now().millisecondsSinceEpoch ~/ 1000;
     for (var l in lspList) {
       if (activity.containsKey(l.lspID) &&
-          ((currentTimestamp - activity[l.lspID].toInt()) >
-              4 * (l.maxInactiveDuration ~/ 5))) {
-        if ((warningDuration == 0) ||
-            (warningDuration >
-                (currentTimestamp - activity[l.lspID].toInt()))) {
+          ((currentTimestamp - activity[l.lspID].toInt()) > 4 * (l.maxInactiveDuration ~/ 5))) {
+        if ((warningDuration == 0) || (warningDuration > (currentTimestamp - activity[l.lspID].toInt()))) {
           warningDuration = (currentTimestamp - activity[l.lspID].toInt());
         }
       }
@@ -155,8 +151,8 @@ class AccountRequiredActionsIndicatorState
       streamC: accountBloc.accountStream,
       streamD: accountBloc.lspActivityStream,
       streamE: backupBloc.backupStateStream,
-      builder: (context, lspStatusSnapshot, settingsSnapshot, accountSnapshot,
-          lspActivitySnapshot, backupSnapshot) {
+      builder: (context, lspStatusSnapshot, settingsSnapshot, accountSnapshot, lspActivitySnapshot,
+          backupSnapshot) {
         final lspStatus = lspStatusSnapshot.data;
         final accountSettings = settingsSnapshot.data;
         final accountModel = accountSnapshot.data;
@@ -332,8 +328,7 @@ class WarningAction extends StatefulWidget {
   }
 }
 
-class WarningActionState extends State<WarningAction>
-    with SingleTickerProviderStateMixin {
+class WarningActionState extends State<WarningAction> with SingleTickerProviderStateMixin {
   Animation<double> _animation;
   AnimationController _animationController;
 

@@ -11,13 +11,11 @@ class AnytimeFallbackLocalizationDelegate extends LocalizationsDelegate<L> {
   @override
   bool isSupported(Locale locale) =>
       supportedLocales().any((l) => l.languageCode == locale.languageCode) &&
-      anytime_texts.AppLocalizations.supportedLocales
-          .any((l) => l.languageCode == locale.languageCode);
+      anytime_texts.AppLocalizations.supportedLocales.any((l) => l.languageCode == locale.languageCode);
 
   // Fallback to English if Breez's supported locale is not supported by Anytime
   @override
-  Future<L> load(Locale locale) =>
-      SynchronousFuture(L.load(const Locale('en', ''), null));
+  Future<L> load(Locale locale) => SynchronousFuture(L.load(const Locale('en', ''), null));
 
   @override
   bool shouldReload(old) => false;

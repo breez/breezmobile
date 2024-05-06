@@ -111,9 +111,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         }
       }
 
-      if (_statesShow.isNotEmpty &&
-          !_statesShow.contains(inputText) &&
-          _stateFocusNode.hasFocus) {
+      if (_statesShow.isNotEmpty && !_statesShow.contains(inputText) && _stateFocusNode.hasFocus) {
         _statesShow.sort();
         setState(() {
           _autoValidateState = AutovalidateMode.disabled;
@@ -143,9 +141,7 @@ class OrderCardPageState extends State<OrderCardPage> {
       _countriesShow.clear();
       _countriesJSON.forEach(_iterateMapEntryGetCountriesShow);
 
-      if (_countriesShow.isNotEmpty &&
-          !_countriesShow.contains(inputText) &&
-          _countryFocusNode.hasFocus) {
+      if (_countriesShow.isNotEmpty && !_countriesShow.contains(inputText) && _countryFocusNode.hasFocus) {
         _countriesShow.sort();
         setState(() {
           _autoValidateCountry = AutovalidateMode.disabled;
@@ -171,24 +167,21 @@ class OrderCardPageState extends State<OrderCardPage> {
 
   void _onChangeZip() {
     setState(() {
-      _autoValidateZip =
-          (_zipController.text.isNotEmpty && !_zipFocusNode.hasFocus)
-              ? AutovalidateMode.always
-              : AutovalidateMode.disabled;
+      _autoValidateZip = (_zipController.text.isNotEmpty && !_zipFocusNode.hasFocus)
+          ? AutovalidateMode.always
+          : AutovalidateMode.disabled;
     });
   }
 
   void _iterateMapEntryGetCountriesShow(key, value) {
     String inputText = _countryController.text;
-    if (value.length >= inputText.length &&
-        value.toLowerCase().startsWith(inputText.toLowerCase())) {
+    if (value.length >= inputText.length && value.toLowerCase().startsWith(inputText.toLowerCase())) {
       _countriesShow.add(value);
     }
   }
 
   void _iterateMapEntryGetCountryShort(key, value) {
-    if (value.toString().toLowerCase() ==
-        _countryController.text.toLowerCase()) {
+    if (value.toString().toLowerCase() == _countryController.text.toLowerCase()) {
       _userCountryShort = key;
     }
   }
@@ -200,11 +193,7 @@ class OrderCardPageState extends State<OrderCardPage> {
     Uri uri = Uri.http(
       "api.ipstack.com",
       "check",
-      {
-        "access_key": "025a14ce39e8588578966edfe7e7d70a",
-        "output": "json",
-        "fields": "country_code"
-      },
+      {"access_key": "025a14ce39e8588578966edfe7e7d70a", "output": "json", "fields": "country_code"},
     );
     final response = await http.get(uri);
     if (response.statusCode == 200) {
@@ -392,9 +381,7 @@ class OrderCardPageState extends State<OrderCardPage> {
         automaticallyImplyLeading: false,
         leading: _showLeadingButton(showSkip),
         title: Text(
-          showSkip
-              ? texts.order_card_action_order_breez_card
-              : texts.order_card_action_order_card,
+          showSkip ? texts.order_card_action_order_breez_card : texts.order_card_action_order_card,
         ),
         actions: _showSkipButton(showSkip),
       ),
@@ -432,8 +419,7 @@ class OrderCardPageState extends State<OrderCardPage> {
                                   Container(
                                     padding: const EdgeInsets.only(top: 19.0),
                                     child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
                                         _country(context),
                                         _zipCode(context),
@@ -602,11 +588,9 @@ class OrderCardPageState extends State<OrderCardPage> {
             _data.state = value;
           },
           validator: (value) {
-            if (value.isEmpty &&
-                _specialCountriesShort.contains(_userCountryShort)) {
+            if (value.isEmpty && _specialCountriesShort.contains(_userCountryShort)) {
               return texts.order_card_country_state_empty;
-            } else if (_specialCountriesShort.contains(_userCountryShort) &&
-                _checkStates(value)) {
+            } else if (_specialCountriesShort.contains(_userCountryShort) && _checkStates(value)) {
               return texts.order_card_country_state_invalid;
             }
             return null;

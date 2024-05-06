@@ -14,8 +14,7 @@ class PulseAnimationDecorator extends StatefulWidget {
   }
 }
 
-class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
-    with TickerProviderStateMixin {
+class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator> with TickerProviderStateMixin {
   AnimationController _animationController;
   Animation<double> _decorationRadius;
 
@@ -72,17 +71,14 @@ class _PulseAnimationDecoratorState extends State<PulseAnimationDecorator>
     return Stack(
       alignment: AlignmentDirectional.center,
       children: <Widget>[
-        Positioned(
-            child: SizedBox(
-                width: widget._maxRadius * 2, height: widget._maxRadius * 2)),
+        Positioned(child: SizedBox(width: widget._maxRadius * 2, height: widget._maxRadius * 2)),
         Positioned(
             top: widget._maxRadius - _decorationRadius.value,
             left: widget._maxRadius - _decorationRadius.value,
             child: Container(
               height: _decorationRadius.value * 2,
               width: _decorationRadius.value * 2,
-              decoration: const BoxDecoration(
-                  shape: BoxShape.circle, color: theme.pulseAnimationColor),
+              decoration: const BoxDecoration(shape: BoxShape.circle, color: theme.pulseAnimationColor),
             )),
         Positioned(child: child)
       ],

@@ -12,12 +12,10 @@ import 'generate_backup_phrase_page.dart';
 
 class BackupPhraseGeneratorConfirmationPage extends StatefulWidget {
   @override
-  BackupPhraseGeneratorConfirmationPageState createState() =>
-      BackupPhraseGeneratorConfirmationPageState();
+  BackupPhraseGeneratorConfirmationPageState createState() => BackupPhraseGeneratorConfirmationPageState();
 }
 
-class BackupPhraseGeneratorConfirmationPageState
-    extends State<BackupPhraseGeneratorConfirmationPage> {
+class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGeneratorConfirmationPage> {
   bool _isUnderstood = false;
 
   @override

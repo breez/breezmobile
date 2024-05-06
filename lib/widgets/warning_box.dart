@@ -19,11 +19,9 @@ class WarningBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: boxPadding ??
-          const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
+      padding: boxPadding ?? const EdgeInsets.symmetric(vertical: 16, horizontal: 30),
       child: Container(
-          padding: contentPadding ??
-              const EdgeInsets.symmetric(horizontal: 12.3, vertical: 16.2),
+          padding: contentPadding ?? const EdgeInsets.symmetric(horizontal: 12.3, vertical: 16.2),
           width: MediaQuery.of(context).size.width,
           decoration: BoxDecoration(
               color: backgroundColor ?? theme.warningBoxColor,

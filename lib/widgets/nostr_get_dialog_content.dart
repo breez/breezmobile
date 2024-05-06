@@ -8,12 +8,7 @@ class NostrGetDialogContent extends StatefulWidget {
   final AsyncSnapshot<NostrSettings> streamSnapshot;
   final MarketplaceBloc bloc;
 
-  const NostrGetDialogContent(
-      {Key key,
-      this.textContent,
-      this.choiceType,
-      this.streamSnapshot,
-      this.bloc})
+  const NostrGetDialogContent({Key key, this.textContent, this.choiceType, this.streamSnapshot, this.bloc})
       : super(key: key);
 
   @override
@@ -54,13 +49,11 @@ class _NostrGetDialogContentState extends State<NostrGetDialogContent> {
                   onChanged: (value) {
                     var currentSettings = widget.streamSnapshot.data;
                     if (widget.choiceType == "GetPubKey") {
-                      widget.bloc.nostrSettingsSettingsSink
-                          .add(currentSettings.copyWith(
+                      widget.bloc.nostrSettingsSettingsSink.add(currentSettings.copyWith(
                         isRememberPubKey: value,
                       ));
                     } else if (widget.choiceType == "SignEvent") {
-                      widget.bloc.nostrSettingsSettingsSink
-                          .add(currentSettings.copyWith(
+                      widget.bloc.nostrSettingsSettingsSink.add(currentSettings.copyWith(
                         isRememberSignEvent: value,
                       ));
                     }

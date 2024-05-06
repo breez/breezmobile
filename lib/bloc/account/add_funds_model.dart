@@ -13,8 +13,7 @@ class AddFundsSettings {
     );
   }
 
-  AddFundsSettings.fromJson(Map<String, dynamic> json)
-      : this(moonpayIpCheck: json["moonpayIpCheck"] ?? true);
+  AddFundsSettings.fromJson(Map<String, dynamic> json) : this(moonpayIpCheck: json["moonpayIpCheck"] ?? true);
 
   Map<String, dynamic> toJson() => {
         "moonpayIpCheck": moonpayIpCheck,

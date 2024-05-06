@@ -33,8 +33,7 @@ class LNURlWithdrawDialog extends StatefulWidget {
   }
 }
 
-class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog>
-    with SingleTickerProviderStateMixin {
+class LNUrlWithdrawDialogState extends State<LNURlWithdrawDialog> with SingleTickerProviderStateMixin {
   String _error;
   Animation<double> _opacityAnimation;
   ModalRoute _currentRoute;

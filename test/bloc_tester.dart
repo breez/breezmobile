@@ -28,8 +28,6 @@ class BlocTester<Input, Out> {
     if (inSink != null) {
       inSink.add(input);
     }
-    return completer.future
-        .then((out) => this.testFunction(out))
-        .catchError((e) {});
+    return completer.future.then((out) => this.testFunction(out)).catchError((e) {});
   }
 }

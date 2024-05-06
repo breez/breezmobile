@@ -65,9 +65,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                       top: Radius.circular(12.0),
                     ),
                   ),
-                  color: theme.themeId == "BLUE"
-                      ? themeData.primaryColorDark
-                      : themeData.canvasColor,
+                  color: theme.themeId == "BLUE" ? themeData.primaryColorDark : themeData.canvasColor,
                 ),
               ),
               SizedBox(
@@ -116,13 +114,10 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
                                       child: AspectRatio(
                                         aspectRatio: 1,
                                         child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                            themeData.primaryTextTheme
-                                                .labelLarge.color,
+                                          valueColor: AlwaysStoppedAnimation<Color>(
+                                            themeData.primaryTextTheme.labelLarge.color,
                                           ),
-                                          backgroundColor:
-                                              themeData.colorScheme.background,
+                                          backgroundColor: themeData.colorScheme.background,
                                         ),
                                       ),
                                     )
@@ -251,10 +246,7 @@ Widget breezAvatarDialog(BuildContext context, UserProfileBloc userBloc) {
 }
 
 Future _uploadImage(File pickedImage, UserProfileBloc userBloc) async {
-  return pickedImage
-      .readAsBytes()
-      .then(_scaleAndFormatPNG)
-      .then((imageBytes) async {
+  return pickedImage.readAsBytes().then(_scaleAndFormatPNG).then((imageBytes) async {
     var action = UploadProfilePicture(imageBytes);
     userBloc.userActionsSink.add(action);
     return action.future;

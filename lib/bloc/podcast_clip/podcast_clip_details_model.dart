@@ -29,9 +29,4 @@ class PodcastClipDetailsModel {
           podcastClipState: podcastClipState ?? this.podcastClipState);
 }
 
-enum PodcastClipState {
-  IDLE,
-  FETCHING_IMAGE,
-  FETCHING_AUDIO_CLIP,
-  GENERATING_CLIP
-}
+enum PodcastClipState { IDLE, FETCHING_IMAGE, FETCHING_AUDIO_CLIP, GENERATING_CLIP }

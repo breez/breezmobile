@@ -117,8 +117,7 @@ class ImagePickerButton extends StatelessWidget {
       onPressed: () async {
         final scaffoldMessenger = ScaffoldMessenger.of(context);
         final picker = ImagePicker();
-        XFile pickedFile =
-            await picker.pickImage(source: ImageSource.gallery).catchError(
+        XFile pickedFile = await picker.pickImage(source: ImageSource.gallery).catchError(
           (err) {
             _log.warning("Failed to pick image", err);
           },
