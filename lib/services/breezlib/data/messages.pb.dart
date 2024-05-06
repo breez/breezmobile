@@ -6065,3 +6065,194 @@ class TorConfig extends $pb.GeneratedMessage {
   void clearSocks() => clearField(3);
 }
 
+class CloseChannelsRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CloseChannelsRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'address')
+    ..hasRequiredFields = false
+  ;
+
+  CloseChannelsRequest._() : super();
+  factory CloseChannelsRequest({
+    $core.String? address,
+  }) {
+    final _result = create();
+    if (address != null) {
+      _result.address = address;
+    }
+    return _result;
+  }
+  factory CloseChannelsRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CloseChannelsRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CloseChannelsRequest clone() => CloseChannelsRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CloseChannelsRequest copyWith(void Function(CloseChannelsRequest) updates) => super.copyWith((message) => updates(message as CloseChannelsRequest)) as CloseChannelsRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelsRequest create() => CloseChannelsRequest._();
+  CloseChannelsRequest createEmptyInstance() => create();
+  static $pb.PbList<CloseChannelsRequest> createRepeated() => $pb.PbList<CloseChannelsRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelsRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CloseChannelsRequest>(create);
+  static CloseChannelsRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get address => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set address($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasAddress() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearAddress() => clearField(1);
+}
+
+class CloseChannelsReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CloseChannelsReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..pc<CloseChannelResult>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channels', $pb.PbFieldType.PM, subBuilder: CloseChannelResult.create)
+    ..hasRequiredFields = false
+  ;
+
+  CloseChannelsReply._() : super();
+  factory CloseChannelsReply({
+    $core.Iterable<CloseChannelResult>? channels,
+  }) {
+    final _result = create();
+    if (channels != null) {
+      _result.channels.addAll(channels);
+    }
+    return _result;
+  }
+  factory CloseChannelsReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CloseChannelsReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CloseChannelsReply clone() => CloseChannelsReply()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CloseChannelsReply copyWith(void Function(CloseChannelsReply) updates) => super.copyWith((message) => updates(message as CloseChannelsReply)) as CloseChannelsReply; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelsReply create() => CloseChannelsReply._();
+  CloseChannelsReply createEmptyInstance() => create();
+  static $pb.PbList<CloseChannelsReply> createRepeated() => $pb.PbList<CloseChannelsReply>();
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelsReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CloseChannelsReply>(create);
+  static CloseChannelsReply? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<CloseChannelResult> get channels => $_getList(0);
+}
+
+class CloseChannelResult extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'CloseChannelResult', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'data'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'remotePubkey')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'channelPoint')
+    ..aOB(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'isSkipped')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'closingTxid')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'failErr')
+    ..hasRequiredFields = false
+  ;
+
+  CloseChannelResult._() : super();
+  factory CloseChannelResult({
+    $core.String? remotePubkey,
+    $core.String? channelPoint,
+    $core.bool? isSkipped,
+    $core.String? closingTxid,
+    $core.String? failErr,
+  }) {
+    final _result = create();
+    if (remotePubkey != null) {
+      _result.remotePubkey = remotePubkey;
+    }
+    if (channelPoint != null) {
+      _result.channelPoint = channelPoint;
+    }
+    if (isSkipped != null) {
+      _result.isSkipped = isSkipped;
+    }
+    if (closingTxid != null) {
+      _result.closingTxid = closingTxid;
+    }
+    if (failErr != null) {
+      _result.failErr = failErr;
+    }
+    return _result;
+  }
+  factory CloseChannelResult.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CloseChannelResult.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CloseChannelResult clone() => CloseChannelResult()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CloseChannelResult copyWith(void Function(CloseChannelResult) updates) => super.copyWith((message) => updates(message as CloseChannelResult)) as CloseChannelResult; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelResult create() => CloseChannelResult._();
+  CloseChannelResult createEmptyInstance() => create();
+  static $pb.PbList<CloseChannelResult> createRepeated() => $pb.PbList<CloseChannelResult>();
+  @$core.pragma('dart2js:noInline')
+  static CloseChannelResult getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CloseChannelResult>(create);
+  static CloseChannelResult? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get remotePubkey => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set remotePubkey($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasRemotePubkey() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearRemotePubkey() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get channelPoint => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set channelPoint($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasChannelPoint() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearChannelPoint() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.bool get isSkipped => $_getBF(2);
+  @$pb.TagNumber(3)
+  set isSkipped($core.bool v) { $_setBool(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasIsSkipped() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearIsSkipped() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get closingTxid => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set closingTxid($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasClosingTxid() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearClosingTxid() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get failErr => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set failErr($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasFailErr() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearFailErr() => clearField(5);
+}
+

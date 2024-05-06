@@ -60,3 +60,20 @@ class RegisterTransactionConfirmationRequest_NotificationType extends $pb.Protob
   const RegisterTransactionConfirmationRequest_NotificationType._($core.int v, $core.String n) : super(v, n);
 }
 
+class BreezStatusReply_BreezStatus extends $pb.ProtobufEnum {
+  static const BreezStatusReply_BreezStatus OPERATIONAL = BreezStatusReply_BreezStatus._(0, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'OPERATIONAL');
+  static const BreezStatusReply_BreezStatus MAINTENANCE = BreezStatusReply_BreezStatus._(1, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'MAINTENANCE');
+  static const BreezStatusReply_BreezStatus SERVICE_DISRUPTION = BreezStatusReply_BreezStatus._(2, const $core.bool.fromEnvironment('protobuf.omit_enum_names') ? '' : 'SERVICE_DISRUPTION');
+
+  static const $core.List<BreezStatusReply_BreezStatus> values = <BreezStatusReply_BreezStatus> [
+    OPERATIONAL,
+    MAINTENANCE,
+    SERVICE_DISRUPTION,
+  ];
+
+  static final $core.Map<$core.int, BreezStatusReply_BreezStatus> _byValue = $pb.ProtobufEnum.initByValue(values);
+  static BreezStatusReply_BreezStatus? valueOf($core.int value) => _byValue[value];
+
+  const BreezStatusReply_BreezStatus._($core.int v, $core.String n) : super(v, n);
+}
+

@@ -1073,3 +1073,37 @@ const TorConfig$json = const {
 
 /// Descriptor for `TorConfig`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List torConfigDescriptor = $convert.base64Decode('CglUb3JDb25maWcSGAoHY29udHJvbBgBIAEoCVIHY29udHJvbBISCgRodHRwGAIgASgJUgRodHRwEhQKBXNvY2tzGAMgASgJUgVzb2Nrcw==');
+@$core.Deprecated('Use closeChannelsRequestDescriptor instead')
+const CloseChannelsRequest$json = const {
+  '1': 'CloseChannelsRequest',
+  '2': const [
+    const {'1': 'address', '3': 1, '4': 1, '5': 9, '10': 'address'},
+  ],
+};
+
+/// Descriptor for `CloseChannelsRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List closeChannelsRequestDescriptor = $convert.base64Decode('ChRDbG9zZUNoYW5uZWxzUmVxdWVzdBIYCgdhZGRyZXNzGAEgASgJUgdhZGRyZXNz');
+@$core.Deprecated('Use closeChannelsReplyDescriptor instead')
+const CloseChannelsReply$json = const {
+  '1': 'CloseChannelsReply',
+  '2': const [
+    const {'1': 'channels', '3': 1, '4': 3, '5': 11, '6': '.data.CloseChannelResult', '10': 'channels'},
+  ],
+};
+
+/// Descriptor for `CloseChannelsReply`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List closeChannelsReplyDescriptor = $convert.base64Decode('ChJDbG9zZUNoYW5uZWxzUmVwbHkSNAoIY2hhbm5lbHMYASADKAsyGC5kYXRhLkNsb3NlQ2hhbm5lbFJlc3VsdFIIY2hhbm5lbHM=');
+@$core.Deprecated('Use closeChannelResultDescriptor instead')
+const CloseChannelResult$json = const {
+  '1': 'CloseChannelResult',
+  '2': const [
+    const {'1': 'remote_pubkey', '3': 1, '4': 1, '5': 9, '10': 'remotePubkey'},
+    const {'1': 'channel_point', '3': 2, '4': 1, '5': 9, '10': 'channelPoint'},
+    const {'1': 'is_skipped', '3': 3, '4': 1, '5': 8, '10': 'isSkipped'},
+    const {'1': 'closing_txid', '3': 4, '4': 1, '5': 9, '10': 'closingTxid'},
+    const {'1': 'fail_err', '3': 5, '4': 1, '5': 9, '10': 'failErr'},
+  ],
+};
+
+/// Descriptor for `CloseChannelResult`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List closeChannelResultDescriptor = $convert.base64Decode('ChJDbG9zZUNoYW5uZWxSZXN1bHQSIwoNcmVtb3RlX3B1YmtleRgBIAEoCVIMcmVtb3RlUHVia2V5EiMKDWNoYW5uZWxfcG9pbnQYAiABKAlSDGNoYW5uZWxQb2ludBIdCgppc19za2lwcGVkGAMgASgIUglpc1NraXBwZWQSIQoMY2xvc2luZ190eGlkGAQgASgJUgtjbG9zaW5nVHhpZBIZCghmYWlsX2VychgFIAEoCVIHZmFpbEVycg==');
