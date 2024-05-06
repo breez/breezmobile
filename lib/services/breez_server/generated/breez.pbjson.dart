@@ -47,6 +47,42 @@ const InactiveNotifyResponse$json = const {
 
 /// Descriptor for `InactiveNotifyResponse`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List inactiveNotifyResponseDescriptor = $convert.base64Decode('ChZJbmFjdGl2ZU5vdGlmeVJlc3BvbnNl');
+@$core.Deprecated('Use registerPaymentNotificationRequestDescriptor instead')
+const RegisterPaymentNotificationRequest$json = const {
+  '1': 'RegisterPaymentNotificationRequest',
+  '2': const [
+    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
+    const {'1': 'blob', '3': 2, '4': 1, '5': 12, '10': 'blob'},
+  ],
+};
+
+/// Descriptor for `RegisterPaymentNotificationRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List registerPaymentNotificationRequestDescriptor = $convert.base64Decode('CiJSZWdpc3RlclBheW1lbnROb3RpZmljYXRpb25SZXF1ZXN0EhUKBmxzcF9pZBgBIAEoCVIFbHNwSWQSEgoEYmxvYhgCIAEoDFIEYmxvYg==');
+@$core.Deprecated('Use registerPaymentNotificationResponseDescriptor instead')
+const RegisterPaymentNotificationResponse$json = const {
+  '1': 'RegisterPaymentNotificationResponse',
+};
+
+/// Descriptor for `RegisterPaymentNotificationResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List registerPaymentNotificationResponseDescriptor = $convert.base64Decode('CiNSZWdpc3RlclBheW1lbnROb3RpZmljYXRpb25SZXNwb25zZQ==');
+@$core.Deprecated('Use removePaymentNotificationRequestDescriptor instead')
+const RemovePaymentNotificationRequest$json = const {
+  '1': 'RemovePaymentNotificationRequest',
+  '2': const [
+    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
+    const {'1': 'blob', '3': 2, '4': 1, '5': 12, '10': 'blob'},
+  ],
+};
+
+/// Descriptor for `RemovePaymentNotificationRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List removePaymentNotificationRequestDescriptor = $convert.base64Decode('CiBSZW1vdmVQYXltZW50Tm90aWZpY2F0aW9uUmVxdWVzdBIVCgZsc3BfaWQYASABKAlSBWxzcElkEhIKBGJsb2IYAiABKAxSBGJsb2I=');
+@$core.Deprecated('Use removePaymentNotificationResponseDescriptor instead')
+const RemovePaymentNotificationResponse$json = const {
+  '1': 'RemovePaymentNotificationResponse',
+};
+
+/// Descriptor for `RemovePaymentNotificationResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List removePaymentNotificationResponseDescriptor = $convert.base64Decode('CiFSZW1vdmVQYXltZW50Tm90aWZpY2F0aW9uUmVzcG9uc2U=');
 @$core.Deprecated('Use receiverInfoRequestDescriptor instead')
 const ReceiverInfoRequest$json = const {
   '1': 'ReceiverInfoRequest',
@@ -222,59 +258,6 @@ const CheckChannelsReply$json = const {
 
 /// Descriptor for `CheckChannelsReply`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List checkChannelsReplyDescriptor = $convert.base64Decode('ChJDaGVja0NoYW5uZWxzUmVwbHkSEgoEYmxvYhgCIAEoDFIEYmxvYg==');
-@$core.Deprecated('Use openLSPChannelRequestDescriptor instead')
-const OpenLSPChannelRequest$json = const {
-  '1': 'OpenLSPChannelRequest',
-  '2': const [
-    const {'1': 'lsp_id', '3': 1, '4': 1, '5': 9, '10': 'lspId'},
-    const {'1': 'pubkey', '3': 2, '4': 1, '5': 9, '10': 'pubkey'},
-  ],
-};
-
-/// Descriptor for `OpenLSPChannelRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openLSPChannelRequestDescriptor = $convert.base64Decode('ChVPcGVuTFNQQ2hhbm5lbFJlcXVlc3QSFQoGbHNwX2lkGAEgASgJUgVsc3BJZBIWCgZwdWJrZXkYAiABKAlSBnB1YmtleQ==');
-@$core.Deprecated('Use openLSPChannelReplyDescriptor instead')
-const OpenLSPChannelReply$json = const {
-  '1': 'OpenLSPChannelReply',
-};
-
-/// Descriptor for `OpenLSPChannelReply`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openLSPChannelReplyDescriptor = $convert.base64Decode('ChNPcGVuTFNQQ2hhbm5lbFJlcGx5');
-@$core.Deprecated('Use openChannelRequestDescriptor instead')
-const OpenChannelRequest$json = const {
-  '1': 'OpenChannelRequest',
-  '2': const [
-    const {'1': 'pubKey', '3': 1, '4': 1, '5': 9, '10': 'pubKey'},
-    const {'1': 'notificationToken', '3': 2, '4': 1, '5': 9, '10': 'notificationToken'},
-  ],
-};
-
-/// Descriptor for `OpenChannelRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openChannelRequestDescriptor = $convert.base64Decode('ChJPcGVuQ2hhbm5lbFJlcXVlc3QSFgoGcHViS2V5GAEgASgJUgZwdWJLZXkSLAoRbm90aWZpY2F0aW9uVG9rZW4YAiABKAlSEW5vdGlmaWNhdGlvblRva2Vu');
-@$core.Deprecated('Use openChannelReplyDescriptor instead')
-const OpenChannelReply$json = const {
-  '1': 'OpenChannelReply',
-};
-
-/// Descriptor for `OpenChannelReply`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openChannelReplyDescriptor = $convert.base64Decode('ChBPcGVuQ2hhbm5lbFJlcGx5');
-@$core.Deprecated('Use openPublicChannelRequestDescriptor instead')
-const OpenPublicChannelRequest$json = const {
-  '1': 'OpenPublicChannelRequest',
-  '2': const [
-    const {'1': 'pubkey', '3': 1, '4': 1, '5': 9, '10': 'pubkey'},
-  ],
-};
-
-/// Descriptor for `OpenPublicChannelRequest`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openPublicChannelRequestDescriptor = $convert.base64Decode('ChhPcGVuUHVibGljQ2hhbm5lbFJlcXVlc3QSFgoGcHVia2V5GAEgASgJUgZwdWJrZXk=');
-@$core.Deprecated('Use openPublicChannelReplyDescriptor instead')
-const OpenPublicChannelReply$json = const {
-  '1': 'OpenPublicChannelReply',
-};
-
-/// Descriptor for `OpenPublicChannelReply`. Decode as a `google.protobuf.DescriptorProto`.
-final $typed_data.Uint8List openPublicChannelReplyDescriptor = $convert.base64Decode('ChZPcGVuUHVibGljQ2hhbm5lbFJlcGx5');
 @$core.Deprecated('Use captchaDescriptor instead')
 const Captcha$json = const {
   '1': 'Captcha',
@@ -790,3 +773,81 @@ const GetReverseRoutingNodeReply$json = const {
 
 /// Descriptor for `GetReverseRoutingNodeReply`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List getReverseRoutingNodeReplyDescriptor = $convert.base64Decode('ChpHZXRSZXZlcnNlUm91dGluZ05vZGVSZXBseRIXCgdub2RlX2lkGAEgASgMUgZub2RlSWQ=');
+@$core.Deprecated('Use reportPaymentFailureRequestDescriptor instead')
+const ReportPaymentFailureRequest$json = const {
+  '1': 'ReportPaymentFailureRequest',
+  '2': const [
+    const {'1': 'sdk_version', '3': 1, '4': 1, '5': 9, '10': 'sdkVersion'},
+    const {'1': 'sdk_git_hash', '3': 2, '4': 1, '5': 9, '10': 'sdkGitHash'},
+    const {'1': 'node_id', '3': 3, '4': 1, '5': 9, '10': 'nodeId'},
+    const {'1': 'lsp_id', '3': 4, '4': 1, '5': 9, '10': 'lspId'},
+    const {'1': 'timestamp', '3': 5, '4': 1, '5': 9, '10': 'timestamp'},
+    const {'1': 'comment', '3': 6, '4': 1, '5': 9, '10': 'comment'},
+    const {'1': 'report', '3': 7, '4': 1, '5': 9, '10': 'report'},
+  ],
+};
+
+/// Descriptor for `ReportPaymentFailureRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List reportPaymentFailureRequestDescriptor = $convert.base64Decode('ChtSZXBvcnRQYXltZW50RmFpbHVyZVJlcXVlc3QSHwoLc2RrX3ZlcnNpb24YASABKAlSCnNka1ZlcnNpb24SIAoMc2RrX2dpdF9oYXNoGAIgASgJUgpzZGtHaXRIYXNoEhcKB25vZGVfaWQYAyABKAlSBm5vZGVJZBIVCgZsc3BfaWQYBCABKAlSBWxzcElkEhwKCXRpbWVzdGFtcBgFIAEoCVIJdGltZXN0YW1wEhgKB2NvbW1lbnQYBiABKAlSB2NvbW1lbnQSFgoGcmVwb3J0GAcgASgJUgZyZXBvcnQ=');
+@$core.Deprecated('Use reportPaymentFailureReplyDescriptor instead')
+const ReportPaymentFailureReply$json = const {
+  '1': 'ReportPaymentFailureReply',
+};
+
+/// Descriptor for `ReportPaymentFailureReply`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List reportPaymentFailureReplyDescriptor = $convert.base64Decode('ChlSZXBvcnRQYXltZW50RmFpbHVyZVJlcGx5');
+@$core.Deprecated('Use breezStatusRequestDescriptor instead')
+const BreezStatusRequest$json = const {
+  '1': 'BreezStatusRequest',
+};
+
+/// Descriptor for `BreezStatusRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List breezStatusRequestDescriptor = $convert.base64Decode('ChJCcmVlelN0YXR1c1JlcXVlc3Q=');
+@$core.Deprecated('Use breezStatusReplyDescriptor instead')
+const BreezStatusReply$json = const {
+  '1': 'BreezStatusReply',
+  '2': const [
+    const {'1': 'status', '3': 1, '4': 1, '5': 14, '6': '.breez.BreezStatusReply.BreezStatus', '10': 'status'},
+  ],
+  '4': const [BreezStatusReply_BreezStatus$json],
+};
+
+@$core.Deprecated('Use breezStatusReplyDescriptor instead')
+const BreezStatusReply_BreezStatus$json = const {
+  '1': 'BreezStatus',
+  '2': const [
+    const {'1': 'OPERATIONAL', '2': 0},
+    const {'1': 'MAINTENANCE', '2': 1},
+    const {'1': 'SERVICE_DISRUPTION', '2': 2},
+  ],
+};
+
+/// Descriptor for `BreezStatusReply`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List breezStatusReplyDescriptor = $convert.base64Decode('ChBCcmVlelN0YXR1c1JlcGx5EjsKBnN0YXR1cxgBIAEoDjIjLmJyZWV6LkJyZWV6U3RhdHVzUmVwbHkuQnJlZXpTdGF0dXNSBnN0YXR1cyJHCgtCcmVlelN0YXR1cxIPCgtPUEVSQVRJT05BTBAAEg8KC01BSU5URU5BTkNFEAESFgoSU0VSVklDRV9ESVNSVVBUSU9OEAI=');
+@$core.Deprecated('Use chainApiServersRequestDescriptor instead')
+const ChainApiServersRequest$json = const {
+  '1': 'ChainApiServersRequest',
+};
+
+/// Descriptor for `ChainApiServersRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List chainApiServersRequestDescriptor = $convert.base64Decode('ChZDaGFpbkFwaVNlcnZlcnNSZXF1ZXN0');
+@$core.Deprecated('Use chainApiServersReplyDescriptor instead')
+const ChainApiServersReply$json = const {
+  '1': 'ChainApiServersReply',
+  '2': const [
+    const {'1': 'servers', '3': 1, '4': 3, '5': 11, '6': '.breez.ChainApiServersReply.ChainAPIServer', '10': 'servers'},
+  ],
+  '3': const [ChainApiServersReply_ChainAPIServer$json],
+};
+
+@$core.Deprecated('Use chainApiServersReplyDescriptor instead')
+const ChainApiServersReply_ChainAPIServer$json = const {
+  '1': 'ChainAPIServer',
+  '2': const [
+    const {'1': 'server_type', '3': 1, '4': 1, '5': 9, '10': 'serverType'},
+    const {'1': 'server_base_url', '3': 2, '4': 1, '5': 9, '10': 'serverBaseUrl'},
+  ],
+};
+
+/// Descriptor for `ChainApiServersReply`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List chainApiServersReplyDescriptor = $convert.base64Decode('ChRDaGFpbkFwaVNlcnZlcnNSZXBseRJECgdzZXJ2ZXJzGAEgAygLMiouYnJlZXouQ2hhaW5BcGlTZXJ2ZXJzUmVwbHkuQ2hhaW5BUElTZXJ2ZXJSB3NlcnZlcnMaWQoOQ2hhaW5BUElTZXJ2ZXISHwoLc2VydmVyX3R5cGUYASABKAlSCnNlcnZlclR5cGUSJgoPc2VydmVyX2Jhc2VfdXJsGAIgASgJUg1zZXJ2ZXJCYXNlVXJs');

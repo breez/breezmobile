@@ -212,6 +212,186 @@ class InactiveNotifyResponse extends $pb.GeneratedMessage {
   static InactiveNotifyResponse? _defaultInstance;
 }
 
+class RegisterPaymentNotificationRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RegisterPaymentNotificationRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspId')
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'blob', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false
+  ;
+
+  RegisterPaymentNotificationRequest._() : super();
+  factory RegisterPaymentNotificationRequest({
+    $core.String? lspId,
+    $core.List<$core.int>? blob,
+  }) {
+    final _result = create();
+    if (lspId != null) {
+      _result.lspId = lspId;
+    }
+    if (blob != null) {
+      _result.blob = blob;
+    }
+    return _result;
+  }
+  factory RegisterPaymentNotificationRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RegisterPaymentNotificationRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RegisterPaymentNotificationRequest clone() => RegisterPaymentNotificationRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RegisterPaymentNotificationRequest copyWith(void Function(RegisterPaymentNotificationRequest) updates) => super.copyWith((message) => updates(message as RegisterPaymentNotificationRequest)) as RegisterPaymentNotificationRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RegisterPaymentNotificationRequest create() => RegisterPaymentNotificationRequest._();
+  RegisterPaymentNotificationRequest createEmptyInstance() => create();
+  static $pb.PbList<RegisterPaymentNotificationRequest> createRepeated() => $pb.PbList<RegisterPaymentNotificationRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RegisterPaymentNotificationRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RegisterPaymentNotificationRequest>(create);
+  static RegisterPaymentNotificationRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get lspId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set lspId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get blob => $_getN(1);
+  @$pb.TagNumber(2)
+  set blob($core.List<$core.int> v) { $_setBytes(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasBlob() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearBlob() => clearField(2);
+}
+
+class RegisterPaymentNotificationResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RegisterPaymentNotificationResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RegisterPaymentNotificationResponse._() : super();
+  factory RegisterPaymentNotificationResponse() => create();
+  factory RegisterPaymentNotificationResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RegisterPaymentNotificationResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RegisterPaymentNotificationResponse clone() => RegisterPaymentNotificationResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RegisterPaymentNotificationResponse copyWith(void Function(RegisterPaymentNotificationResponse) updates) => super.copyWith((message) => updates(message as RegisterPaymentNotificationResponse)) as RegisterPaymentNotificationResponse; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RegisterPaymentNotificationResponse create() => RegisterPaymentNotificationResponse._();
+  RegisterPaymentNotificationResponse createEmptyInstance() => create();
+  static $pb.PbList<RegisterPaymentNotificationResponse> createRepeated() => $pb.PbList<RegisterPaymentNotificationResponse>();
+  @$core.pragma('dart2js:noInline')
+  static RegisterPaymentNotificationResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RegisterPaymentNotificationResponse>(create);
+  static RegisterPaymentNotificationResponse? _defaultInstance;
+}
+
+class RemovePaymentNotificationRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RemovePaymentNotificationRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspId')
+    ..a<$core.List<$core.int>>(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'blob', $pb.PbFieldType.OY)
+    ..hasRequiredFields = false
+  ;
+
+  RemovePaymentNotificationRequest._() : super();
+  factory RemovePaymentNotificationRequest({
+    $core.String? lspId,
+    $core.List<$core.int>? blob,
+  }) {
+    final _result = create();
+    if (lspId != null) {
+      _result.lspId = lspId;
+    }
+    if (blob != null) {
+      _result.blob = blob;
+    }
+    return _result;
+  }
+  factory RemovePaymentNotificationRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RemovePaymentNotificationRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RemovePaymentNotificationRequest clone() => RemovePaymentNotificationRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RemovePaymentNotificationRequest copyWith(void Function(RemovePaymentNotificationRequest) updates) => super.copyWith((message) => updates(message as RemovePaymentNotificationRequest)) as RemovePaymentNotificationRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RemovePaymentNotificationRequest create() => RemovePaymentNotificationRequest._();
+  RemovePaymentNotificationRequest createEmptyInstance() => create();
+  static $pb.PbList<RemovePaymentNotificationRequest> createRepeated() => $pb.PbList<RemovePaymentNotificationRequest>();
+  @$core.pragma('dart2js:noInline')
+  static RemovePaymentNotificationRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RemovePaymentNotificationRequest>(create);
+  static RemovePaymentNotificationRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get lspId => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set lspId($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasLspId() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearLspId() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.List<$core.int> get blob => $_getN(1);
+  @$pb.TagNumber(2)
+  set blob($core.List<$core.int> v) { $_setBytes(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasBlob() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearBlob() => clearField(2);
+}
+
+class RemovePaymentNotificationResponse extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'RemovePaymentNotificationResponse', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  RemovePaymentNotificationResponse._() : super();
+  factory RemovePaymentNotificationResponse() => create();
+  factory RemovePaymentNotificationResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory RemovePaymentNotificationResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  RemovePaymentNotificationResponse clone() => RemovePaymentNotificationResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  RemovePaymentNotificationResponse copyWith(void Function(RemovePaymentNotificationResponse) updates) => super.copyWith((message) => updates(message as RemovePaymentNotificationResponse)) as RemovePaymentNotificationResponse; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static RemovePaymentNotificationResponse create() => RemovePaymentNotificationResponse._();
+  RemovePaymentNotificationResponse createEmptyInstance() => create();
+  static $pb.PbList<RemovePaymentNotificationResponse> createRepeated() => $pb.PbList<RemovePaymentNotificationResponse>();
+  @$core.pragma('dart2js:noInline')
+  static RemovePaymentNotificationResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<RemovePaymentNotificationResponse>(create);
+  static RemovePaymentNotificationResponse? _defaultInstance;
+}
+
 class ReceiverInfoRequest extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReceiverInfoRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
     ..hasRequiredFields = false
@@ -1075,262 +1255,6 @@ class CheckChannelsReply extends $pb.GeneratedMessage {
   $core.bool hasBlob() => $_has(0);
   @$pb.TagNumber(2)
   void clearBlob() => clearField(2);
-}
-
-class OpenLSPChannelRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenLSPChannelRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspId')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pubkey')
-    ..hasRequiredFields = false
-  ;
-
-  OpenLSPChannelRequest._() : super();
-  factory OpenLSPChannelRequest({
-    $core.String? lspId,
-    $core.String? pubkey,
-  }) {
-    final _result = create();
-    if (lspId != null) {
-      _result.lspId = lspId;
-    }
-    if (pubkey != null) {
-      _result.pubkey = pubkey;
-    }
-    return _result;
-  }
-  factory OpenLSPChannelRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenLSPChannelRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenLSPChannelRequest clone() => OpenLSPChannelRequest()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenLSPChannelRequest copyWith(void Function(OpenLSPChannelRequest) updates) => super.copyWith((message) => updates(message as OpenLSPChannelRequest)) as OpenLSPChannelRequest; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenLSPChannelRequest create() => OpenLSPChannelRequest._();
-  OpenLSPChannelRequest createEmptyInstance() => create();
-  static $pb.PbList<OpenLSPChannelRequest> createRepeated() => $pb.PbList<OpenLSPChannelRequest>();
-  @$core.pragma('dart2js:noInline')
-  static OpenLSPChannelRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenLSPChannelRequest>(create);
-  static OpenLSPChannelRequest? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get lspId => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set lspId($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasLspId() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearLspId() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get pubkey => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set pubkey($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasPubkey() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearPubkey() => clearField(2);
-}
-
-class OpenLSPChannelReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenLSPChannelReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..hasRequiredFields = false
-  ;
-
-  OpenLSPChannelReply._() : super();
-  factory OpenLSPChannelReply() => create();
-  factory OpenLSPChannelReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenLSPChannelReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenLSPChannelReply clone() => OpenLSPChannelReply()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenLSPChannelReply copyWith(void Function(OpenLSPChannelReply) updates) => super.copyWith((message) => updates(message as OpenLSPChannelReply)) as OpenLSPChannelReply; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenLSPChannelReply create() => OpenLSPChannelReply._();
-  OpenLSPChannelReply createEmptyInstance() => create();
-  static $pb.PbList<OpenLSPChannelReply> createRepeated() => $pb.PbList<OpenLSPChannelReply>();
-  @$core.pragma('dart2js:noInline')
-  static OpenLSPChannelReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenLSPChannelReply>(create);
-  static OpenLSPChannelReply? _defaultInstance;
-}
-
-class OpenChannelRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenChannelRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pubKey', protoName: 'pubKey')
-    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'notificationToken', protoName: 'notificationToken')
-    ..hasRequiredFields = false
-  ;
-
-  OpenChannelRequest._() : super();
-  factory OpenChannelRequest({
-    $core.String? pubKey,
-    $core.String? notificationToken,
-  }) {
-    final _result = create();
-    if (pubKey != null) {
-      _result.pubKey = pubKey;
-    }
-    if (notificationToken != null) {
-      _result.notificationToken = notificationToken;
-    }
-    return _result;
-  }
-  factory OpenChannelRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenChannelRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenChannelRequest clone() => OpenChannelRequest()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenChannelRequest copyWith(void Function(OpenChannelRequest) updates) => super.copyWith((message) => updates(message as OpenChannelRequest)) as OpenChannelRequest; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenChannelRequest create() => OpenChannelRequest._();
-  OpenChannelRequest createEmptyInstance() => create();
-  static $pb.PbList<OpenChannelRequest> createRepeated() => $pb.PbList<OpenChannelRequest>();
-  @$core.pragma('dart2js:noInline')
-  static OpenChannelRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenChannelRequest>(create);
-  static OpenChannelRequest? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get pubKey => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set pubKey($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasPubKey() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearPubKey() => clearField(1);
-
-  @$pb.TagNumber(2)
-  $core.String get notificationToken => $_getSZ(1);
-  @$pb.TagNumber(2)
-  set notificationToken($core.String v) { $_setString(1, v); }
-  @$pb.TagNumber(2)
-  $core.bool hasNotificationToken() => $_has(1);
-  @$pb.TagNumber(2)
-  void clearNotificationToken() => clearField(2);
-}
-
-class OpenChannelReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenChannelReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..hasRequiredFields = false
-  ;
-
-  OpenChannelReply._() : super();
-  factory OpenChannelReply() => create();
-  factory OpenChannelReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenChannelReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenChannelReply clone() => OpenChannelReply()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenChannelReply copyWith(void Function(OpenChannelReply) updates) => super.copyWith((message) => updates(message as OpenChannelReply)) as OpenChannelReply; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenChannelReply create() => OpenChannelReply._();
-  OpenChannelReply createEmptyInstance() => create();
-  static $pb.PbList<OpenChannelReply> createRepeated() => $pb.PbList<OpenChannelReply>();
-  @$core.pragma('dart2js:noInline')
-  static OpenChannelReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenChannelReply>(create);
-  static OpenChannelReply? _defaultInstance;
-}
-
-class OpenPublicChannelRequest extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenPublicChannelRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'pubkey')
-    ..hasRequiredFields = false
-  ;
-
-  OpenPublicChannelRequest._() : super();
-  factory OpenPublicChannelRequest({
-    $core.String? pubkey,
-  }) {
-    final _result = create();
-    if (pubkey != null) {
-      _result.pubkey = pubkey;
-    }
-    return _result;
-  }
-  factory OpenPublicChannelRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenPublicChannelRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenPublicChannelRequest clone() => OpenPublicChannelRequest()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenPublicChannelRequest copyWith(void Function(OpenPublicChannelRequest) updates) => super.copyWith((message) => updates(message as OpenPublicChannelRequest)) as OpenPublicChannelRequest; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenPublicChannelRequest create() => OpenPublicChannelRequest._();
-  OpenPublicChannelRequest createEmptyInstance() => create();
-  static $pb.PbList<OpenPublicChannelRequest> createRepeated() => $pb.PbList<OpenPublicChannelRequest>();
-  @$core.pragma('dart2js:noInline')
-  static OpenPublicChannelRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenPublicChannelRequest>(create);
-  static OpenPublicChannelRequest? _defaultInstance;
-
-  @$pb.TagNumber(1)
-  $core.String get pubkey => $_getSZ(0);
-  @$pb.TagNumber(1)
-  set pubkey($core.String v) { $_setString(0, v); }
-  @$pb.TagNumber(1)
-  $core.bool hasPubkey() => $_has(0);
-  @$pb.TagNumber(1)
-  void clearPubkey() => clearField(1);
-}
-
-class OpenPublicChannelReply extends $pb.GeneratedMessage {
-  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'OpenPublicChannelReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
-    ..hasRequiredFields = false
-  ;
-
-  OpenPublicChannelReply._() : super();
-  factory OpenPublicChannelReply() => create();
-  factory OpenPublicChannelReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
-  factory OpenPublicChannelReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
-  'Will be removed in next major version')
-  OpenPublicChannelReply clone() => OpenPublicChannelReply()..mergeFromMessage(this);
-  @$core.Deprecated(
-  'Using this can add significant overhead to your binary. '
-  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
-  'Will be removed in next major version')
-  OpenPublicChannelReply copyWith(void Function(OpenPublicChannelReply) updates) => super.copyWith((message) => updates(message as OpenPublicChannelReply)) as OpenPublicChannelReply; // ignore: deprecated_member_use
-  $pb.BuilderInfo get info_ => _i;
-  @$core.pragma('dart2js:noInline')
-  static OpenPublicChannelReply create() => OpenPublicChannelReply._();
-  OpenPublicChannelReply createEmptyInstance() => create();
-  static $pb.PbList<OpenPublicChannelReply> createRepeated() => $pb.PbList<OpenPublicChannelReply>();
-  @$core.pragma('dart2js:noInline')
-  static OpenPublicChannelReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<OpenPublicChannelReply>(create);
-  static OpenPublicChannelReply? _defaultInstance;
 }
 
 class Captcha extends $pb.GeneratedMessage {
@@ -3963,5 +3887,372 @@ class GetReverseRoutingNodeReply extends $pb.GeneratedMessage {
   $core.bool hasNodeId() => $_has(0);
   @$pb.TagNumber(1)
   void clearNodeId() => clearField(1);
+}
+
+class ReportPaymentFailureRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReportPaymentFailureRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'sdkVersion')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'sdkGitHash')
+    ..aOS(3, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'nodeId')
+    ..aOS(4, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'lspId')
+    ..aOS(5, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'timestamp')
+    ..aOS(6, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'comment')
+    ..aOS(7, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'report')
+    ..hasRequiredFields = false
+  ;
+
+  ReportPaymentFailureRequest._() : super();
+  factory ReportPaymentFailureRequest({
+    $core.String? sdkVersion,
+    $core.String? sdkGitHash,
+    $core.String? nodeId,
+    $core.String? lspId,
+    $core.String? timestamp,
+    $core.String? comment,
+    $core.String? report,
+  }) {
+    final _result = create();
+    if (sdkVersion != null) {
+      _result.sdkVersion = sdkVersion;
+    }
+    if (sdkGitHash != null) {
+      _result.sdkGitHash = sdkGitHash;
+    }
+    if (nodeId != null) {
+      _result.nodeId = nodeId;
+    }
+    if (lspId != null) {
+      _result.lspId = lspId;
+    }
+    if (timestamp != null) {
+      _result.timestamp = timestamp;
+    }
+    if (comment != null) {
+      _result.comment = comment;
+    }
+    if (report != null) {
+      _result.report = report;
+    }
+    return _result;
+  }
+  factory ReportPaymentFailureRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ReportPaymentFailureRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ReportPaymentFailureRequest clone() => ReportPaymentFailureRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ReportPaymentFailureRequest copyWith(void Function(ReportPaymentFailureRequest) updates) => super.copyWith((message) => updates(message as ReportPaymentFailureRequest)) as ReportPaymentFailureRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ReportPaymentFailureRequest create() => ReportPaymentFailureRequest._();
+  ReportPaymentFailureRequest createEmptyInstance() => create();
+  static $pb.PbList<ReportPaymentFailureRequest> createRepeated() => $pb.PbList<ReportPaymentFailureRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ReportPaymentFailureRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReportPaymentFailureRequest>(create);
+  static ReportPaymentFailureRequest? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get sdkVersion => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set sdkVersion($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasSdkVersion() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearSdkVersion() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get sdkGitHash => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set sdkGitHash($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasSdkGitHash() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearSdkGitHash() => clearField(2);
+
+  @$pb.TagNumber(3)
+  $core.String get nodeId => $_getSZ(2);
+  @$pb.TagNumber(3)
+  set nodeId($core.String v) { $_setString(2, v); }
+  @$pb.TagNumber(3)
+  $core.bool hasNodeId() => $_has(2);
+  @$pb.TagNumber(3)
+  void clearNodeId() => clearField(3);
+
+  @$pb.TagNumber(4)
+  $core.String get lspId => $_getSZ(3);
+  @$pb.TagNumber(4)
+  set lspId($core.String v) { $_setString(3, v); }
+  @$pb.TagNumber(4)
+  $core.bool hasLspId() => $_has(3);
+  @$pb.TagNumber(4)
+  void clearLspId() => clearField(4);
+
+  @$pb.TagNumber(5)
+  $core.String get timestamp => $_getSZ(4);
+  @$pb.TagNumber(5)
+  set timestamp($core.String v) { $_setString(4, v); }
+  @$pb.TagNumber(5)
+  $core.bool hasTimestamp() => $_has(4);
+  @$pb.TagNumber(5)
+  void clearTimestamp() => clearField(5);
+
+  @$pb.TagNumber(6)
+  $core.String get comment => $_getSZ(5);
+  @$pb.TagNumber(6)
+  set comment($core.String v) { $_setString(5, v); }
+  @$pb.TagNumber(6)
+  $core.bool hasComment() => $_has(5);
+  @$pb.TagNumber(6)
+  void clearComment() => clearField(6);
+
+  @$pb.TagNumber(7)
+  $core.String get report => $_getSZ(6);
+  @$pb.TagNumber(7)
+  set report($core.String v) { $_setString(6, v); }
+  @$pb.TagNumber(7)
+  $core.bool hasReport() => $_has(6);
+  @$pb.TagNumber(7)
+  void clearReport() => clearField(7);
+}
+
+class ReportPaymentFailureReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ReportPaymentFailureReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ReportPaymentFailureReply._() : super();
+  factory ReportPaymentFailureReply() => create();
+  factory ReportPaymentFailureReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ReportPaymentFailureReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ReportPaymentFailureReply clone() => ReportPaymentFailureReply()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ReportPaymentFailureReply copyWith(void Function(ReportPaymentFailureReply) updates) => super.copyWith((message) => updates(message as ReportPaymentFailureReply)) as ReportPaymentFailureReply; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ReportPaymentFailureReply create() => ReportPaymentFailureReply._();
+  ReportPaymentFailureReply createEmptyInstance() => create();
+  static $pb.PbList<ReportPaymentFailureReply> createRepeated() => $pb.PbList<ReportPaymentFailureReply>();
+  @$core.pragma('dart2js:noInline')
+  static ReportPaymentFailureReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ReportPaymentFailureReply>(create);
+  static ReportPaymentFailureReply? _defaultInstance;
+}
+
+class BreezStatusRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'BreezStatusRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  BreezStatusRequest._() : super();
+  factory BreezStatusRequest() => create();
+  factory BreezStatusRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory BreezStatusRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  BreezStatusRequest clone() => BreezStatusRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  BreezStatusRequest copyWith(void Function(BreezStatusRequest) updates) => super.copyWith((message) => updates(message as BreezStatusRequest)) as BreezStatusRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static BreezStatusRequest create() => BreezStatusRequest._();
+  BreezStatusRequest createEmptyInstance() => create();
+  static $pb.PbList<BreezStatusRequest> createRepeated() => $pb.PbList<BreezStatusRequest>();
+  @$core.pragma('dart2js:noInline')
+  static BreezStatusRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BreezStatusRequest>(create);
+  static BreezStatusRequest? _defaultInstance;
+}
+
+class BreezStatusReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'BreezStatusReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..e<BreezStatusReply_BreezStatus>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'status', $pb.PbFieldType.OE, defaultOrMaker: BreezStatusReply_BreezStatus.OPERATIONAL, valueOf: BreezStatusReply_BreezStatus.valueOf, enumValues: BreezStatusReply_BreezStatus.values)
+    ..hasRequiredFields = false
+  ;
+
+  BreezStatusReply._() : super();
+  factory BreezStatusReply({
+    BreezStatusReply_BreezStatus? status,
+  }) {
+    final _result = create();
+    if (status != null) {
+      _result.status = status;
+    }
+    return _result;
+  }
+  factory BreezStatusReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory BreezStatusReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  BreezStatusReply clone() => BreezStatusReply()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  BreezStatusReply copyWith(void Function(BreezStatusReply) updates) => super.copyWith((message) => updates(message as BreezStatusReply)) as BreezStatusReply; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static BreezStatusReply create() => BreezStatusReply._();
+  BreezStatusReply createEmptyInstance() => create();
+  static $pb.PbList<BreezStatusReply> createRepeated() => $pb.PbList<BreezStatusReply>();
+  @$core.pragma('dart2js:noInline')
+  static BreezStatusReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<BreezStatusReply>(create);
+  static BreezStatusReply? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  BreezStatusReply_BreezStatus get status => $_getN(0);
+  @$pb.TagNumber(1)
+  set status(BreezStatusReply_BreezStatus v) { setField(1, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasStatus() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearStatus() => clearField(1);
+}
+
+class ChainApiServersRequest extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ChainApiServersRequest', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  ChainApiServersRequest._() : super();
+  factory ChainApiServersRequest() => create();
+  factory ChainApiServersRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChainApiServersRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ChainApiServersRequest clone() => ChainApiServersRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ChainApiServersRequest copyWith(void Function(ChainApiServersRequest) updates) => super.copyWith((message) => updates(message as ChainApiServersRequest)) as ChainApiServersRequest; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersRequest create() => ChainApiServersRequest._();
+  ChainApiServersRequest createEmptyInstance() => create();
+  static $pb.PbList<ChainApiServersRequest> createRepeated() => $pb.PbList<ChainApiServersRequest>();
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ChainApiServersRequest>(create);
+  static ChainApiServersRequest? _defaultInstance;
+}
+
+class ChainApiServersReply_ChainAPIServer extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ChainApiServersReply.ChainAPIServer', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..aOS(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'serverType')
+    ..aOS(2, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'serverBaseUrl')
+    ..hasRequiredFields = false
+  ;
+
+  ChainApiServersReply_ChainAPIServer._() : super();
+  factory ChainApiServersReply_ChainAPIServer({
+    $core.String? serverType,
+    $core.String? serverBaseUrl,
+  }) {
+    final _result = create();
+    if (serverType != null) {
+      _result.serverType = serverType;
+    }
+    if (serverBaseUrl != null) {
+      _result.serverBaseUrl = serverBaseUrl;
+    }
+    return _result;
+  }
+  factory ChainApiServersReply_ChainAPIServer.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChainApiServersReply_ChainAPIServer.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ChainApiServersReply_ChainAPIServer clone() => ChainApiServersReply_ChainAPIServer()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ChainApiServersReply_ChainAPIServer copyWith(void Function(ChainApiServersReply_ChainAPIServer) updates) => super.copyWith((message) => updates(message as ChainApiServersReply_ChainAPIServer)) as ChainApiServersReply_ChainAPIServer; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersReply_ChainAPIServer create() => ChainApiServersReply_ChainAPIServer._();
+  ChainApiServersReply_ChainAPIServer createEmptyInstance() => create();
+  static $pb.PbList<ChainApiServersReply_ChainAPIServer> createRepeated() => $pb.PbList<ChainApiServersReply_ChainAPIServer>();
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersReply_ChainAPIServer getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ChainApiServersReply_ChainAPIServer>(create);
+  static ChainApiServersReply_ChainAPIServer? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.String get serverType => $_getSZ(0);
+  @$pb.TagNumber(1)
+  set serverType($core.String v) { $_setString(0, v); }
+  @$pb.TagNumber(1)
+  $core.bool hasServerType() => $_has(0);
+  @$pb.TagNumber(1)
+  void clearServerType() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.String get serverBaseUrl => $_getSZ(1);
+  @$pb.TagNumber(2)
+  set serverBaseUrl($core.String v) { $_setString(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasServerBaseUrl() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearServerBaseUrl() => clearField(2);
+}
+
+class ChainApiServersReply extends $pb.GeneratedMessage {
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'ChainApiServersReply', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'breez'), createEmptyInstance: create)
+    ..pc<ChainApiServersReply_ChainAPIServer>(1, const $core.bool.fromEnvironment('protobuf.omit_field_names') ? '' : 'servers', $pb.PbFieldType.PM, subBuilder: ChainApiServersReply_ChainAPIServer.create)
+    ..hasRequiredFields = false
+  ;
+
+  ChainApiServersReply._() : super();
+  factory ChainApiServersReply({
+    $core.Iterable<ChainApiServersReply_ChainAPIServer>? servers,
+  }) {
+    final _result = create();
+    if (servers != null) {
+      _result.servers.addAll(servers);
+    }
+    return _result;
+  }
+  factory ChainApiServersReply.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory ChainApiServersReply.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  ChainApiServersReply clone() => ChainApiServersReply()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  ChainApiServersReply copyWith(void Function(ChainApiServersReply) updates) => super.copyWith((message) => updates(message as ChainApiServersReply)) as ChainApiServersReply; // ignore: deprecated_member_use
+  $pb.BuilderInfo get info_ => _i;
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersReply create() => ChainApiServersReply._();
+  ChainApiServersReply createEmptyInstance() => create();
+  static $pb.PbList<ChainApiServersReply> createRepeated() => $pb.PbList<ChainApiServersReply>();
+  @$core.pragma('dart2js:noInline')
+  static ChainApiServersReply getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<ChainApiServersReply>(create);
+  static ChainApiServersReply? _defaultInstance;
+
+  @$pb.TagNumber(1)
+  $core.List<ChainApiServersReply_ChainAPIServer> get servers => $_getList(0);
 }
 

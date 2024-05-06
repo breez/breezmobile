@@ -59,6 +59,12 @@ class BreezAPIClient extends $grpc.Client {
           '/data.BreezAPI/ListPayments',
           ($0.ListPaymentsRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.PaymentsList.fromBuffer(value));
+  static final _$closeChannels =
+      $grpc.ClientMethod<$0.CloseChannelsRequest, $0.CloseChannelsReply>(
+          '/data.BreezAPI/CloseChannels',
+          ($0.CloseChannelsRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.CloseChannelsReply.fromBuffer(value));
 
   BreezAPIClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -110,6 +116,12 @@ class BreezAPIClient extends $grpc.Client {
       $0.ListPaymentsRequest request,
       {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$listPayments, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CloseChannelsReply> closeChannels(
+      $0.CloseChannelsRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$closeChannels, request, options: options);
   }
 }
 
@@ -177,6 +189,15 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) =>
             $0.ListPaymentsRequest.fromBuffer(value),
         ($0.PaymentsList value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.CloseChannelsRequest, $0.CloseChannelsReply>(
+            'CloseChannels',
+            closeChannels_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.CloseChannelsRequest.fromBuffer(value),
+            ($0.CloseChannelsReply value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.LSPList> getLSPList_Pre(
@@ -219,6 +240,11 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
     return listPayments(call, await request);
   }
 
+  $async.Future<$0.CloseChannelsReply> closeChannels_Pre($grpc.ServiceCall call,
+      $async.Future<$0.CloseChannelsRequest> request) async {
+    return closeChannels(call, await request);
+  }
+
   $async.Future<$0.LSPList> getLSPList(
       $grpc.ServiceCall call, $0.LSPListRequest request);
   $async.Future<$0.ConnectLSPReply> connectToLSP(
@@ -235,4 +261,6 @@ abstract class BreezAPIServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.RestartDaemonRequest request);
   $async.Future<$0.PaymentsList> listPayments(
       $grpc.ServiceCall call, $0.ListPaymentsRequest request);
+  $async.Future<$0.CloseChannelsReply> closeChannels(
+      $grpc.ServiceCall call, $0.CloseChannelsRequest request);
 }
