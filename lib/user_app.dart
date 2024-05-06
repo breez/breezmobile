@@ -18,6 +18,7 @@ import 'package:breez/l10n/locales.dart';
 import 'package:breez/routes/add_funds/deposit_to_btc_address_page.dart';
 import 'package:breez/routes/add_funds/moonpay_webview.dart';
 import 'package:breez/routes/charge/items/item_page.dart';
+import 'package:breez/routes/close_channels/coop_close_channels.dart';
 import 'package:breez/routes/connect_to_pay/connect_to_pay_page.dart';
 import 'package:breez/routes/create_invoice/create_invoice_page.dart';
 import 'package:breez/routes/dev/dev.dart';
@@ -288,6 +289,14 @@ class UserApp extends StatelessWidget {
                                 builder: (_) => withBreezTheme(
                                   context,
                                   const NetworkPage(),
+                                ),
+                                settings: settings,
+                              );
+                            case '/close_channels':
+                              return FadeInRoute(
+                                builder: (_) => withBreezTheme(
+                                  context,
+                                  const CoopCloseChannelsPage(),
                                 ),
                                 settings: settings,
                               );

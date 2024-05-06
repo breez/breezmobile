@@ -78,3 +78,9 @@ class ResetClosedChannelChainInfoAction extends AsyncAction {
 
   ResetClosedChannelChainInfoAction(this.channelPoint, this.blockHeight);
 }
+
+class CloseChannelsAction extends AsyncAction {
+  final String address;
+
+  CloseChannelsAction(this.address);
+}

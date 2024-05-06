@@ -7,72 +7,72 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  another_flushbar: ^1.12.31-dev.1
+  another_flushbar: ^1.12.30
   app_settings: ^5.1.1
-  archive: ^3.4.9
-  audio_service: ^0.18.12
+  archive: <=3.4.10 # Requires Flutter 3.10
+  audio_service: ^0.18.13
   auto_size_text: ^3.0.0
-  badges: <3.1.2 # Requires Flutter 3.10
+  badges: <=3.1.1 # Requires Flutter 3.10
   bip39: ^1.0.6
   breez_translations:
     git:
       url: https://github.com/breez/Breez-Translations.git
-      ref: 79ad21b70c7f0a71da25acbde42f569cc44e0c61
-  clipboard_watcher: ^0.2.0
-  collection: ^1.18.0
+      ref: 7334b3dafef1d5c247bbe23d90e5435e880c56ab
+  clipboard_watcher: <=0.2.0 # Requires Flutter 3.10
+  collection: <=1.17.0 # flutter_test
   confetti: ^0.7.0
-  connectivity_plus: <5.0.0  # anytime
+  connectivity_plus: <=4.0.2  # anytime
   convert: ^3.1.1
   crypto: ^3.0.3
-  csv: ^5.1.1
-  device_info_plus: ^9.1.1
-  dio: ^5.4.0
+  csv: ^6.0.0
+  device_info_plus: <=9.1.2 # anytime
+  dio: ^5.4.3+1
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.13
   email_validator: ^2.1.17
-  extended_image: <8.0.0 # Requires Flutter 3.10
+  extended_image: <=7.0.2 # Requires Flutter 3.10
   ffmpeg_kit_flutter_https_gpl: ^6.0.3
-  file_picker: <5.3.2 # Requires Flutter 3.10
-  firebase_core: ^2.24.0
+  file_picker: <=5.3.1 # Requires Flutter 3.10
+  firebase_core: <=2.24.2 # Requires Flutter 3.10
   firebase_core_platform_interface: ^5.0.0
-  firebase_database: ^10.3.6
-  firebase_dynamic_links: ^5.4.6
-  firebase_messaging: ^14.7.6
+  firebase_database: <=10.4.0  # Requires Flutter 3.10
+  firebase_dynamic_links: <=5.4.8 # Requires Flutter 3.10
+  firebase_messaging: <=14.7.10 # Requires Flutter 3.10
   fixnum: ^1.1.0
   flutter_easyloading: ^3.0.5
-  flutter_secure_storage: <9.0.0 # anytime
-  flutter_spinkit: ^5.2.0
-  flutter_svg: ^2.0.9
+  flutter_secure_storage: <=8.1.0 # anytime
+  flutter_spinkit: ^5.2.1
+  flutter_svg: <=2.0.9  #  # Requires Flutter 3.10 - http 1.0.0
   flutter_web_browser: ^0.17.1
   git_info: ^1.1.2
   google_api_availability: ^5.0.0
-  grpc: <3.2.0 # Requires Flutter 3.10
+  grpc: <=3.1.0 # Requires Flutter 3.10
   hex: ^0.2.0
-  http: <1.0.0 # Requires Flutter 3.10
-  image: ^4.1.3
-  image_cropper: <5.0.0 # Requires Flutter 3.10
-  image_picker: ^1.0.4
+  http: <=0.13.6 # Requires Flutter 3.10
+  image: ^4.1.7
+  image_cropper: <=4.0.1 # Requires Flutter 3.10
+  image_picker: <=1.0.4  # Requires Flutter 3.10
   ini: ^2.1.0
-  intl: ^0.18.1
-  json_annotation: ^4.8.1
-  local_auth: <2.0.0 # Can't differentiate between biometric types on local auth 2.0.0+
+  intl: <=0.17.0 # local_auth
+  json_annotation: <=4.8.1 # Requires Flutter 3.10
+  local_auth: <=1.1.11 # Can't differentiate between biometric types on local auth 2.0.0+
   logging: ^1.2.0
+  meta: <=1.8.0 # flutter_test
   md5_file_checksum:
     git:
       url: https://github.com/breez/md5_file_checksum.git
-  nfc_manager: ^3.3.0
-  nostr_tools: <1.0.8 # Requires Flutter 3.10(depends on http ^1.1.0)
-  package_info_plus: <5.0.1 # Requires Flutter 3.10
-  path: ^1.8.3
-  path_provider: ^2.1.1
-  path_provider_platform_interface: ^2.1.1
-  pdf: ^3.10.7
-  plugin_platform_interface: <2.1.7 # Requires Flutter 3.10
-  printing: <5.11.0 # Requires Flutter 3.10
-  protobuf: <3.0.0 # Requires Flutter 3.10
-  provider: ^6.1.1
-  meta: ^1.11.0
-  mobile_scanner: ^3.5.5
+  mobile_scanner: <=3.5.7 # Requires Flutter 3.10
+  nfc_manager: ^3.4.0
+  nostr_tools: <=1.0.7 # Requires Flutter 3.10(depends on http ^1.1.0)
+  package_info_plus: <=4.2.0 # Requires Flutter 3.10
+  path: <=1.8.2 # flutter_test(^1.8.2) anytime(^1.8.3)
+  path_provider: <=2.1.1 # Requires Flutter 3.10
+  path_provider_platform_interface: <=2.1.1 # Requires Flutter 3.10
+  pdf: ^3.10.8
+  plugin_platform_interface: <=2.1.6 # Requires Flutter 3.10
+  printing: <=5.10.4 # Requires Flutter 3.10
+  protobuf: <=2.1.0 # Requires Flutter 3.10
+  provider: ^6.1.2
   # qr_flutter has already fixed the build issue with the qr package but did not publish an updated
   # version, they will publish as 4.0.1 for now they recommend to use the master but instead of that
   # we are using an specific commit to avoid unexpected behaviour in future builds.
@@ -81,22 +81,22 @@ dependencies:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
   rxdart: ^0.27.7
-  screenshot: <2.0.0 # Requires Flutter 3.10
-  share_plus: ^7.2.1
-  shared_preferences: ^2.2.2
+  screenshot: <=1.3.0 # Requires Flutter 3.10
+  share_plus: <=7.2.2 # anytime
+  shared_preferences: <=2.2.2 # Requires Flutter 3.10
   shimmer: ^3.0.0
   simple_animations: ^5.0.2
-  sqflite: <2.3.0 # Requires Flutter 3.10
+  sqflite: <=2.2.8+4 # Requires Flutter 3.10
   store_checker: ^1.4.0
-  timeago: ^3.6.0
+  timeago: ^3.6.1
   tutorial_coach_mark: ^1.2.11
   uni_links: ^0.5.1
-  url_launcher: <6.1.12 # Requires Flutter 3.10
-  uuid: ^4.2.1
+  url_launcher: <=6.1.11 # Requires Flutter 3.10
+  uuid: <=4.2.2  # Requires Flutter 3.10
   validators: ^3.0.0
   webdav_client: ^1.2.1
-  webview_flutter: ^4.4.2
-  webview_flutter_android: ^3.12.1
+  webview_flutter: <=4.4.2 # Requires Flutter 3.10
+  webview_flutter_android: <=3.12.1 # Requires Flutter 3.10
 
   anytime:
     git:
@@ -120,10 +120,9 @@ dependencies:
       ref: 97f610be82bfe42d5ce86c348d931d61949fa517
 
 dependency_overrides:
-  collection: ^1.18.0
-  intl: ^0.18.1
-  meta: ^1.11.0
-  path: ^1.8.3
+  intl: <=0.18.1 # anytime
+  meta: <=1.9.1 # anytime
+  path: <=1.8.3
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
@@ -132,12 +131,12 @@ dependency_overrides:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  build_runner: <2.4.0 # Requires Flutter 3.10
-  json_serializable: <6.7.0 # Requires Flutter 3.10
-  mockito: <5.4.1 #
-  sqflite_common_ffi: <2.3.0 # Requires Flutter 3.10
+  build_runner: <=2.3.3 # Requires Flutter 3.10
+  json_serializable: <=6.6.2 # Requires Flutter 3.10
+  mockito: <=5.4.0 #
+  sqflite_common_ffi: <=2.2.5 # Requires Flutter 3.10
   test: any
-  flutter_lints: <3.0.0 # Requires Flutter 3.10
+  flutter_lints: <=2.0.3 # Requires Flutter 3.10
 
 environment:
   sdk: ">=2.10.0 <3.0.0"
