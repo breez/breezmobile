@@ -22,6 +22,11 @@ final _log = Logger("BreezBridge");
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the command below:
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/protobuf/ lib/services/breezlib/protobuf/messages.proto
 // You may need to activate protoc_plugin. See [here](https://pub.dev/packages/protoc_plugin#how-to-build).
+//
+// Due to Flutter SDK restrictions, we need to install a strict version of protoc_plugin
+// as any version above 20.0.1 requires Flutter 3.10.
+//
+// dart pub global activate protoc_plugin 20.0.1
 class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
   static const _eventChannel =
@@ -995,5 +1000,12 @@ class BreezBridge {
     String lndDir = (await getApplicationDocumentsDirectory()).path;
     String network = config.get('Application Options', 'network');
     return '$lndDir/data/chain/bitcoin/$network/channel.backup';
+  }
+
+  Future<CloseChannelsReply> closeChannels(String address) {
+    return _invokeMethodWhenReady(
+      "closeChannels",
+      {"argument": address},
+    ).then((res) => CloseChannelsReply()..mergeFromBuffer(res ?? []));
   }
 }

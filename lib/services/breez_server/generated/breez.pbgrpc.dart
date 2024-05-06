@@ -205,6 +205,12 @@ class InformationClient extends $grpc.Client {
           ($0.ReceiverInfoRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) =>
               $0.ReceiverInfoReply.fromBuffer(value));
+  static final _$chainApiServers =
+      $grpc.ClientMethod<$0.ChainApiServersRequest, $0.ChainApiServersReply>(
+          '/breez.Information/ChainApiServers',
+          ($0.ChainApiServersRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.ChainApiServersReply.fromBuffer(value));
 
   InformationClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -231,6 +237,12 @@ class InformationClient extends $grpc.Client {
       $0.ReceiverInfoRequest request,
       {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$receiverInfo, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.ChainApiServersReply> chainApiServers(
+      $0.ChainApiServersRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$chainApiServers, request, options: options);
   }
 }
 
@@ -270,6 +282,15 @@ abstract class InformationServiceBase extends $grpc.Service {
             ($core.List<$core.int> value) =>
                 $0.ReceiverInfoRequest.fromBuffer(value),
             ($0.ReceiverInfoReply value) => value.writeToBuffer()));
+    $addMethod(
+        $grpc.ServiceMethod<$0.ChainApiServersRequest, $0.ChainApiServersReply>(
+            'ChainApiServers',
+            chainApiServers_Pre,
+            false,
+            false,
+            ($core.List<$core.int> value) =>
+                $0.ChainApiServersRequest.fromBuffer(value),
+            ($0.ChainApiServersReply value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.PingReply> ping_Pre(
@@ -293,6 +314,12 @@ abstract class InformationServiceBase extends $grpc.Service {
     return receiverInfo(call, await request);
   }
 
+  $async.Future<$0.ChainApiServersReply> chainApiServers_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.ChainApiServersRequest> request) async {
+    return chainApiServers(call, await request);
+  }
+
   $async.Future<$0.PingReply> ping(
       $grpc.ServiceCall call, $0.PingRequest request);
   $async.Future<$0.RatesReply> rates(
@@ -301,6 +328,8 @@ abstract class InformationServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.BreezAppVersionsRequest request);
   $async.Future<$0.ReceiverInfoReply> receiverInfo(
       $grpc.ServiceCall call, $0.ReceiverInfoRequest request);
+  $async.Future<$0.ChainApiServersReply> chainApiServers(
+      $grpc.ServiceCall call, $0.ChainApiServersRequest request);
 }
 
 class ChannelOpenerClient extends $grpc.Client {
@@ -309,12 +338,6 @@ class ChannelOpenerClient extends $grpc.Client {
           '/breez.ChannelOpener/LSPList',
           ($0.LSPListRequest value) => value.writeToBuffer(),
           ($core.List<$core.int> value) => $0.LSPListReply.fromBuffer(value));
-  static final _$openLSPChannel =
-      $grpc.ClientMethod<$0.OpenLSPChannelRequest, $0.OpenLSPChannelReply>(
-          '/breez.ChannelOpener/OpenLSPChannel',
-          ($0.OpenLSPChannelRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) =>
-              $0.OpenLSPChannelReply.fromBuffer(value));
   static final _$registerPayment =
       $grpc.ClientMethod<$0.RegisterPaymentRequest, $0.RegisterPaymentReply>(
           '/breez.ChannelOpener/RegisterPayment',
@@ -336,12 +359,6 @@ class ChannelOpenerClient extends $grpc.Client {
   $grpc.ResponseFuture<$0.LSPListReply> lSPList($0.LSPListRequest request,
       {$grpc.CallOptions? options}) {
     return $createUnaryCall(_$lSPList, request, options: options);
-  }
-
-  $grpc.ResponseFuture<$0.OpenLSPChannelReply> openLSPChannel(
-      $0.OpenLSPChannelRequest request,
-      {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$openLSPChannel, request, options: options);
   }
 
   $grpc.ResponseFuture<$0.RegisterPaymentReply> registerPayment(
@@ -369,15 +386,6 @@ abstract class ChannelOpenerServiceBase extends $grpc.Service {
         ($core.List<$core.int> value) => $0.LSPListRequest.fromBuffer(value),
         ($0.LSPListReply value) => value.writeToBuffer()));
     $addMethod(
-        $grpc.ServiceMethod<$0.OpenLSPChannelRequest, $0.OpenLSPChannelReply>(
-            'OpenLSPChannel',
-            openLSPChannel_Pre,
-            false,
-            false,
-            ($core.List<$core.int> value) =>
-                $0.OpenLSPChannelRequest.fromBuffer(value),
-            ($0.OpenLSPChannelReply value) => value.writeToBuffer()));
-    $addMethod(
         $grpc.ServiceMethod<$0.RegisterPaymentRequest, $0.RegisterPaymentReply>(
             'RegisterPayment',
             registerPayment_Pre,
@@ -402,12 +410,6 @@ abstract class ChannelOpenerServiceBase extends $grpc.Service {
     return lSPList(call, await request);
   }
 
-  $async.Future<$0.OpenLSPChannelReply> openLSPChannel_Pre(
-      $grpc.ServiceCall call,
-      $async.Future<$0.OpenLSPChannelRequest> request) async {
-    return openLSPChannel(call, await request);
-  }
-
   $async.Future<$0.RegisterPaymentReply> registerPayment_Pre(
       $grpc.ServiceCall call,
       $async.Future<$0.RegisterPaymentRequest> request) async {
@@ -421,66 +423,13 @@ abstract class ChannelOpenerServiceBase extends $grpc.Service {
 
   $async.Future<$0.LSPListReply> lSPList(
       $grpc.ServiceCall call, $0.LSPListRequest request);
-  $async.Future<$0.OpenLSPChannelReply> openLSPChannel(
-      $grpc.ServiceCall call, $0.OpenLSPChannelRequest request);
   $async.Future<$0.RegisterPaymentReply> registerPayment(
       $grpc.ServiceCall call, $0.RegisterPaymentRequest request);
   $async.Future<$0.CheckChannelsReply> checkChannels(
       $grpc.ServiceCall call, $0.CheckChannelsRequest request);
 }
 
-class PublicChannelOpenerClient extends $grpc.Client {
-  static final _$openPublicChannel = $grpc.ClientMethod<
-          $0.OpenPublicChannelRequest, $0.OpenPublicChannelReply>(
-      '/breez.PublicChannelOpener/OpenPublicChannel',
-      ($0.OpenPublicChannelRequest value) => value.writeToBuffer(),
-      ($core.List<$core.int> value) =>
-          $0.OpenPublicChannelReply.fromBuffer(value));
-
-  PublicChannelOpenerClient($grpc.ClientChannel channel,
-      {$grpc.CallOptions? options,
-      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
-      : super(channel, options: options, interceptors: interceptors);
-
-  $grpc.ResponseFuture<$0.OpenPublicChannelReply> openPublicChannel(
-      $0.OpenPublicChannelRequest request,
-      {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$openPublicChannel, request, options: options);
-  }
-}
-
-abstract class PublicChannelOpenerServiceBase extends $grpc.Service {
-  $core.String get $name => 'breez.PublicChannelOpener';
-
-  PublicChannelOpenerServiceBase() {
-    $addMethod($grpc.ServiceMethod<$0.OpenPublicChannelRequest,
-            $0.OpenPublicChannelReply>(
-        'OpenPublicChannel',
-        openPublicChannel_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) =>
-            $0.OpenPublicChannelRequest.fromBuffer(value),
-        ($0.OpenPublicChannelReply value) => value.writeToBuffer()));
-  }
-
-  $async.Future<$0.OpenPublicChannelReply> openPublicChannel_Pre(
-      $grpc.ServiceCall call,
-      $async.Future<$0.OpenPublicChannelRequest> request) async {
-    return openPublicChannel(call, await request);
-  }
-
-  $async.Future<$0.OpenPublicChannelReply> openPublicChannel(
-      $grpc.ServiceCall call, $0.OpenPublicChannelRequest request);
-}
-
 class FundManagerClient extends $grpc.Client {
-  static final _$openChannel =
-      $grpc.ClientMethod<$0.OpenChannelRequest, $0.OpenChannelReply>(
-          '/breez.FundManager/OpenChannel',
-          ($0.OpenChannelRequest value) => value.writeToBuffer(),
-          ($core.List<$core.int> value) =>
-              $0.OpenChannelReply.fromBuffer(value));
   static final _$updateChannelPolicy = $grpc.ClientMethod<
           $0.UpdateChannelPolicyRequest, $0.UpdateChannelPolicyReply>(
       '/breez.FundManager/UpdateChannelPolicy',
@@ -531,12 +480,6 @@ class FundManagerClient extends $grpc.Client {
       $core.Iterable<$grpc.ClientInterceptor>? interceptors})
       : super(channel, options: options, interceptors: interceptors);
 
-  $grpc.ResponseFuture<$0.OpenChannelReply> openChannel(
-      $0.OpenChannelRequest request,
-      {$grpc.CallOptions? options}) {
-    return $createUnaryCall(_$openChannel, request, options: options);
-  }
-
   $grpc.ResponseFuture<$0.UpdateChannelPolicyReply> updateChannelPolicy(
       $0.UpdateChannelPolicyRequest request,
       {$grpc.CallOptions? options}) {
@@ -586,14 +529,6 @@ abstract class FundManagerServiceBase extends $grpc.Service {
   $core.String get $name => 'breez.FundManager';
 
   FundManagerServiceBase() {
-    $addMethod($grpc.ServiceMethod<$0.OpenChannelRequest, $0.OpenChannelReply>(
-        'OpenChannel',
-        openChannel_Pre,
-        false,
-        false,
-        ($core.List<$core.int> value) =>
-            $0.OpenChannelRequest.fromBuffer(value),
-        ($0.OpenChannelReply value) => value.writeToBuffer()));
     $addMethod($grpc.ServiceMethod<$0.UpdateChannelPolicyRequest,
             $0.UpdateChannelPolicyReply>(
         'UpdateChannelPolicy',
@@ -657,11 +592,6 @@ abstract class FundManagerServiceBase extends $grpc.Service {
             value.writeToBuffer()));
   }
 
-  $async.Future<$0.OpenChannelReply> openChannel_Pre($grpc.ServiceCall call,
-      $async.Future<$0.OpenChannelRequest> request) async {
-    return openChannel(call, await request);
-  }
-
   $async.Future<$0.UpdateChannelPolicyReply> updateChannelPolicy_Pre(
       $grpc.ServiceCall call,
       $async.Future<$0.UpdateChannelPolicyRequest> request) async {
@@ -703,8 +633,6 @@ abstract class FundManagerServiceBase extends $grpc.Service {
     return registerTransactionConfirmation(call, await request);
   }
 
-  $async.Future<$0.OpenChannelReply> openChannel(
-      $grpc.ServiceCall call, $0.OpenChannelRequest request);
   $async.Future<$0.UpdateChannelPolicyReply> updateChannelPolicy(
       $grpc.ServiceCall call, $0.UpdateChannelPolicyRequest request);
   $async.Future<$0.AddFundInitReply> addFundInit(
@@ -1162,6 +1090,86 @@ abstract class InactiveNotifierServiceBase extends $grpc.Service {
       $grpc.ServiceCall call, $0.InactiveNotifyRequest request);
 }
 
+class PaymentNotifierClient extends $grpc.Client {
+  static final _$registerPaymentNotification = $grpc.ClientMethod<
+          $0.RegisterPaymentNotificationRequest,
+          $0.RegisterPaymentNotificationResponse>(
+      '/breez.PaymentNotifier/RegisterPaymentNotification',
+      ($0.RegisterPaymentNotificationRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) =>
+          $0.RegisterPaymentNotificationResponse.fromBuffer(value));
+  static final _$removePaymentNotification = $grpc.ClientMethod<
+          $0.RemovePaymentNotificationRequest,
+          $0.RemovePaymentNotificationResponse>(
+      '/breez.PaymentNotifier/RemovePaymentNotification',
+      ($0.RemovePaymentNotificationRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) =>
+          $0.RemovePaymentNotificationResponse.fromBuffer(value));
+
+  PaymentNotifierClient($grpc.ClientChannel channel,
+      {$grpc.CallOptions? options,
+      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
+      : super(channel, options: options, interceptors: interceptors);
+
+  $grpc.ResponseFuture<$0.RegisterPaymentNotificationResponse>
+      registerPaymentNotification($0.RegisterPaymentNotificationRequest request,
+          {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$registerPaymentNotification, request,
+        options: options);
+  }
+
+  $grpc.ResponseFuture<$0.RemovePaymentNotificationResponse>
+      removePaymentNotification($0.RemovePaymentNotificationRequest request,
+          {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$removePaymentNotification, request,
+        options: options);
+  }
+}
+
+abstract class PaymentNotifierServiceBase extends $grpc.Service {
+  $core.String get $name => 'breez.PaymentNotifier';
+
+  PaymentNotifierServiceBase() {
+    $addMethod($grpc.ServiceMethod<$0.RegisterPaymentNotificationRequest,
+            $0.RegisterPaymentNotificationResponse>(
+        'RegisterPaymentNotification',
+        registerPaymentNotification_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.RegisterPaymentNotificationRequest.fromBuffer(value),
+        ($0.RegisterPaymentNotificationResponse value) =>
+            value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.RemovePaymentNotificationRequest,
+            $0.RemovePaymentNotificationResponse>(
+        'RemovePaymentNotification',
+        removePaymentNotification_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.RemovePaymentNotificationRequest.fromBuffer(value),
+        ($0.RemovePaymentNotificationResponse value) => value.writeToBuffer()));
+  }
+
+  $async.Future<$0.RegisterPaymentNotificationResponse>
+      registerPaymentNotification_Pre($grpc.ServiceCall call,
+          $async.Future<$0.RegisterPaymentNotificationRequest> request) async {
+    return registerPaymentNotification(call, await request);
+  }
+
+  $async.Future<$0.RemovePaymentNotificationResponse>
+      removePaymentNotification_Pre($grpc.ServiceCall call,
+          $async.Future<$0.RemovePaymentNotificationRequest> request) async {
+    return removePaymentNotification(call, await request);
+  }
+
+  $async.Future<$0.RegisterPaymentNotificationResponse>
+      registerPaymentNotification($grpc.ServiceCall call,
+          $0.RegisterPaymentNotificationRequest request);
+  $async.Future<$0.RemovePaymentNotificationResponse> removePaymentNotification(
+      $grpc.ServiceCall call, $0.RemovePaymentNotificationRequest request);
+}
+
 class SignerClient extends $grpc.Client {
   static final _$signUrl =
       $grpc.ClientMethod<$0.SignUrlRequest, $0.SignUrlResponse>(
@@ -1201,4 +1209,76 @@ abstract class SignerServiceBase extends $grpc.Service {
 
   $async.Future<$0.SignUrlResponse> signUrl(
       $grpc.ServiceCall call, $0.SignUrlRequest request);
+}
+
+class SupportClient extends $grpc.Client {
+  static final _$reportPaymentFailure = $grpc.ClientMethod<
+          $0.ReportPaymentFailureRequest, $0.ReportPaymentFailureReply>(
+      '/breez.Support/ReportPaymentFailure',
+      ($0.ReportPaymentFailureRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) =>
+          $0.ReportPaymentFailureReply.fromBuffer(value));
+  static final _$breezStatus =
+      $grpc.ClientMethod<$0.BreezStatusRequest, $0.BreezStatusReply>(
+          '/breez.Support/BreezStatus',
+          ($0.BreezStatusRequest value) => value.writeToBuffer(),
+          ($core.List<$core.int> value) =>
+              $0.BreezStatusReply.fromBuffer(value));
+
+  SupportClient($grpc.ClientChannel channel,
+      {$grpc.CallOptions? options,
+      $core.Iterable<$grpc.ClientInterceptor>? interceptors})
+      : super(channel, options: options, interceptors: interceptors);
+
+  $grpc.ResponseFuture<$0.ReportPaymentFailureReply> reportPaymentFailure(
+      $0.ReportPaymentFailureRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$reportPaymentFailure, request, options: options);
+  }
+
+  $grpc.ResponseFuture<$0.BreezStatusReply> breezStatus(
+      $0.BreezStatusRequest request,
+      {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$breezStatus, request, options: options);
+  }
+}
+
+abstract class SupportServiceBase extends $grpc.Service {
+  $core.String get $name => 'breez.Support';
+
+  SupportServiceBase() {
+    $addMethod($grpc.ServiceMethod<$0.ReportPaymentFailureRequest,
+            $0.ReportPaymentFailureReply>(
+        'ReportPaymentFailure',
+        reportPaymentFailure_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.ReportPaymentFailureRequest.fromBuffer(value),
+        ($0.ReportPaymentFailureReply value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.BreezStatusRequest, $0.BreezStatusReply>(
+        'BreezStatus',
+        breezStatus_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) =>
+            $0.BreezStatusRequest.fromBuffer(value),
+        ($0.BreezStatusReply value) => value.writeToBuffer()));
+  }
+
+  $async.Future<$0.ReportPaymentFailureReply> reportPaymentFailure_Pre(
+      $grpc.ServiceCall call,
+      $async.Future<$0.ReportPaymentFailureRequest> request) async {
+    return reportPaymentFailure(call, await request);
+  }
+
+  $async.Future<$0.BreezStatusReply> breezStatus_Pre($grpc.ServiceCall call,
+      $async.Future<$0.BreezStatusRequest> request) async {
+    return breezStatus(call, await request);
+  }
+
+  $async.Future<$0.ReportPaymentFailureReply> reportPaymentFailure(
+      $grpc.ServiceCall call, $0.ReportPaymentFailureRequest request);
+  $async.Future<$0.BreezStatusReply> breezStatus(
+      $grpc.ServiceCall call, $0.BreezStatusRequest request);
 }
