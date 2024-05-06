@@ -164,9 +164,7 @@ class ItemAvatarPickerState extends State<ItemAvatarPicker> {
               contentPadding: const EdgeInsets.only(top: 16, left: 16),
               suffixIcon: IconButton(
                 icon: Icon(
-                  _imageFilterController.text.isEmpty
-                      ? Icons.search
-                      : Icons.close,
+                  _imageFilterController.text.isEmpty ? Icons.search : Icons.close,
                   size: 20,
                 ),
                 onPressed: _imageFilterController.text.isEmpty

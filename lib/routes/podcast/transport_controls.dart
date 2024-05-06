@@ -114,9 +114,7 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
                 Expanded(flex: 1, child: Container()),
                 IconButton(
                   onPressed: () {
-                    return snapshot.data == AudioState.buffering
-                        ? null
-                        : _rewind(audioBloc);
+                    return snapshot.data == AudioState.buffering ? null : _rewind(audioBloc);
                   },
                   tooltip: L.of(context).rewind_button_label,
                   padding: const EdgeInsets.all(0.0),
@@ -140,9 +138,7 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
                 Expanded(flex: 1, child: Container()),
                 IconButton(
                   onPressed: () {
-                    return snapshot.data == AudioState.buffering
-                        ? null
-                        : _fastForward(audioBloc);
+                    return snapshot.data == AudioState.buffering ? null : _fastForward(audioBloc);
                   },
                   padding: const EdgeInsets.all(0.0),
                   icon: SvgPicture.asset(
@@ -191,12 +187,7 @@ class _PlayButton extends StatelessWidget {
   final Function() onPause;
   final AnimationController playPauseController;
 
-  const _PlayButton(
-      {Key key,
-      this.audioState,
-      this.onPlay,
-      this.onPause,
-      this.playPauseController})
+  const _PlayButton({Key key, this.audioState, this.onPlay, this.onPause, this.playPauseController})
       : super(key: key);
 
   @override
@@ -210,9 +201,7 @@ class _PlayButton extends StatelessWidget {
     final translations = L.of(context);
     if (buffering) {
       return Tooltip(
-          message: playing
-              ? translations.pause_button_label
-              : translations.play_button_label,
+          message: playing ? translations.pause_button_label : translations.play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
               shape: const CircleBorder(),
@@ -227,9 +216,7 @@ class _PlayButton extends StatelessWidget {
     }
 
     return Tooltip(
-      message: playing
-          ? translations.pause_button_label
-          : translations.play_button_label,
+      message: playing ? translations.pause_button_label : translations.play_button_label,
       child: TextButton(
         style: TextButton.styleFrom(
           shape: CircleBorder(

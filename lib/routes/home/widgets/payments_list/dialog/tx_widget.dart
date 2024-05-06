@@ -37,8 +37,7 @@ class TxWidget extends StatelessWidget {
         Padding(
           padding: padding ?? const EdgeInsets.only(top: 20.0),
           child: LinkLauncher(
-            linkTitle: txLabel ??
-                texts.payment_details_dialog_transaction_label_default,
+            linkTitle: txLabel ?? texts.payment_details_dialog_transaction_label_default,
             textStyle: textStyle,
             linkName: txID,
             linkAddress: txURL,

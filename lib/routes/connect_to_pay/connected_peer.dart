@@ -16,27 +16,20 @@ class ConnectedPeer extends StatelessWidget {
   final bool _renderPayer;
   final Function() _onShareInvite;
 
-  const ConnectedPeer(
-      this._renderPayer, this._paymentSessionData, this._onShareInvite);
+  const ConnectedPeer(this._renderPayer, this._paymentSessionData, this._onShareInvite);
 
   @override
   Widget build(BuildContext context) {
-    String imageURL = _renderPayer
-        ? _paymentSessionData.payerData.imageURL
-        : _paymentSessionData.payeeData.imageURL;
-    bool showShare = !_renderPayer &&
-        !_me &&
-        !_paymentSessionData.invitationSent &&
-        imageURL == null;
+    String imageURL =
+        _renderPayer ? _paymentSessionData.payerData.imageURL : _paymentSessionData.payeeData.imageURL;
+    bool showShare = !_renderPayer && !_me && !_paymentSessionData.invitationSent && imageURL == null;
     bool showAlien = !_renderPayer && imageURL == null;
 
     return Column(children: <Widget>[
       Stack(alignment: AlignmentDirectional.center, children: <Widget>[
         Positioned(
             child: AnimatedOpacity(
-                opacity: showShare && _paymentSessionData.invitationReady
-                    ? 1.0
-                    : 0.0,
+                opacity: showShare && _paymentSessionData.invitationReady ? 1.0 : 0.0,
                 duration: const Duration(milliseconds: 1000),
                 child: PulseAnimationDecorator(Container(), 55.0, 45.0))),
         Positioned(
@@ -44,15 +37,11 @@ class ConnectedPeer extends StatelessWidget {
                 duration: const Duration(milliseconds: 1000),
                 opacity: !showShare ? 1.0 : 0.0,
                 child: AlienAvatar())),
-        Positioned(
-            child: !showShare && !showAlien
-                ? buildPeerAvatar(imageURL)
-                : const SizedBox()),
+        Positioned(child: !showShare && !showAlien ? buildPeerAvatar(imageURL) : const SizedBox()),
         Positioned(
             child: showShare
                 ? _ShareInviteWidget(
-                    !_paymentSessionData.invitationReady ||
-                        _paymentSessionData.sessionSecret == null,
+                    !_paymentSessionData.invitationReady || _paymentSessionData.sessionSecret == null,
                     _onShareInvite)
                 : const SizedBox()),
         _paymentSessionData.invitationReady || _renderPayer
@@ -76,14 +65,12 @@ class ConnectedPeer extends StatelessWidget {
                 width: 24.0,
                 child: _online
                     ? DelayRender(
-                        duration:
-                            PaymentSessionState.connectionEmulationDuration,
+                        duration: PaymentSessionState.connectionEmulationDuration,
                         child: Container(
                             decoration: BoxDecoration(
                           color: Colors.greenAccent[400],
                           border: Border.all(color: Colors.white, width: 3.0),
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(12.0)),
+                          borderRadius: const BorderRadius.all(Radius.circular(12.0)),
                         )))
                     : const SizedBox())
             : const SizedBox()
@@ -93,15 +80,13 @@ class ConnectedPeer extends StatelessWidget {
 
   Widget buildPeerAvatar(String imageURL) {
     if (_me || _renderPayer) {
-      return BreezAvatar(imageURL,
-          radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor);
+      return BreezAvatar(imageURL, radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor);
     }
 
     return AnimatedOpacity(
         duration: const Duration(milliseconds: 1000),
         opacity: 1.0,
-        child: BreezAvatar(imageURL,
-            radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor));
+        child: BreezAvatar(imageURL, radius: 30.0, backgroundColor: theme.sessionAvatarBackgroundColor));
   }
 
   bool get _online => _renderPayer
@@ -151,8 +136,7 @@ class AvatarDecorator extends StatelessWidget {
     return Container(
         width: 60.0,
         height: 60.0,
-        decoration: BoxDecoration(
-            color: theme.sessionAvatarBackgroundColor, shape: BoxShape.circle),
+        decoration: BoxDecoration(color: theme.sessionAvatarBackgroundColor, shape: BoxShape.circle),
         child: Padding(
           padding: const EdgeInsets.all(6.0),
           child: child,

@@ -29,13 +29,7 @@ class Confetti extends StatelessWidget {
       // start again as soon as the animation is finished
       shouldLoop: false,
       // manually specify the colors to be used
-      colors: const [
-        Colors.green,
-        Colors.blue,
-        Colors.pink,
-        Colors.orange,
-        Colors.purple
-      ],
+      colors: const [Colors.green, Colors.blue, Colors.pink, Colors.orange, Colors.purple],
     );
   }
 }

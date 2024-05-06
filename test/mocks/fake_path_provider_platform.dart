@@ -52,7 +52,8 @@ class FakePathProviderPlatform extends Fake with MockPlatformInterfaceMixin impl
   Future<List<String>> getExternalCachePaths() async => ["$basePath/externalCachePath"];
 
   @override
-  Future<List<String>> getExternalStoragePaths({StorageDirectory type}) async => ["$basePath/externalStoragePath"];
+  Future<List<String>> getExternalStoragePaths({StorageDirectory type}) async =>
+      ["$basePath/externalStoragePath"];
 
   @override
   Future<String> getDownloadsPath() async => "$basePath/downloadsPath";

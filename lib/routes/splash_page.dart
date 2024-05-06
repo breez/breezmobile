@@ -28,9 +28,7 @@ class SplashPageState extends State<SplashPage> {
     final navigator = Navigator.of(context);
     SharedPreferences prefs = await SharedPreferences.getInstance();
     bool isFirstRun = (prefs.getBool('isFirstRun') ?? true);
-    if (widget._user.registered == null ||
-        widget._user.registered == false ||
-        isFirstRun) {
+    if (widget._user.registered == null || widget._user.registered == false || isFirstRun) {
       prefs.setBool('isFirstRun', false);
       _startTime();
     } else {

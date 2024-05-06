@@ -44,8 +44,7 @@ class MakeInvoiceRequest extends StatelessWidget {
           style: themeData.primaryTextTheme.displaySmall.copyWith(
             fontSize: 16,
           ),
-          textAlign:
-              description.length > 40 ? TextAlign.justify : TextAlign.center,
+          textAlign: description.length > 40 ? TextAlign.justify : TextAlign.center,
           maxLines: 3,
         ),
       ));

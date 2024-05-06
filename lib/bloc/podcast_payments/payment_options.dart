@@ -11,8 +11,7 @@ class PaymentOptions {
     this.customSatsPerMinValue,
   });
 
-  PaymentOptions.initial()
-      : this._(preferredBoostValue: 5000, preferredSatsPerMinValue: 0);
+  PaymentOptions.initial() : this._(preferredBoostValue: 5000, preferredSatsPerMinValue: 0);
 
   PaymentOptions copyWith({
     int preferredBoostValue,
@@ -22,11 +21,9 @@ class PaymentOptions {
   }) {
     return PaymentOptions._(
       preferredBoostValue: preferredBoostValue ?? this.preferredBoostValue,
-      preferredSatsPerMinValue:
-          preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
+      preferredSatsPerMinValue: preferredSatsPerMinValue ?? this.preferredSatsPerMinValue,
       customBoostValue: customBoostValue ?? this.customBoostValue,
-      customSatsPerMinValue:
-          customSatsPerMinValue ?? this.customSatsPerMinValue,
+      customSatsPerMinValue: customSatsPerMinValue ?? this.customSatsPerMinValue,
     );
   }
 
@@ -43,8 +40,7 @@ class PaymentOptions {
         'customSatsPerMinValue': customSatsPerMinValue,
       };
 
-  List<int> get presetBoostAmountsList =>
-      [50, 100, 500, 1000, 5000, 10000, 50000];
+  List<int> get presetBoostAmountsList => [50, 100, 500, 1000, 5000, 10000, 50000];
 
   List get boostAmountList {
     List boostAmountList = presetBoostAmountsList;
@@ -56,8 +52,7 @@ class PaymentOptions {
     ];
   }
 
-  List<int> get presetSatsPerMinuteAmountsList =>
-      [0, 10, 25, 50, 100, 250, 500, 1000];
+  List<int> get presetSatsPerMinuteAmountsList => [0, 10, 25, 50, 100, 250, 500, 1000];
 
   List get satsPerMinuteIntervalsList {
     List satsPerMinuteIntervalsList = presetSatsPerMinuteAmountsList;

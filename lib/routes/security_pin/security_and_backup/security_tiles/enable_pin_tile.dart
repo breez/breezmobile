@@ -52,9 +52,7 @@ class _EnablePinTileState extends State<EnablePinTile> {
                 ),
           switchValue: securityModel.requiresPin,
           group: securityModel.requiresPin ? widget.autoSizeGroup : null,
-          onTap: securityModel.requiresPin
-              ? null
-              : () => _onChangePinSelected(securityModel),
+          onTap: securityModel.requiresPin ? null : () => _onChangePinSelected(securityModel),
           onChanged: (bool value) async {
             if (mounted) {
               await _resetSecurityModel();

@@ -32,8 +32,7 @@ class ClosedChannelPaymentDetails extends StatefulWidget {
   }
 }
 
-class ClosedChannelPaymentDetailsState
-    extends State<ClosedChannelPaymentDetails> {
+class ClosedChannelPaymentDetailsState extends State<ClosedChannelPaymentDetails> {
   bool showRefreshChainButton = false;
   bool mismatchChecked = false;
   bool mismatchedLoading = false;
@@ -53,10 +52,7 @@ class ClosedChannelPaymentDetailsState
   void checkMismatch() {
     final channel = widget.closedChannel;
     final lsp = widget.lsp;
-    if (!mismatchChecked &&
-        channel.pending &&
-        lsp != null &&
-        lsp.currentLSP != null) {
+    if (!mismatchChecked && channel.pending && lsp != null && lsp.currentLSP != null) {
       mismatchChecked = true;
       setState(() {
         mismatchedLoading = true;

@@ -66,9 +66,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
                         accSnapshot.data,
                         snapshot.data,
                         lspSnapshot.data,
-                        snapshot.hasError
-                            ? texts.invoice_btc_address_network_error
-                            : null,
+                        snapshot.hasError ? texts.invoice_btc_address_network_error : null,
                       ),
                       bottomNavigationBar: _buildBottomBar(
                         context,
@@ -160,9 +158,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     Int64 maxAllowedDeposit,
   ) {
     final connected = accountModel.connected;
-    final minFees = (lspInfo != null)
-        ? lspInfo.longestValidOpeningFeeParams.minMsat ~/ 1000
-        : Int64(0);
+    final minFees = (lspInfo != null) ? lspInfo.longestValidOpeningFeeParams.minMsat ~/ 1000 : Int64(0);
     final showMinFeeMessage = minFees > 0;
     final minFeeFormatted = accountModel.currency.format(minFees);
     final minSats = accountModel.currency.format(
@@ -176,13 +172,11 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
       maxAllowedDeposit,
       includeDisplayName: true,
     );
-    final setUpFee =
-        (lspInfo.longestValidOpeningFeeParams.proportional / 10000).toString();
+    final setUpFee = (lspInfo.longestValidOpeningFeeParams.proportional / 10000).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
-    final bool showFeeMessage =
-        maxAllowedDeposit > accountModel.maxInboundLiquidity;
+    final bool showFeeMessage = maxAllowedDeposit > accountModel.maxInboundLiquidity;
 
     if (!showFeeMessage) {
       return texts.invoice_btc_address_channel_not_needed(minSats, maxSats);
@@ -195,24 +189,21 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
         liquidity,
       );
     } else if (connected && !showMinFeeMessage) {
-      return texts
-          .invoice_btc_address_warning_without_min_fee_account_connected(
+      return texts.invoice_btc_address_warning_without_min_fee_account_connected(
         minSats,
         maxSats,
         setUpFee,
         liquidity,
       );
     } else if (!connected && showMinFeeMessage) {
-      return texts
-          .invoice_btc_address_warning_with_min_fee_account_not_connected(
+      return texts.invoice_btc_address_warning_with_min_fee_account_not_connected(
         minSats,
         maxSats,
         setUpFee,
         minFeeFormatted,
       );
     } else {
-      return texts
-          .invoice_btc_address_warning_without_min_fee_account_not_connected(
+      return texts.invoice_btc_address_warning_without_min_fee_account_not_connected(
         minSats,
         maxSats,
         setUpFee,
@@ -224,9 +215,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
     LSPInfo lspInfo,
     Int64 minAllowedDeposit,
   ) {
-    final minFees = (lspInfo != null)
-        ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000
-        : Int64(0);
+    final minFees = (lspInfo != null) ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000 : Int64(0);
     if (minAllowedDeposit == null) return minFees;
     if (minFees > minAllowedDeposit) return minFees;
     return minAllowedDeposit;
@@ -242,9 +231,7 @@ class DepositToBTCAddressPageState extends State<DepositToBTCAddressPage> {
 
     if (hasError || response?.errorMessage?.isNotEmpty == true) {
       return SingleButtonBottomBar(
-        text: hasError
-            ? texts.invoice_btc_address_action_retry
-            : texts.invoice_btc_address_action_close,
+        text: hasError ? texts.invoice_btc_address_action_retry : texts.invoice_btc_address_action_close,
         onPressed: () {
           if (hasError) {
             _addFundsBloc.addFundRequestSink.add(AddFundsInfo(true, false));

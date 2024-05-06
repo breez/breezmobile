@@ -3,8 +3,7 @@ import 'dart:convert';
 import 'package:breez_translations/breez_translations_locales.dart';
 
 Map<String, CurrencyData> currencyDataFromJson(String str) =>
-    Map.from(json.decode(str)).map((k, v) =>
-        MapEntry<String, CurrencyData>(k, CurrencyData.fromJson(k, v)));
+    Map.from(json.decode(str)).map((k, v) => MapEntry<String, CurrencyData>(k, CurrencyData.fromJson(k, v)));
 
 Map<String, CurrencyDataOverride> currencyDataOverrideFromJson(
   CurrencyData base,

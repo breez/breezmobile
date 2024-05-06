@@ -52,8 +52,7 @@ class CurrencyWrapper {
     return fiat.satConversionRate;
   }
 
-  RegExp get whitelistedPattern =>
-      btc?.whitelistedPattern ?? fiat.whitelistedPattern;
+  RegExp get whitelistedPattern => btc?.whitelistedPattern ?? fiat.whitelistedPattern;
 
   String format(
     double value, {

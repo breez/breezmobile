@@ -51,8 +51,7 @@ class UserProfileBloc {
   Stream<BreezUserModel> get userStream => _userStreamController.stream;
 
   final _userStreamPreviewController = BehaviorSubject<BreezUserModel>();
-  Stream<BreezUserModel> get userPreviewStream =>
-      _userStreamPreviewController.stream;
+  Stream<BreezUserModel> get userPreviewStream => _userStreamPreviewController.stream;
 
   final _currencyController = BehaviorSubject<Currency>();
   Sink<Currency> get currencySink => _currencyController.sink;
@@ -133,10 +132,8 @@ class UserProfileBloc {
     _deviceService.eventStream.listen((e) {
       if (e == NotificationType.PAUSE) {
         watcher?.cancel();
-        watcher = Timer(
-            Duration(
-                seconds: _userStreamController
-                    .value.securityModel.automaticallyLockInterval), () {
+        watcher =
+            Timer(Duration(seconds: _userStreamController.value.securityModel.automaticallyLockInterval), () {
           var currentUser = _userStreamController.value;
           if (currentUser.securityModel.requiresPin && !currentUser.locked) {
             _userStreamController.add(currentUser.copyWith(locked: true));
@@ -153,8 +150,7 @@ class UserProfileBloc {
   Future _initializeWithSavedUser(ServiceInjector injector) {
     return injector.sharedPreferences.then((preferences) async {
       _log.info("UserProfileBloc got preferences");
-      String jsonStr =
-          preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
+      String jsonStr = preferences.getString(USER_DETAILS_PREFERENCES_KEY) ?? "{}";
       Map profile = json.decode(jsonStr);
       BreezUserModel user = BreezUserModel.fromJson(profile);
 
@@ -170,8 +166,7 @@ class UserProfileBloc {
       }
       if (!user.registered && Platform.isAndroid) {
         GooglePlayServicesAvailability availability =
-            await GoogleApiAvailability.instance
-                .checkGooglePlayServicesAvailability();
+            await GoogleApiAvailability.instance.checkGooglePlayServicesAvailability();
         _log.info("GooglePlayServicesAvailability:$availability");
         if ((availability == GooglePlayServicesAvailability.serviceMissing) ||
             (availability == GooglePlayServicesAvailability.serviceDisabled) ||
@@ -199,8 +194,7 @@ class UserProfileBloc {
   }
 
   Future _setLockState(SetLockState action) async {
-    _saveChanges(
-        await _preferences, _currentUser.copyWith(locked: action.locked));
+    _saveChanges(await _preferences, _currentUser.copyWith(locked: action.locked));
     action.resolve(action.locked);
   }
 
@@ -209,20 +203,17 @@ class UserProfileBloc {
   }
 
   Future _setAppMode(SetAppMode action) async {
-    _saveChanges(
-        await _preferences, _currentUser.copyWith(appMode: action.appMode));
+    _saveChanges(await _preferences, _currentUser.copyWith(appMode: action.appMode));
     action.resolve(action.appMode);
   }
 
   Future _setPOSCurrency(SetPOSCurrency action) async {
-    _saveChanges(await _preferences,
-        _currentUser.copyWith(posCurrencyShortName: action.shortName));
+    _saveChanges(await _preferences, _currentUser.copyWith(posCurrencyShortName: action.shortName));
     action.resolve(action.shortName);
   }
 
   Future _setPaymentOptions(SetPaymentOptions action) async {
-    _saveChanges(await _preferences,
-        _currentUser.copyWith(paymentOptions: action.paymentOptions));
+    _saveChanges(await _preferences, _currentUser.copyWith(paymentOptions: action.paymentOptions));
     action.resolve(action.paymentOptions);
   }
 
@@ -230,13 +221,11 @@ class UserProfileBloc {
     action.resolve(await _uploadImage(action.bytes));
   }
 
-  Future _setSeenPaymentStripTutorial(
-      SetSeenPaymentStripTutorial action) async {
+  Future _setSeenPaymentStripTutorial(SetSeenPaymentStripTutorial action) async {
     _saveChanges(
         await _preferences,
         _currentUser.copyWith(
-            seenTutorials: _currentUser.seenTutorials
-                .copyWith(paymentStripTutorial: action.seen)));
+            seenTutorials: _currentUser.seenTutorials.copyWith(paymentStripTutorial: action.seen)));
     action.resolve(action.seen);
   }
 
@@ -244,8 +233,7 @@ class UserProfileBloc {
     try {
       return _saveImage(bytes).then((file) {
         return _breezServer.uploadLogo(bytes).then((imageUrl) async {
-          _userStreamPreviewController
-              .add(_currentUser.copyWith(image: imageUrl));
+          _userStreamPreviewController.add(_currentUser.copyWith(image: imageUrl));
           return Future.value(null);
         });
       });
@@ -268,8 +256,7 @@ class UserProfileBloc {
     } catch (e) {
       //  This is a temporary workaround for flutter_secure_storage issues
       //  on apps published in Google Play for Android devices
-      if (e.toString().contains("java.lang.NullPointerException") &&
-          Platform.isAndroid) {
+      if (e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid) {
         action.resolve(true);
         return;
       }
@@ -289,8 +276,7 @@ class UserProfileBloc {
       String hexHash = HEX.encode(hashedPassword);
       await _secureStorage.write(key: 'adminPassword', value: hexHash);
     }
-    await _saveChanges(await _preferences,
-        _currentUser.copyWith(hasAdminPassword: action.password != null));
+    await _saveChanges(await _preferences, _currentUser.copyWith(hasAdminPassword: action.password != null));
     action.resolve(null);
   }
 
@@ -301,33 +287,23 @@ class UserProfileBloc {
     action.resolve(listEquals(decodedHash, hashedPassword));
   }
 
-  Future _updateSecurityModelAction(
-      UpdateSecurityModel updateSecurityModelAction) async {
-    updateSecurityModelAction
-        .resolve(await _updateSecurityModel(updateSecurityModelAction));
+  Future _updateSecurityModelAction(UpdateSecurityModel updateSecurityModelAction) async {
+    updateSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
-  Future _resetSecurityModelAction(
-      ResetSecurityModel resetSecurityModelAction) async {
-    var updateSecurityModelAction =
-        UpdateSecurityModel(SecurityModel.initial());
-    resetSecurityModelAction
-        .resolve(await _updateSecurityModel(updateSecurityModelAction));
+  Future _resetSecurityModelAction(ResetSecurityModel resetSecurityModelAction) async {
+    var updateSecurityModelAction = UpdateSecurityModel(SecurityModel.initial());
+    resetSecurityModelAction.resolve(await _updateSecurityModel(updateSecurityModelAction));
   }
 
-  Future _updateSecurityModel(
-      UpdateSecurityModel updateSecurityModelAction) async {
+  Future _updateSecurityModel(UpdateSecurityModel updateSecurityModelAction) async {
     await _saveChanges(
-        await _preferences,
-        _currentUser.copyWith(
-            securityModel: updateSecurityModelAction.newModel));
+        await _preferences, _currentUser.copyWith(securityModel: updateSecurityModelAction.newModel));
     return updateSecurityModelAction.newModel;
   }
 
-  Future _updatePreferredCurrenciesAction(
-      UpdatePreferredCurrencies updateCurrencies) async {
-    var updated =
-        _currentUser.copyWith(preferredCurrencies: updateCurrencies.currencies);
+  Future _updatePreferredCurrenciesAction(UpdatePreferredCurrencies updateCurrencies) async {
+    var updated = _currentUser.copyWith(preferredCurrencies: updateCurrencies.currencies);
     await _saveChanges(await _preferences, updated);
     updateCurrencies.resolve(updateCurrencies.currencies);
   }
@@ -337,14 +313,12 @@ class UserProfileBloc {
   }
 
   Future _changeTheme(ChangeTheme action) async {
-    await _saveChanges(
-        await _preferences, _currentUser.copyWith(themeId: action.newTheme));
+    await _saveChanges(await _preferences, _currentUser.copyWith(themeId: action.newTheme));
     return action.newTheme;
   }
 
   Future _validateBiometrics(ValidateBiometrics action) async {
-    action.resolve(await _localAuthService.authenticate(
-        localizedReason: action.localizedReason));
+    action.resolve(await _localAuthService.authenticate(localizedReason: action.localizedReason));
   }
 
   Future _stopBiometrics(StopBiometrics action) async {
@@ -367,8 +341,7 @@ class UserProfileBloc {
     try {
       String token = await _notifications.getToken();
 
-      if (token != null &&
-          (token != user.token || user.userID == null || user.userID.isEmpty)) {
+      if (token != null && (token != user.token || user.userID == null || user.userID.isEmpty)) {
         //var userID = await _breezServer.registerDevice(token);
         var userID = token;
         userToRegister = userToRegister.copyWith(token: token, userID: userID);
@@ -385,15 +358,12 @@ class UserProfileBloc {
     BreezUserModel userModel,
   ) async {
     var appDir = await getApplicationDocumentsDirectory();
-    var backupAppDataDirPath =
-        '${appDir.path}${Platform.pathSeparator}app_data_backup';
-    final backupUserPrefsPath =
-        '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
+    var backupAppDataDirPath = '${appDir.path}${Platform.pathSeparator}app_data_backup';
+    final backupUserPrefsPath = '$backupAppDataDirPath${Platform.pathSeparator}userPreferences.txt';
     if (await File(backupUserPrefsPath).exists()) {
       final backupUserPrefs = await File(backupUserPrefsPath).readAsString();
       Map<dynamic, dynamic> userData = json.decode(backupUserPrefs);
-      BackupUserPreferences userPrefs =
-          BackupUserPreferences.fromJson(userData);
+      BackupUserPreferences userPrefs = BackupUserPreferences.fromJson(userData);
       return userModel.fromUserPreferences(userPrefs);
     }
     return userModel;
@@ -402,16 +372,14 @@ class UserProfileBloc {
   void _listenCurrencyChange(ServiceInjector injector) {
     _currencyController.stream.listen((currency) async {
       var preferences = await injector.sharedPreferences;
-      await _saveChanges(
-          preferences, _currentUser.copyWith(currency: currency));
+      await _saveChanges(preferences, _currentUser.copyWith(currency: currency));
     });
   }
 
   void _listenFiatCurrencyChange(ServiceInjector injector) {
     _fiatConversionController.stream.listen((shortName) async {
       var preferences = await injector.sharedPreferences;
-      await _saveChanges(
-          preferences, _currentUser.copyWith(fiatCurrency: shortName));
+      await _saveChanges(preferences, _currentUser.copyWith(fiatCurrency: shortName));
     });
   }
 
@@ -437,20 +405,15 @@ class UserProfileBloc {
 
   _saveImage(List<int> logoBytes) {
     return getApplicationDocumentsDirectory()
-        .then((docDir) =>
-            Directory([docDir.path, PROFILE_DATA_FOLDER_PATH].join("/"))
-                .create(recursive: true))
-        .then((profileDir) => File([
-              profileDir.path,
-              'profile-${DateTime.now().millisecondsSinceEpoch}-.png'
-            ].join("/"))
+        .then(
+            (docDir) => Directory([docDir.path, PROFILE_DATA_FOLDER_PATH].join("/")).create(recursive: true))
+        .then((profileDir) =>
+            File([profileDir.path, 'profile-${DateTime.now().millisecondsSinceEpoch}-.png'].join("/"))
                 .writeAsBytes(logoBytes, flush: true));
   }
 
-  Future<bool> _saveChanges(
-      SharedPreferences preferences, BreezUserModel user) {
-    var res =
-        preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
+  Future<bool> _saveChanges(SharedPreferences preferences, BreezUserModel user) {
+    var res = preferences.setString(USER_DETAILS_PREFERENCES_KEY, json.encode(user));
     _publishUser(user);
     return res;
   }

@@ -95,9 +95,7 @@ class _PosInvoiceCartBarState extends State<PosInvoiceCartBar> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 8.0),
                   child: Text(
-                    widget.isKeypadView
-                        ? widget.currentCurrency.format(widget.currentAmount)
-                        : "",
+                    widget.isKeypadView ? widget.currentCurrency.format(widget.currentAmount) : "",
                     maxLines: 1,
                     style: theme.invoiceAmountStyle.copyWith(
                       color: themeData.textTheme.headlineSmall.color,

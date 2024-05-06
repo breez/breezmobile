@@ -188,8 +188,7 @@ class PosReportDialog extends StatelessWidget {
                   }
                 });
               } else {
-                posCatalogBloc.actionsSink
-                    .add(UpdatePosReportTimeRange(newOption));
+                posCatalogBloc.actionsSink.add(UpdatePosReportTimeRange(newOption));
               }
             }
           },

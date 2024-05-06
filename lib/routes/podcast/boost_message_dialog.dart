@@ -119,8 +119,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
         ),
       ),
     ];
-    if (_amountKey.currentState?.validate() ??
-        _amountController.text.isNotEmpty) {
+    if (_amountKey.currentState?.validate() ?? _amountController.text.isNotEmpty) {
       actions.add(
         TextButton(
           onPressed: () {

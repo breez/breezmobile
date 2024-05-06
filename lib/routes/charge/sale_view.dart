@@ -64,8 +64,7 @@ class SaleViewState extends State<SaleView> {
     if (_currentSaleSubscription == null) {
       if (!widget.readOnly) {
         final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
-        _currentSaleSubscription =
-            posCatalogBloc.currentSaleStream.listen((sale) {
+        _currentSaleSubscription = posCatalogBloc.currentSaleStream.listen((sale) {
           setState(() {
             bool updateNote = saleInProgress == null;
             saleInProgress = sale;
@@ -92,8 +91,7 @@ class SaleViewState extends State<SaleView> {
     super.dispose();
   }
 
-  bool get showNote =>
-      !widget.readOnly || widget.readOnlySale.note?.isNotEmpty == true;
+  bool get showNote => !widget.readOnly || widget.readOnlySale.note?.isNotEmpty == true;
 
   @override
   Widget build(BuildContext context) {
@@ -109,8 +107,7 @@ class SaleViewState extends State<SaleView> {
           return const Loader();
         }
 
-        CurrencyWrapper saleCurrency =
-            widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
+        CurrencyWrapper saleCurrency = widget.saleCurrency ?? CurrencyWrapper.fromBTC(Currency.SAT);
         String title = texts.sale_view_title;
         if (widget.salePayment != null) {
           title = BreezDateUtils.formatYearMonthDayHourMinute(
@@ -171,9 +168,7 @@ class SaleViewState extends State<SaleView> {
           ),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
-              color: theme.themeId == "BLUE"
-                  ? themeData.colorScheme.background
-                  : themeData.canvasColor,
+              color: theme.themeId == "BLUE" ? themeData.colorScheme.background : themeData.canvasColor,
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withOpacity(0.3),
@@ -413,12 +408,10 @@ class SaleLinesList extends StatelessWidget {
         //primary: false,
         itemBuilder: (context, index) {
           return ListTileTheme(
-            textColor: theme.themeId == "BLUE"
-                ? themeData.canvasColor
-                : themeData.textTheme.titleMedium.color,
-            iconColor: theme.themeId == "BLUE"
-                ? themeData.canvasColor
-                : themeData.textTheme.titleMedium.color,
+            textColor:
+                theme.themeId == "BLUE" ? themeData.canvasColor : themeData.textTheme.titleMedium.color,
+            iconColor:
+                theme.themeId == "BLUE" ? themeData.canvasColor : themeData.textTheme.titleMedium.color,
             child: Column(
               children: [
                 SaleLineWidget(
@@ -428,8 +421,7 @@ class SaleLinesList extends StatelessWidget {
                       : () => posCatalogBloc.actionsSink.add(
                             SetCurrentSale(
                               currentSale.copyWith(
-                                saleLines: currentSale.saleLines
-                                  ..removeAt(index),
+                                saleLines: currentSale.saleLines..removeAt(index),
                               ),
                             ),
                           ),
@@ -537,9 +529,8 @@ class SaleLineWidget extends StatelessWidget {
                 child: Text(
                   saleLine.quantity.toString(),
                   style: TextStyle(
-                    color: theme.themeId == "BLUE"
-                        ? Colors.black.withOpacity(0.7)
-                        : listTileThemeData.textColor,
+                    color:
+                        theme.themeId == "BLUE" ? Colors.black.withOpacity(0.7) : listTileThemeData.textColor,
                     fontSize: 18.0,
                   ),
                 ),
@@ -551,13 +542,9 @@ class SaleLineWidget extends StatelessWidget {
                     iconSize: 22.0,
                     color: iconColor,
                     icon: Icon(
-                      saleLine.quantity == 1
-                          ? Icons.delete_outline
-                          : Icons.remove,
+                      saleLine.quantity == 1 ? Icons.delete_outline : Icons.remove,
                     ),
-                    onPressed: () => saleLine.quantity == 1
-                        ? onDelete()
-                        : onChangeQuantity(-1),
+                    onPressed: () => saleLine.quantity == 1 ? onDelete() : onChangeQuantity(-1),
                   ),
           ],
         ),
@@ -583,9 +570,7 @@ class CurrencyDisplay extends StatelessWidget {
     double priceInFiat = saleLine.totalFiat;
     double priceInSats = saleLine.totalSats;
     TextStyle textStyle = TextStyle(
-      color: ListTileTheme.of(context)
-          .textColor
-          .withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5),
+      color: ListTileTheme.of(context).textColor.withOpacity(theme.themeId == "BLUE" ? 0.75 : 0.5),
     );
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,

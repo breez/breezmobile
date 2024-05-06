@@ -50,9 +50,7 @@ class PayerSessionWidget extends StatelessWidget {
                 _currentSession.sentInvitesSink.add(null);
               }),
             ),
-            waitingFormPayee(sessionState)
-                ? Container()
-                : _waitingFormPayee(sessionState),
+            waitingFormPayee(sessionState) ? Container() : _waitingFormPayee(sessionState),
           ],
         );
       },
@@ -69,8 +67,7 @@ class PayerSessionWidget extends StatelessWidget {
           child: PaymentDetailsForm(
             _account,
             sessionState,
-            (amountToPay, {description}) =>
-                _currentSession.paymentDetailsSink.add(
+            (amountToPay, {description}) => _currentSession.paymentDetailsSink.add(
               PaymentDetails(amountToPay, description),
             ),
           ),

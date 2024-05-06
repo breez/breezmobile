@@ -76,9 +76,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
         leading: const backBtn.BackButton(),
         title: Text(texts.payment_options_title),
       ),
-      body: (_loadingOverride || _loadingBaseFee || _loadingProportionalFee)
-          ? Container()
-          : _body(context),
+      body: (_loadingOverride || _loadingBaseFee || _loadingProportionalFee) ? Container() : _body(context),
     );
   }
 
@@ -148,8 +146,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
             child: Form(
               child: TextFormField(
                 enabled: _overriding,
-                keyboardType:
-                    const TextInputType.numberWithOptions(decimal: false),
+                keyboardType: const TextInputType.numberWithOptions(decimal: false),
                 inputFormatters: [
                   FilteringTextInputFormatter.digitsOnly,
                 ],
@@ -362,8 +359,7 @@ class _PaymentOptionsPageState extends State<PaymentOptionsPage> {
     _closeKeyboard();
 
     final options = AppBlocsProvider.of<PaymentOptionsBloc>(context);
-    var updatePaymentProportionalFeeAction =
-        UpdatePaymentProportionalFee(_proportionalFee);
+    var updatePaymentProportionalFeeAction = UpdatePaymentProportionalFee(_proportionalFee);
     var updatePaymentBaseFeeAction = UpdatePaymentBaseFee(_baseFee);
     final overridePaymentFeeAction = OverridePaymentFee(_overriding);
     options.actionsSink.add(updatePaymentProportionalFeeAction);

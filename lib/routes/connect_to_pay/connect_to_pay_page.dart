@@ -65,9 +65,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
           ctpBloc.startSession(_currentSession);
         }
         _payer = _currentSession.runtimeType == PayerRemoteSession;
-        _title = _payer
-            ? texts.connect_to_pay_title_payer
-            : texts.connect_to_pay_title_payee;
+        _title = _payer ? texts.connect_to_pay_title_payer : texts.connect_to_pay_title_payee;
         registerErrorsListener();
         registerEndOfSessionListener(context);
         _isInit = true;
@@ -82,8 +80,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
       _popWithMessage(error.description);
     });
 
-    _remotePartyErrorSubscription =
-        _currentSession.paymentSessionStateStream.listen((s) {
+    _remotePartyErrorSubscription = _currentSession.paymentSessionStateStream.listen((s) {
       final error = !_payer ? s.payerData?.error : s.payeeData?.error;
       if (error != null) {
         _popWithMessage(error);
@@ -93,11 +90,9 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
 
   void registerEndOfSessionListener(BuildContext context) async {
     final texts = context.texts();
-    _endOfSessionSubscription =
-        _currentSession.paymentSessionStateStream.listen(
+    _endOfSessionSubscription = _currentSession.paymentSessionStateStream.listen(
       (session) {
-        _remoteUserName ??=
-            _payer ? session.payeeData?.userName : session.payerData?.userName;
+        _remoteUserName ??= _payer ? session.payeeData?.userName : session.payerData?.userName;
 
         if (session.remotePartyCancelled) {
           _popWithMessage(
@@ -111,8 +106,7 @@ class ConnectToPayPageState extends State<ConnectToPayPage> {
         }
 
         if (session.paymentFulfilled) {
-          final formattedAmount = _currentSession.currentUser.currency
-              .format(Int64(session.settledAmount));
+          final formattedAmount = _currentSession.currentUser.currency.format(Int64(session.settledAmount));
           _popWithMessage(
             _payer
                 ? texts.connect_to_pay_success_payer(

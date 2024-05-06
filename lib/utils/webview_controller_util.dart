@@ -20,8 +20,7 @@ WebViewController setWebViewController({
     )
     ..addJavaScriptChannel(
       "BreezWebView",
-      onMessageReceived: (JavaScriptMessage message) =>
-          onMessageReceived(message),
+      onMessageReceived: (JavaScriptMessage message) => onMessageReceived(message),
     )
     ..loadRequest(Uri.parse(url));
 }

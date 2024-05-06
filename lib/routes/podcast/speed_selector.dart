@@ -72,9 +72,7 @@ class SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
           ),
           child: Text(
             texts.podcast_speed_selector_speed(
-              speed % 1 == 0
-                  ? speed.toStringAsFixed(0).toString()
-                  : speed.toString(),
+              speed % 1 == 0 ? speed.toStringAsFixed(0).toString() : speed.toString(),
             ),
             style: TextStyle(
               fontSize: 14.0,
@@ -155,9 +153,7 @@ class SpeedSliderState extends State<SpeedSlider> {
           padding: const EdgeInsets.only(top: 16.0),
           child: Text(
             texts.podcast_speed_selector_speed(
-              speed % 1 == 0
-                  ? speed.toStringAsFixed(0).toString()
-                  : speed.toString(),
+              speed % 1 == 0 ? speed.toStringAsFixed(0).toString() : speed.toString(),
             ),
             style: themeData.primaryTextTheme.headlineSmall,
           ),

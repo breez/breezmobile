@@ -22,8 +22,7 @@ class BreezAvatar extends StatelessWidget {
     if (avatarURL != null && avatarURL.isNotEmpty) {
       if (avatarURL.startsWith("breez://profile_image?")) {
         var queryParams = Uri.parse(avatarURL).queryParameters;
-        return _GeneratedAvatar(
-            radius, queryParams["animal"], queryParams["color"], avatarBgColor);
+        return _GeneratedAvatar(radius, queryParams["animal"], queryParams["color"], avatarBgColor);
       }
 
       if (avatarURL.startsWith("src/icon/vendors/")) {
@@ -79,8 +78,7 @@ class _GeneratedAvatar extends StatelessWidget {
   final String color;
   final Color backgroundColor;
 
-  const _GeneratedAvatar(
-      this.radius, this.animal, this.color, this.backgroundColor);
+  const _GeneratedAvatar(this.radius, this.animal, this.color, this.backgroundColor);
 
   @override
   Widget build(BuildContext context) {
@@ -180,11 +178,9 @@ class _VendorAvatar extends StatelessWidget {
   }
 
   Widget _vendorAvatar() {
-    String vendorName =
-        RegExp("(?<=vendors/)(.*)(?=_logo)").stringMatch(avatarURL);
+    String vendorName = RegExp("(?<=vendors/)(.*)(?=_logo)").stringMatch(avatarURL);
     var bgColor = theme.vendorTheme[vendorName]?.iconBgColor ?? Colors.white;
-    var fgColor =
-        theme.vendorTheme[vendorName]?.iconFgColor ?? Colors.transparent;
+    var fgColor = theme.vendorTheme[vendorName]?.iconFgColor ?? Colors.transparent;
     return CircleAvatar(
       radius: radius,
       child: Container(
@@ -192,8 +188,7 @@ class _VendorAvatar extends StatelessWidget {
             color: bgColor,
             shape: CircleBorder(side: BorderSide(color: bgColor)),
             image: DecorationImage(
-                image: AssetImage(avatarURL),
-                colorFilter: ColorFilter.mode(fgColor, BlendMode.color))),
+                image: AssetImage(avatarURL), colorFilter: ColorFilter.mode(fgColor, BlendMode.color))),
       ),
     );
   }

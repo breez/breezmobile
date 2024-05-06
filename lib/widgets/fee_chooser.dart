@@ -100,9 +100,7 @@ class FeeChooser extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         borderRadius: borderRadius,
-        color: isSelected
-            ? themeData.colorScheme.onSurface
-            : themeData.canvasColor,
+        color: isSelected ? themeData.colorScheme.onSurface : themeData.canvasColor,
         border: border,
       ),
       child: TextButton(

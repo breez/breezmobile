@@ -35,8 +35,7 @@ class RestoreFormState extends State<RestoreForm> {
   void initState() {
     super.initState();
     _autoValidateMode = AutovalidateMode.disabled;
-    focusNodes =
-        List<FocusNode>.generate(widget.is24Word ? 24 : 12, (_) => FocusNode());
+    focusNodes = List<FocusNode>.generate(widget.is24Word ? 24 : 12, (_) => FocusNode());
   }
 
   @override
@@ -123,8 +122,7 @@ class RestoreFormState extends State<RestoreForm> {
   }
 
   FutureOr<List<String>> _getSuggestions(pattern) {
-    var suggestionList =
-        WORDLIST.where((item) => item.startsWith(pattern)).toList();
+    var suggestionList = WORDLIST.where((item) => item.startsWith(pattern)).toList();
     return suggestionList.isNotEmpty ? suggestionList : List.empty();
   }
 }

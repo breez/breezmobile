@@ -31,12 +31,7 @@ class RemoteServerAuthData {
         );
 
   Map<String, dynamic> toJson() {
-    return {
-      "url": url,
-      "user": user,
-      "password": password,
-      "breezDir": breezDir
-    };
+    return {"url": url, "user": user, "password": password, "breezDir": breezDir};
   }
 
   bool equal(RemoteServerAuthData other) {
@@ -150,9 +145,8 @@ class BackupSettings {
       : this(
           json["promptOnError"] ?? false,
           BackupKeyType.values[json["backupKeyType"] ?? 0],
-          BackupSettings.availableBackupProviders().firstWhere(
-              (p) => p.name == json["backupProvider"],
-              orElse: () => null),
+          BackupSettings.availableBackupProviders()
+              .firstWhere((p) => p.name == json["backupProvider"], orElse: () => null),
           RemoteServerAuthData.fromJson(json["remoteServerAuthData"] ?? {}),
         );
 
@@ -200,10 +194,7 @@ class BackupSettings {
   }
 
   static List<BackupProvider> availableBackupProviders() {
-    List<BackupProvider> providers = [
-      BackupProvider.googleDrive(),
-      BackupProvider.remoteServer()
-    ];
+    List<BackupProvider> providers = [BackupProvider.googleDrive(), BackupProvider.remoteServer()];
     if (defaultTargetPlatform == TargetPlatform.iOS) {
       providers.insert(0, BackupProvider.iCloud());
     }
@@ -239,8 +230,7 @@ class BackupState {
   BackupState.fromJson(Map<String, dynamic> json)
       : this(
           json["lastBackupTime"] != null
-              ? DateTime.fromMillisecondsSinceEpoch(json["lastBackupTime"])
-                  .toLocal()
+              ? DateTime.fromMillisecondsSinceEpoch(json["lastBackupTime"]).toLocal()
               : null,
           false,
           json["lastBackupAccountName"],
@@ -398,10 +388,8 @@ class BreezLibBackupKey {
     if (key != null) {
       switch (backupKeyType) {
         case BackupKeyType.PHRASE:
-          assert(entropy.length == ENTROPY_LENGTH ||
-              entropy.length == ENTROPY_LENGTH * 2);
-          result =
-              entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
+          assert(entropy.length == ENTROPY_LENGTH || entropy.length == ENTROPY_LENGTH * 2);
+          result = entropy.length == ENTROPY_LENGTH ? 'Mnemonics12' : 'Mnemonics';
           break;
         case BackupKeyType.PIN:
 
@@ -459,8 +447,7 @@ class RestoreRequest {
           "Node ID mustn't be empty for restore request.",
         ),
         assert(
-          !(encryptionKey != null && encryptionKey.key != null) ||
-              encryptionKey.key.isNotEmpty,
+          !(encryptionKey != null && encryptionKey.key != null) || encryptionKey.key.isNotEmpty,
           "Encryption key mustn't be empty for encrypted backup.",
         );
 }

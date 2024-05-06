@@ -19,14 +19,10 @@ class LocalAuthenticationService {
   Future<LocalAuthenticationOption> _getLocalAuthenticationOption() async {
     final availableBiometrics = await _auth.getAvailableBiometrics();
     if (availableBiometrics.contains(BiometricType.face)) {
-      return Platform.isIOS
-          ? LocalAuthenticationOption.FACE_ID
-          : LocalAuthenticationOption.FACE;
+      return Platform.isIOS ? LocalAuthenticationOption.FACE_ID : LocalAuthenticationOption.FACE;
     }
     if (availableBiometrics.contains(BiometricType.fingerprint)) {
-      return Platform.isIOS
-          ? LocalAuthenticationOption.TOUCH_ID
-          : LocalAuthenticationOption.FINGERPRINT;
+      return Platform.isIOS ? LocalAuthenticationOption.TOUCH_ID : LocalAuthenticationOption.FINGERPRINT;
     }
     return LocalAuthenticationOption.NONE;
   }

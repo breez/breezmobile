@@ -12,8 +12,7 @@ class PendingShareIndicator extends StatefulWidget {
   }
 }
 
-class PendingShareIndicatorState extends State<PendingShareIndicator>
-    with TickerProviderStateMixin {
+class PendingShareIndicatorState extends State<PendingShareIndicator> with TickerProviderStateMixin {
   static const animationDuration = Duration(milliseconds: 500);
   static const rotatingDuration = Duration(milliseconds: 1000);
   AnimationController _scaleAnimationController;
@@ -25,10 +24,8 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
   @override
   void initState() {
     super.initState();
-    _scaleAnimationController =
-        AnimationController(vsync: this, duration: animationDuration);
-    _rotateAnimationController =
-        AnimationController(vsync: this, duration: rotatingDuration);
+    _scaleAnimationController = AnimationController(vsync: this, duration: animationDuration);
+    _rotateAnimationController = AnimationController(vsync: this, duration: rotatingDuration);
 
     _scale1 = _linearTween(_scaleAnimationController, 0.3, 1.0);
     _scale2 = _linearTween(_scaleAnimationController, 0.6, 1.0);
@@ -45,8 +42,7 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
     _rotateAnimationController.repeat();
   }
 
-  Animation<double> _linearTween(
-      AnimationController controller, double begin, double end) {
+  Animation<double> _linearTween(AnimationController controller, double begin, double end) {
     return Tween<double>(
       begin: begin,
       end: end,
@@ -71,8 +67,7 @@ class PendingShareIndicatorState extends State<PendingShareIndicator>
 
   @override
   Widget build(BuildContext context) {
-    return CustomPaint(
-        painter: _ConnectedCustomPainter(_scale1, _scale2, _rotate));
+    return CustomPaint(painter: _ConnectedCustomPainter(_scale1, _scale2, _rotate));
   }
 }
 
@@ -104,8 +99,7 @@ class _ConnectedCustomPainter extends CustomPainter {
     canvas.rotate(_rotate.value);
     List<double> startAngles = [-3 * math.pi / 4, math.pi / 4];
     for (int i = 0; i < 2; i++) {
-      Rect rect = Rect.fromLTRB(-x + circleSpacing, -y + circleSpacing,
-          x - circleSpacing, y - circleSpacing);
+      Rect rect = Rect.fromLTRB(-x + circleSpacing, -y + circleSpacing, x - circleSpacing, y - circleSpacing);
       canvas.drawArc(rect, startAngles[i], math.pi / 2, false, arcPaint);
     }
   }

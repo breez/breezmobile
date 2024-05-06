@@ -39,8 +39,7 @@ class DownloadTaskManager {
     await FlutterDownloader.initialize(ignoreSsl: true, debug: true);
     _log.info("GraphDownloader after Initialize");
 
-    bool success = IsolateNameServer.registerPortWithName(
-        _port.sendPort, 'downloader_send_port');
+    bool success = IsolateNameServer.registerPortWithName(_port.sendPort, 'downloader_send_port');
     _port.listen((dynamic data) {
       final id = (data as List<dynamic>)[0] as String;
       final status = DownloadTaskStatus(data[1] as int);
@@ -60,8 +59,7 @@ class DownloadTaskManager {
   }
 
   void pollTasksStatus() {
-    _downloadTimer ??=
-        Timer.periodic(const Duration(seconds: 3), (timer) async {
+    _downloadTimer ??= Timer.periodic(const Duration(seconds: 3), (timer) async {
       var tasks = await loadTasks();
       final polledTasks = tasks.where((t) => _tasksToPoll.contains(t.taskId));
       for (var task in polledTasks) {
@@ -120,8 +118,7 @@ class DownloadTaskManager {
   }
 
   Future removeTask(String taskID, {shouldDeleteContent = true}) async {
-    await FlutterDownloader.remove(
-        taskId: taskID, shouldDeleteContent: shouldDeleteContent);
+    await FlutterDownloader.remove(taskId: taskID, shouldDeleteContent: shouldDeleteContent);
     _tasksToPoll.remove(taskID);
   }
 

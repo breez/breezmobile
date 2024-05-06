@@ -89,9 +89,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     if (accountSubscription == null) {
       AccountBloc accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       accountSubscription = accountBloc.accountStream.listen((acc) {
-        currentCurrency =
-            CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc) ??
-                CurrencyWrapper.fromBTC(Currency.SAT);
+        currentCurrency = CurrencyWrapper.fromShortName(acc.posCurrencyShortName, acc) ??
+            CurrencyWrapper.fromBTC(Currency.SAT);
       });
 
       FetchRates fetchRatesAction = FetchRates();
@@ -121,8 +120,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
         }
 
         // if the current pending item does not exist, then it was removed.
-        if (s.saleLines.firstWhere(
-                (s) => s.isCustom && s.itemName == currentPendingItem.itemName,
+        if (s.saleLines.firstWhere((s) => s.isCustom && s.itemName == currentPendingItem.itemName,
                 orElse: () => null) ==
             null) {
           setState(() {
@@ -245,8 +243,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     if (persistedCurrency == null && rates.isEmpty) {
       return const Center(child: Loader());
     }
-    final totalAmount =
-        currentSale.totalChargeSat / currentCurrency.satConversionRate;
+    final totalAmount = currentSale.totalChargeSat / currentCurrency.satConversionRate;
 
     return Stack(
       children: [
@@ -277,16 +274,14 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
                         try {
                           navigator.push(loaderRoute);
 
-                          final tempFees =
-                              lspStatus.currentLSP.cheapestOpeningFeeParams;
+                          final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
                           fetchLSPList(lspBloc).then(
                             (lspList) {
                               if (loaderRoute.isActive) {
                                 navigator.removeRoute(loaderRoute);
                               }
                               var refreshedLSP = lspList.firstWhere(
-                                (lsp) =>
-                                    lsp.lspID == lspStatus.currentLSP.lspID,
+                                (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                               );
                               // Show fee dialog if necessary and submit invoice
                               showSetupFeesDialog(
@@ -460,16 +455,12 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
       items: [
         ViewSwitchItem(
           texts.pos_invoice_tab_keypad,
-          () => AppBlocsProvider.of<PosCatalogBloc>(context)
-              .actionsSink
-              .add(UpdatePosSelectedTab("KEYPAD")),
+          () => AppBlocsProvider.of<PosCatalogBloc>(context).actionsSink.add(UpdatePosSelectedTab("KEYPAD")),
           iconData: Icons.dialpad,
         ),
         ViewSwitchItem(
           texts.pos_invoice_tab_items,
-          () => AppBlocsProvider.of<PosCatalogBloc>(context)
-              .actionsSink
-              .add(UpdatePosSelectedTab("ITEMS")),
+          () => AppBlocsProvider.of<PosCatalogBloc>(context).actionsSink.add(UpdatePosSelectedTab("ITEMS")),
           iconData: Icons.playlist_add,
         ),
       ],
@@ -892,8 +883,8 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     });
   }
 
-  void _changeCurrency(Sale currentSale, String value,
-      UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
+  void _changeCurrency(
+      Sale currentSale, String value, UserProfileBloc userProfileBloc, CurrencyWrapper currentCurrency) {
     _log.info("_changeCurrency from ${currentCurrency.shortName} to $value");
     if (currentCurrency.shortName.toUpperCase() == value) {
       return;

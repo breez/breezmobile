@@ -29,9 +29,7 @@ void main() {
             '"Withdraw link does not exist."} method: fetchLnurl',
             clearTrailingDot: clearTrailingDot,
           ),
-          clearTrailingDot
-              ? 'Withdraw link does not exist'
-              : 'Withdraw link does not exist.',
+          clearTrailingDot ? 'Withdraw link does not exist' : 'Withdraw link does not exist.',
         );
       });
 
@@ -82,13 +80,11 @@ void main() {
           extractExceptionMessage(
             PlatformException(
               code: "Method Error",
-              message:
-                  "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+              message: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
                   "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
                   "error: code = Unknown desc = fees are too high for the given amount transaction output "
                   "amount is negative}",
-              details:
-                  "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
+              details: "Error Domain=go Code=1 \"rpc error: code = Unknown desc = fees are too high for the "
                   "given amount transaction output amount is negative\" UserInfo={NSLocalizedDescription=rpc "
                   "error: code = Unknown desc = fees are too high for the given amount transaction output "
                   "amount is negative}",

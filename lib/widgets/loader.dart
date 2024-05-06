@@ -92,9 +92,7 @@ class FullScreenLoader extends StatelessWidget {
                   Loader(value: value, label: message, color: progressColor),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: message != null
-                        ? Text(message, textAlign: TextAlign.center)
-                        : const SizedBox(),
+                    child: message != null ? Text(message, textAlign: TextAlign.center) : const SizedBox(),
                   )
                 ],
               ),
@@ -102,8 +100,7 @@ class FullScreenLoader extends StatelessWidget {
           ),
           onClose != null
               ? Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 30),
                   child: Align(
                     alignment: Alignment.topRight,
                     child: IconButton(

@@ -101,10 +101,8 @@ class PodcastIndexAPI extends PodcastApi {
 
   @override
   void addClientAuthorityBytes(List<int> certificateAuthorityBytes) {
-    if (_certificateAuthorityBytes.isNotEmpty &&
-        _defaultSecurityContext == null) {
-      SecurityContext.defaultContext
-          .setTrustedCertificatesBytes(_certificateAuthorityBytes);
+    if (_certificateAuthorityBytes.isNotEmpty && _defaultSecurityContext == null) {
+      SecurityContext.defaultContext.setTrustedCertificatesBytes(_certificateAuthorityBytes);
       _defaultSecurityContext = SecurityContext.defaultContext;
     }
   }

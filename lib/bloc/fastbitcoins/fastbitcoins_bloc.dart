@@ -16,25 +16,17 @@ class FastbitcoinsBloc {
   static const PRODUCTION_URL = "wallet-api.fastbitcoins.com";
   static const TESTING_URL = "wallet-api-test.aao-tech.com";
 
-  final _validateRequestController =
-      StreamController<ValidateRequestModel>.broadcast();
-  Sink<ValidateRequestModel> get validateRequestSink =>
-      _validateRequestController.sink;
+  final _validateRequestController = StreamController<ValidateRequestModel>.broadcast();
+  Sink<ValidateRequestModel> get validateRequestSink => _validateRequestController.sink;
 
-  final _validateResponseController =
-      StreamController<ValidateResponseModel>.broadcast();
-  Stream<ValidateResponseModel> get validateResponseStream =>
-      _validateResponseController.stream;
+  final _validateResponseController = StreamController<ValidateResponseModel>.broadcast();
+  Stream<ValidateResponseModel> get validateResponseStream => _validateResponseController.stream;
 
-  final _redeemRequestController =
-      StreamController<RedeemRequestModel>.broadcast();
-  Sink<RedeemRequestModel> get redeemRequestSink =>
-      _redeemRequestController.sink;
+  final _redeemRequestController = StreamController<RedeemRequestModel>.broadcast();
+  Sink<RedeemRequestModel> get redeemRequestSink => _redeemRequestController.sink;
 
-  final _redeemResponseController =
-      StreamController<RedeemResponseModel>.broadcast();
-  Stream<RedeemResponseModel> get redeemResponseStream =>
-      _redeemResponseController.stream;
+  final _redeemResponseController = StreamController<RedeemResponseModel>.broadcast();
+  Stream<RedeemResponseModel> get redeemResponseStream => _redeemResponseController.stream;
 
   final String baseURL;
   BreezBridge _breezLib;
@@ -59,8 +51,7 @@ class FastbitcoinsBloc {
           body: jsonEncode(request.toJson()),
         );
         _validateResponse(response);
-        ValidateResponseModel res =
-            ValidateResponseModel.fromJson(jsonDecode(response.body));
+        ValidateResponseModel res = ValidateResponseModel.fromJson(jsonDecode(response.body));
         if (res.error == 1 && res.kycRequired != 1) {
           throw res.errorMessage;
         }
@@ -87,8 +78,7 @@ class FastbitcoinsBloc {
           body: jsonEncode(request.toJson()),
         );
         _validateResponse(response);
-        RedeemResponseModel res =
-            RedeemResponseModel.fromJson(jsonDecode(response.body));
+        RedeemResponseModel res = RedeemResponseModel.fromJson(jsonDecode(response.body));
         if (res.error == 1) {
           throw res.errorMessage;
         }

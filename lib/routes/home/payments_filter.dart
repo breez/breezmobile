@@ -79,9 +79,7 @@ class PaymentFilterSliverState extends State<PaymentFilterSliver> {
         builder: (context, shrinkedHeight, overlapContent) {
           return AnimatedOpacity(
             duration: const Duration(milliseconds: 100),
-            opacity: !_hasNoFilter
-                ? 1.0
-                : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
+            opacity: !_hasNoFilter ? 1.0 : (scrollOffset - widget._maxSize / 2).clamp(0.0, 1.0),
             child: Container(
               color: theme.customData[theme.themeId].dashboardBgColor,
               child: Padding(
@@ -132,15 +130,9 @@ class PaymentsFilterState extends State<PaymentsFilter> {
   void initState() {
     super.initState();
     final today = DateTime.now();
-    formattedStartDate = DateTime(
-        widget._paymentsModel.firstDate.year,
-        widget._paymentsModel.firstDate.month,
-        widget._paymentsModel.firstDate.day,
-        0,
-        0,
-        0);
-    formattedEndDate =
-        DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
+    formattedStartDate = DateTime(widget._paymentsModel.firstDate.year, widget._paymentsModel.firstDate.month,
+        widget._paymentsModel.firstDate.day, 0, 0, 0);
+    formattedEndDate = DateTime(today.year, today.month, today.day, 23, 59, 59, 999);
   }
 
   @override
@@ -171,11 +163,7 @@ class PaymentsFilterState extends State<PaymentsFilter> {
       );
     }
 
-    return Row(children: [
-      _buildExportButton(),
-      _buildCalendarButton(),
-      _buildFilterDropdown()
-    ]);
+    return Row(children: [_buildExportButton(), _buildCalendarButton(), _buildFilterDropdown()]);
   }
 
   Padding _buildCalendarButton() {
@@ -202,10 +190,8 @@ class PaymentsFilterState extends State<PaymentsFilter> {
               ).then((result) {
                 bool hasStartDateChanged = result[0] != formattedStartDate;
                 bool hasEndDateChanged = result[1] != formattedEndDate;
-                bool hasDateFilterChanged =
-                    hasStartDateChanged || hasEndDateChanged;
-                bool hasActiveDateFilter =
-                    widget._paymentsModel.filter.initial == false;
+                bool hasDateFilterChanged = hasStartDateChanged || hasEndDateChanged;
+                bool hasActiveDateFilter = widget._paymentsModel.filter.initial == false;
 
                 if (hasDateFilterChanged) {
                   widget._accountBloc.paymentFilterSink.add(

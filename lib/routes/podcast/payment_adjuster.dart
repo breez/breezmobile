@@ -49,8 +49,7 @@ class PaymentAdjuster extends StatelessWidget {
                     builder: (c) => CustomAmountDialog(
                       userModel.paymentOptions.customSatsPerMinValue,
                       userModel.paymentOptions.presetSatsPerMinuteAmountsList,
-                      (satsPerMinute) =>
-                          userBloc.userActionsSink.add(SetPaymentOptions(
+                      (satsPerMinute) => userBloc.userActionsSink.add(SetPaymentOptions(
                         userModel.paymentOptions.copyWith(
                           preferredSatsPerMinValue: satsPerMinute,
                           customSatsPerMinValue: satsPerMinute,

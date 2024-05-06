@@ -17,14 +17,9 @@ class VendorRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Color vendorFgColor =
-        theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ??
-            Colors.transparent;
-    Color vendorBgColor =
-        theme.vendorTheme[_vendor.id.toLowerCase()]?.iconBgColor ??
-            Colors.white;
-    Color vendorTextColor =
-        theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
+    Color vendorFgColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.iconFgColor ?? Colors.transparent;
+    Color vendorBgColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.iconBgColor ?? Colors.white;
+    Color vendorTextColor = theme.vendorTheme[_vendor.id.toLowerCase()]?.textColor ?? Colors.black;
 
     final vendorLogo = _vendor.logo != null
         ? Image(
@@ -60,8 +55,7 @@ class VendorRow extends StatelessWidget {
                   responseID: _vendor.responseID,
                 );
               }
-              return VendorWebViewPage(
-                  accountBloc, _vendor.url, _vendor.displayName);
+              return VendorWebViewPage(accountBloc, _vendor.url, _vendor.displayName);
             },
           ));
         },
@@ -77,9 +71,8 @@ class VendorRow extends StatelessWidget {
                 )
               ],
               border: Border.all(
-                  color: vendorBgColor == Colors.white
-                      ? Theme.of(context).highlightColor
-                      : Colors.transparent,
+                  color:
+                      vendorBgColor == Colors.white ? Theme.of(context).highlightColor : Colors.transparent,
                   style: BorderStyle.solid,
                   width: 1.0),
               borderRadius: BorderRadius.circular(14.0)),
@@ -100,8 +93,7 @@ class VendorRow extends StatelessWidget {
       return <Widget>[
         vendorLogo,
         const Padding(padding: EdgeInsets.only(left: 8.0)),
-        Text(_vendor.displayName,
-            style: theme.vendorTitleStyle.copyWith(color: vendorTextColor)),
+        Text(_vendor.displayName, style: theme.vendorTitleStyle.copyWith(color: vendorTextColor)),
       ];
     }
   }

@@ -17,8 +17,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 final _log = Logger("LSPBloc");
 
 class LSPBloc with AsyncActionsHandler {
-  static const String SELECTED_LSP_PREFERENCES_KEY =
-      "SELECTED_LSP_PREFERENCES_KEY";
+  static const String SELECTED_LSP_PREFERENCES_KEY = "SELECTED_LSP_PREFERENCES_KEY";
 
   final _lspPromptController = StreamController<bool>.broadcast();
   Stream<bool> get lspPromptStream => _lspPromptController.stream;
@@ -47,8 +46,7 @@ class LSPBloc with AsyncActionsHandler {
     ServiceInjector().sharedPreferences.then((sp) async {
       // initial status
       var selectedLSP = sp.getString(SELECTED_LSP_PREFERENCES_KEY);
-      _lspsStatusController
-          .add(LSPStatus.initial().copyWith(selectedLSP: selectedLSP));
+      _lspsStatusController.add(LSPStatus.initial().copyWith(selectedLSP: selectedLSP));
       _breezLib.setSelectedLspID(selectedLSP);
       _listenReconnects();
       _handleAccountChangs(sp);
@@ -61,22 +59,19 @@ class LSPBloc with AsyncActionsHandler {
     try {
       action.resolve(await _ensureLSPSFetched());
     } catch (err) {
-      _lspsStatusController.add(_lspsStatusController.value
-          .copyWith(lastConnectionError: err.toString()));
+      _lspsStatusController.add(_lspsStatusController.value.copyWith(lastConnectionError: err.toString()));
       rethrow;
     }
   }
 
   Future _connectLSP(ConnectLSP action) async {
-    if (_lspsStatusController.value.availableLSPs
-        .where((element) => element.lspID == action.lspID)
-        .isEmpty) {
+    if (_lspsStatusController.value.availableLSPs.where((element) => element.lspID == action.lspID).isEmpty) {
       final texts = getSystemAppLocalizations();
       throw Exception(texts.lsp_error_provider_do_not_exists);
     }
     String selectedLSP = action.lspID;
-    _lspsStatusController.add(_lspsStatusController.value
-        .copyWith(selectedLSP: selectedLSP, lastConnectionError: null));
+    _lspsStatusController
+        .add(_lspsStatusController.value.copyWith(selectedLSP: selectedLSP, lastConnectionError: null));
     _breezLib.setSelectedLspID(selectedLSP);
     await accountStream.where((a) => a.synced).first;
 
@@ -89,8 +84,7 @@ class LSPBloc with AsyncActionsHandler {
       }, tryLimit: 3, interval: const Duration(seconds: 2));
     } catch (err) {
       _log.info("Failed to connect to LSP: $err");
-      _lspsStatusController.add(_lspsStatusController.value
-          .copyWith(lastConnectionError: err.toString()));
+      _lspsStatusController.add(_lspsStatusController.value.copyWith(lastConnectionError: err.toString()));
       rethrow;
     }
   }
@@ -98,10 +92,8 @@ class LSPBloc with AsyncActionsHandler {
   void _handleAccountChangs(SharedPreferences sp) {
     bool breezReady = false;
     _breezLib.notificationStream.listen((event) async {
-      breezReady =
-          breezReady || event.type == NotificationEvent_NotificationType.READY;
-      if (breezReady &&
-          event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
+      breezReady = breezReady || event.type == NotificationEvent_NotificationType.READY;
+      if (breezReady && event.type == NotificationEvent_NotificationType.ACCOUNT_CHANGED) {
         await _ensureLSPSFetched();
         if (await _selectedLSP == null) {
           var availableLSPs = _lspsStatusController.value.availableLSPs;
@@ -126,9 +118,7 @@ class LSPBloc with AsyncActionsHandler {
   }
 
   void _listenLifecycleEvents() {
-    _device.eventStream
-        .where((e) => e == NotificationType.RESUME)
-        .listen((e) async {
+    _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) async {
       _log.info("App Resumed - flutter resume called, refreshing LSPs");
       await _ensureLSPSFetched();
     });
@@ -136,9 +126,7 @@ class LSPBloc with AsyncActionsHandler {
 
   void _listenReconnects() {
     Future connectingFuture = Future.value(null);
-    _reconnectStreamController.stream
-        .debounceTime(const Duration(milliseconds: 500))
-        .listen((_) async {
+    _reconnectStreamController.stream.debounceTime(const Duration(milliseconds: 500)).listen((_) async {
       connectingFuture.whenComplete(() {
         connectingFuture = _ensureLSPConnected();
       });
@@ -148,9 +136,8 @@ class LSPBloc with AsyncActionsHandler {
   Future<LSPInfo> get _selectedLSP async {
     var sp = await ServiceInjector().sharedPreferences;
     var selectedLSP = sp.getString(SELECTED_LSP_PREFERENCES_KEY);
-    var lsp = _lspsStatusController.value.availableLSPs.firstWhere(
-        (element) => element.lspID == selectedLSP,
-        orElse: () => null);
+    var lsp = _lspsStatusController.value.availableLSPs
+        .firstWhere((element) => element.lspID == selectedLSP, orElse: () => null);
     return lsp;
   }
 

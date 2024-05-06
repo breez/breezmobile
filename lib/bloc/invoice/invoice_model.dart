@@ -19,8 +19,7 @@ class PaymentRequestModel {
   final String _paymentHash;
   final Int64 _lspFee;
 
-  PaymentRequestModel(
-      this._invoice, this._rawPayReq, this._paymentHash, this._lspFee);
+  PaymentRequestModel(this._invoice, this._rawPayReq, this._paymentHash, this._lspFee);
 
   String get description => _invoice.description;
   String get payeeImageURL => _invoice.payeeImageURL;

@@ -50,16 +50,14 @@ class ShareablePaymentRow extends StatelessWidget {
                   padding: const EdgeInsets.only(left: 16.0, right: 0.0),
                   child: GestureDetector(
                     onTap: () => isTxID
-                        ? launchLinkOnExternalBrowser(
-                            "https://blockstream.info/tx/$sharedValue")
+                        ? launchLinkOnExternalBrowser("https://blockstream.info/tx/$sharedValue")
                         : null,
                     child: Text(
                       sharedValue,
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: themeData.primaryTextTheme.displaySmall
-                          .copyWith(fontSize: 10),
+                      style: themeData.primaryTextTheme.displaySmall.copyWith(fontSize: 10),
                     ),
                   ),
                 ),
@@ -75,17 +73,14 @@ class ShareablePaymentRow extends StatelessWidget {
                       IconButton(
                         alignment: Alignment.centerRight,
                         padding: const EdgeInsets.only(right: 8.0),
-                        tooltip:
-                            texts.payment_details_dialog_copy_action(title),
+                        tooltip: texts.payment_details_dialog_copy_action(title),
                         iconSize: 16.0,
                         color: themeData.primaryTextTheme.labelLarge.color,
                         icon: const Icon(
                           IconData(0xe90b, fontFamily: 'icomoon'),
                         ),
                         onPressed: () {
-                          ServiceInjector()
-                              .device
-                              .setClipboardText(sharedValue);
+                          ServiceInjector().device.setClipboardText(sharedValue);
                           Navigator.pop(context);
                           showFlushbar(
                             context,

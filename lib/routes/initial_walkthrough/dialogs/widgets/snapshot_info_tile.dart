@@ -34,12 +34,10 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    final isSelected =
-        (widget.selectedSnapshot?.nodeID == widget.snapshotInfo.nodeID);
+    final isSelected = (widget.selectedSnapshot?.nodeID == widget.snapshotInfo.nodeID);
 
     var date = widget.snapshotInfo.modifiedTime;
-    var parsedDate =
-        DateTime.tryParse(widget.snapshotInfo.modifiedTime).toLocal();
+    var parsedDate = DateTime.tryParse(widget.snapshotInfo.modifiedTime).toLocal();
     if (parsedDate != null) {
       date = BreezDateUtils.formatYearMonthDayHourMinute(parsedDate);
     }
@@ -57,9 +55,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
         widget.snapshotInfo.encrypted
             ? texts.restore_dialog_modified_encrypted(date)
             : texts.restore_dialog_modified_not_encrypted(date),
-        style: themeData.primaryTextTheme.bodySmall
-            .copyWith(fontSize: 9)
-            .apply(fontSizeDelta: 1.3),
+        style: themeData.primaryTextTheme.bodySmall.copyWith(fontSize: 9).apply(fontSizeDelta: 1.3),
       ),
       subtitle: Text(
         widget.snapshotInfo.nodeID,

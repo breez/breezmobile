@@ -55,11 +55,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 
-final GlobalKey firstPaymentItemKey =
-    GlobalKey(debugLabel: "firstPaymentItemKey");
+final GlobalKey firstPaymentItemKey = GlobalKey(debugLabel: "firstPaymentItemKey");
 final ScrollController scrollController = ScrollController();
-final GlobalKey<ScaffoldState> _scaffoldKey =
-    GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
+final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>(debugLabel: "scaffoldKey");
 
 class Home extends StatefulWidget {
   final AccountBloc accountBloc;
@@ -212,14 +210,9 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
                 _onNavigationItemSelected,
                 _filterItems,
               ),
-              bottomNavigationBar: appMode == AppMode.balance
-                  ? BottomActionsBar(firstPaymentItemKey)
-                  : null,
-              floatingActionButton: appMode == AppMode.balance
-                  ? QrActionButton(firstPaymentItemKey)
-                  : null,
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
+              bottomNavigationBar: appMode == AppMode.balance ? BottomActionsBar(firstPaymentItemKey) : null,
+              floatingActionButton: appMode == AppMode.balance ? QrActionButton(firstPaymentItemKey) : null,
+              floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
               body: widget._screenBuilders[_activeScreen] ?? _homePage(appMode),
             );
           },
@@ -339,8 +332,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
     SyncUIHandler(widget.accountBloc, context);
     ShowPinHandler(widget.userProfileBloc, context);
 
-    _accountNotificationsSubscription =
-        widget.accountBloc.accountNotificationsStream.listen(
+    _accountNotificationsSubscription = widget.accountBloc.accountNotificationsStream.listen(
       (data) => showFlushbar(context, message: data),
       onError: (e) => showFlushbar(context, message: e.toString()),
     );
@@ -448,15 +440,12 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
           print('_listenPaymentResults processing: $paymentHash');
         }
 
-        if (!fulfilledPayment.cancelled &&
-            !fulfilledPayment.ignoreGlobalFeedback) {
+        if (!fulfilledPayment.cancelled && !fulfilledPayment.ignoreGlobalFeedback) {
           await scrollController
               .animateTo(scrollController.position.minScrollExtent,
-                  duration: const Duration(milliseconds: 10),
-                  curve: Curves.ease)
+                  duration: const Duration(milliseconds: 10), curve: Curves.ease)
               .whenComplete(() async {
-            var action =
-                fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
+            var action = fulfilledPayment?.paymentItem?.lnurlPayInfo?.successAction;
             if (action?.hasTag() == true) {
               await Future.delayed(
                 const Duration(seconds: 1),
@@ -489,8 +478,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         await widget.accountBloc.accountStream.first.then(
           (accountModel) async {
             final errorString = error.toDisplayMessage(accountModel.currency);
-            if (error.validationError &&
-                errorString.contains("payment is in transition")) {
+            if (error.validationError && errorString.contains("payment is in transition")) {
               return;
             }
             showFlushbar(context, message: errorString);

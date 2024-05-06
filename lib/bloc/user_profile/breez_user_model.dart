@@ -93,11 +93,9 @@ class BreezUserModel {
       locked: locked ?? this.locked,
       token: token ?? this.token,
       themeId: themeId ?? this.themeId,
-      registrationRequested:
-          registrationRequested ?? this.registrationRequested,
+      registrationRequested: registrationRequested ?? this.registrationRequested,
       hideBalance: hideBalance ?? this.hideBalance,
-      cancellationTimeoutValue:
-          cancellationTimeoutValue ?? this.cancellationTimeoutValue,
+      cancellationTimeoutValue: cancellationTimeoutValue ?? this.cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword ?? this.hasAdminPassword,
       businessAddress: businessAddress ?? this.businessAddress,
       defaultPosNote: defaultPosNote ?? this.defaultPosNote,
@@ -113,16 +111,13 @@ class BreezUserModel {
     return userID != null;
   }
 
-  String get avatarURL => image == null || image.isEmpty
-      ? 'breez://profile_image?animal=$animal&color=$color'
-      : image;
+  String get avatarURL =>
+      image == null || image.isEmpty ? 'breez://profile_image?animal=$animal&color=$color' : image;
 
   BreezUserModel.fromJson(Map<String, dynamic> json)
       : userID = json['userID'],
         token = json['token'],
-        currency = json['currency'] == null
-            ? Currency.SAT
-            : Currency.fromTickerSymbol(json['currency']),
+        currency = json['currency'] == null ? Currency.SAT : Currency.fromTickerSymbol(json['currency']),
         fiatCurrency = json['fiatCurrency'] ?? "USD",
         name = json['name'],
         color = json['color'],
@@ -135,8 +130,7 @@ class BreezUserModel {
                 json['securityModel'],
               ),
         themeId = json['themeId'] ?? "DARK",
-        registrationRequested =
-            json['registrationRequested'] ?? json['token'] != null,
+        registrationRequested = json['registrationRequested'] ?? json['token'] != null,
         hideBalance = json['hideBalance'] ?? false,
         cancellationTimeoutValue = json['cancellationTimeoutValue'] ?? 90.0,
         hasAdminPassword = json['hasAdminPassword'] ?? false,
@@ -145,9 +139,8 @@ class BreezUserModel {
             : BusinessAddress.fromJson(json['businessAddress']),
         defaultPosNote = json['defaultPosNote'] ?? "",
         posCurrencyShortName = json['posCurrencyShortName'] ?? "SAT",
-        preferredCurrencies =
-            (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
-                <String>['USD', 'EUR', 'GBP', 'JPY'],
+        preferredCurrencies = (json['preferredCurrencies'] as List<dynamic>)?.cast<String>() ??
+            <String>['USD', 'EUR', 'GBP', 'JPY'],
         appMode = AppMode.values[json["appMode"] ?? 0],
         paymentOptions = json["paymentOptions"] == null
             ? PaymentOptions.initial()
@@ -197,13 +190,11 @@ class BreezUserModel {
       themeId: userPreferences.themeId ?? themeId,
       registrationRequested: registrationRequested,
       hideBalance: hideBalance,
-      cancellationTimeoutValue:
-          userPreferences.cancellationTimeoutValue ?? cancellationTimeoutValue,
+      cancellationTimeoutValue: userPreferences.cancellationTimeoutValue ?? cancellationTimeoutValue,
       hasAdminPassword: hasAdminPassword,
       businessAddress: userPreferences.businessAddress ?? businessAddress,
       posCurrencyShortName: posCurrencyShortName,
-      preferredCurrencies:
-          userPreferences.preferredCurrencies ?? preferredCurrencies,
+      preferredCurrencies: userPreferences.preferredCurrencies ?? preferredCurrencies,
       appMode: appMode,
       paymentOptions: userPreferences.paymentOptions ?? paymentOptions,
       seenTutorials: seenTutorials,

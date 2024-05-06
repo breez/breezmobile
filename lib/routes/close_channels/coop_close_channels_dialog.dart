@@ -91,8 +91,7 @@ class _CoopCloseChannelsDialogState extends State<CoopCloseChannelsDialog> {
                 child: Image.asset(
                   loaderThemeData.loaderAssetPath,
                   height: 64.0,
-                  colorBlendMode:
-                      loaderThemeData.loaderColorBlendMode ?? BlendMode.srcIn,
+                  colorBlendMode: loaderThemeData.loaderColorBlendMode ?? BlendMode.srcIn,
                   gaplessPlayback: true,
                 ),
               ),
@@ -115,16 +114,14 @@ class _CoopCloseChannelsDialogState extends State<CoopCloseChannelsDialog> {
                             );
                           } catch (e) {
                             final RenderBox box = context.findRenderObject();
-                            final offset =
-                                box.localToGlobal(Offset.zero) & box.size;
+                            final offset = box.localToGlobal(Offset.zero) & box.size;
                             final rect = Rect.fromPoints(
                               offset.topLeft,
                               offset.bottomRight,
                             );
                             Share.share(
                               "contact@breez.technology",
-                              subject: texts
-                                  .close_channels_dialog_failure_message_middle,
+                              subject: texts.close_channels_dialog_failure_message_middle,
                               sharePositionOrigin: rect,
                             );
                           }
@@ -154,8 +151,7 @@ class _CoopCloseChannelsDialogState extends State<CoopCloseChannelsDialog> {
                     texts.close_channels_dialog_action_close,
                     style: themeData.primaryTextTheme.labelLarge,
                   ),
-                  onPressed: () =>
-                      Navigator.of(context).removeRoute(_currentRoute),
+                  onPressed: () => Navigator.of(context).removeRoute(_currentRoute),
                 ),
               ]
             : null,

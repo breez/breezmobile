@@ -31,8 +31,7 @@ class PaymentItemAvatar extends StatelessWidget {
       final metadataImage = _metadataImage();
       if (metadataImage != null) return metadataImage;
 
-      IconData icon = (paymentItem.type == PaymentType.RECEIVED ||
-              paymentItem.type == PaymentType.DEPOSIT)
+      IconData icon = (paymentItem.type == PaymentType.RECEIVED || paymentItem.type == PaymentType.DEPOSIT)
           ? Icons.add_rounded
           : Icons.remove_rounded;
       Widget child = Icon(icon, color: const Color(0xb3303234));

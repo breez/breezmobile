@@ -60,8 +60,7 @@ Widget _withTheme(BreezUserModel user, Widget child) {
 // ignore: must_be_immutable
 class UserApp extends StatelessWidget {
   final GlobalKey<NavigatorState> _navigatorKey = GlobalKey<NavigatorState>();
-  final GlobalKey<NavigatorState> _homeNavigatorKey =
-      GlobalKey<NavigatorState>();
+  final GlobalKey<NavigatorState> _homeNavigatorKey = GlobalKey<NavigatorState>();
   Sink<bool> _reloadDatabaseSink;
 
   UserApp(Sink<bool> reloadDatabaseSink) {
@@ -120,17 +119,13 @@ class UserApp extends StatelessWidget {
                 final MediaQueryData data = MediaQuery.of(context);
                 return MediaQuery(
                   data: data.copyWith(
-                    textScaleFactor: (data.textScaleFactor >= 1.3)
-                        ? 1.3
-                        : data.textScaleFactor,
+                    textScaleFactor: (data.textScaleFactor >= 1.3) ? 1.3 : data.textScaleFactor,
                   ),
                   child: _withTheme(user, child),
                 );
               },
             ),
-            initialRoute: user.registrationRequested
-                ? (user.locked ? '/lockscreen' : "/")
-                : '/splash',
+            initialRoute: user.registrationRequested ? (user.locked ? '/lockscreen' : "/") : '/splash',
             // ignore: missing_return
             onGenerateRoute: (RouteSettings settings) {
               switch (settings.name) {
@@ -163,21 +158,20 @@ class UserApp extends StatelessWidget {
                             );
                           });
                         },
-                        onFingerprintEntered:
-                            user.securityModel.isFingerprintEnabled
-                                ? (isValid) async {
-                                    if (isValid) {
-                                      final navigator = Navigator.of(ctx);
-                                      await Future.delayed(
-                                        const Duration(milliseconds: 200),
-                                      );
-                                      navigator.pop();
-                                      userProfileBloc.userActionsSink.add(
-                                        SetLockState(false),
-                                      );
-                                    }
-                                  }
-                                : null,
+                        onFingerprintEntered: user.securityModel.isFingerprintEnabled
+                            ? (isValid) async {
+                                if (isValid) {
+                                  final navigator = Navigator.of(ctx);
+                                  await Future.delayed(
+                                    const Duration(milliseconds: 200),
+                                  );
+                                  navigator.pop();
+                                  userProfileBloc.userActionsSink.add(
+                                    SetLockState(false),
+                                  );
+                                }
+                              }
+                            : null,
                         userProfileBloc: userProfileBloc,
                       ),
                     ),
