@@ -178,6 +178,7 @@ class AccountBloc {
       CheckClosedChannelMismatchAction: _checkClosedChannelMismatch,
       ResetClosedChannelChainInfoAction: _resetClosedChannelChainInfoAction,
       SetNonBlockingUnconfirmedSwaps: _setNonBlockingUnconfirmedSwaps,
+      CloseChannelsAction: _closeChannels,
     };
 
     _accountController.add(AccountModel.initial());
@@ -546,7 +547,8 @@ class AccountBloc {
     });
 
     _device.eventStream.where((e) => e == NotificationType.RESUME).listen((e) {
-      _log.info("App Resumed - flutter resume called, adding reconnect request");
+      _log.info(
+          "App Resumed - flutter resume called, adding reconnect request");
       _reconnectSink.add(null);
     });
   }
@@ -956,6 +958,11 @@ class AccountBloc {
     final calculateFee = CalculateFee(amount);
     _paymentOptionsBloc.actionsSink.add(calculateFee);
     return await calculateFee.future;
+  }
+
+  Future _closeChannels(CloseChannelsAction action) async {
+    var response = await _breezLib.closeChannels(action.address);
+    action.resolve(response.channels);
   }
 
   close() {

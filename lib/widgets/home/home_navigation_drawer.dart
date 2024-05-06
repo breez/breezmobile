@@ -197,6 +197,16 @@ class HomeNavigationDrawer extends StatelessWidget {
                           "/payment_options",
                         ),
                       ),
+                      DrawerItemConfig(
+                        "",
+                        texts.close_channels_title,
+                        "src/icon/close_channels.png",
+                        onItemSelected: (_) => protectAdminRoute(
+                          context,
+                          user,
+                          "/close_channels",
+                        ),
+                      ),
                       user.appMode == AppMode.pos
                           ? DrawerItemConfig(
                               "",
