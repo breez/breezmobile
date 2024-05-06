@@ -11,19 +11,16 @@ class PodcastHistoryTimeRangeDbModel {
   final int fieldId;
   final String podcastHistoryTimeRangeKey;
 
-  PodcastHistoryTimeRangeDbModel(
-      {this.fieldId, this.podcastHistoryTimeRangeKey});
+  PodcastHistoryTimeRangeDbModel({this.fieldId, this.podcastHistoryTimeRangeKey});
 
   Map<String, Object> toJson() => {
         PodcastHistoryTimeRangeFields.fieldId: fieldId,
         PodcastHistoryTimeRangeFields.timeRangeKey: podcastHistoryTimeRangeKey,
       };
 
-  static PodcastHistoryTimeRangeDbModel fromJson(Map<String, Object> json) =>
-      PodcastHistoryTimeRangeDbModel(
-          fieldId: json[PodcastHistoryTimeRangeFields.fieldId] as int,
-          podcastHistoryTimeRangeKey:
-              json[PodcastHistoryTimeRangeFields.timeRangeKey] as String);
+  static PodcastHistoryTimeRangeDbModel fromJson(Map<String, Object> json) => PodcastHistoryTimeRangeDbModel(
+      fieldId: json[PodcastHistoryTimeRangeFields.fieldId] as int,
+      podcastHistoryTimeRangeKey: json[PodcastHistoryTimeRangeFields.timeRangeKey] as String);
 }
 
 class PodcastHistoryFields {
@@ -84,8 +81,7 @@ class PodcastHistoryModel {
         PodcastHistoryFields.podcastUrl: podcastUrl,
       };
 
-  static PodcastHistoryModel fromJson(Map<String, Object> json) =>
-      PodcastHistoryModel(
+  static PodcastHistoryModel fromJson(Map<String, Object> json) => PodcastHistoryModel(
         fieldId: json[PodcastHistoryFields.fieldId] as int,
         podcastId: json[PodcastHistoryFields.podcastId] as String,
         timeStamp: json[PodcastHistoryFields.timeStamp] != null

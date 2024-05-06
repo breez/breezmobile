@@ -45,8 +45,7 @@ class SecurityAndBackupPage extends StatefulWidget {
   }
 }
 
-class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
-    with WidgetsBindingObserver {
+class SecurityAndBackupPageState extends State<SecurityAndBackupPage> with WidgetsBindingObserver {
   StreamSubscription<BackupState> _backupInProgressSubscription;
   bool _showingBackupDialog = false;
   final _autoSizeGroup = AutoSizeGroup();
@@ -98,9 +97,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
     /// Subscribing to backups in progress such as here will also block the UI
     /// for other sources of backups outside this page such as
     /// receiving an onchain payment.
-    _backupInProgressSubscription = widget.backupBloc.backupStateStream
-        .where((s) => s.inProgress)
-        .listen((s) async {
+    _backupInProgressSubscription =
+        widget.backupBloc.backupStateStream.where((s) => s.inProgress).listen((s) async {
       setState(() {
         _subscribedToBackupState = true;
       });
@@ -169,8 +167,8 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                   }
 
                   final backupSettings = backupSnapshot.data;
-                  final isRemoteServer = (backupSettings != null &&
-                      backupSettings.backupProvider?.isRemoteServer == true);
+                  final isRemoteServer =
+                      (backupSettings != null && backupSettings.backupProvider?.isRemoteServer == true);
 
                   return ListView(
                     children: [
@@ -192,14 +190,12 @@ class SecurityAndBackupPageState extends State<SecurityAndBackupPage>
                           autoSizeGroup: _autoSizeGroup,
                           changePin: _updateSecurityModel,
                         ),
-                        if (_localAuthenticationOption !=
-                            LocalAuthenticationOption.NONE) ...[
+                        if (_localAuthenticationOption != LocalAuthenticationOption.NONE) ...[
                           const Divider(),
                           EnableBiometricAuthTile(
                             userProfileBloc: widget.userProfileBloc,
                             autoSizeGroup: _autoSizeGroup,
-                            localAuthenticationOption:
-                                _localAuthenticationOption,
+                            localAuthenticationOption: _localAuthenticationOption,
                             changeBiometricAuth: _updateSecurityModel,
                           ),
                         ]

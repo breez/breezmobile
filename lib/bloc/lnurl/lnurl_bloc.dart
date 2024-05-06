@@ -22,14 +22,12 @@ class LNUrlBloc with AsyncActionsHandler {
 
   StreamController _lnUrlStreamController;
 
-  final StreamController<String> _lnurlInputController =
-      StreamController<String>.broadcast();
+  final StreamController<String> _lnurlInputController = StreamController<String>.broadcast();
   Sink<String> get lnurlInputSink => _lnurlInputController.sink;
 
   final StreamController<NfcWithdrawInvoiceStatus> _nfcWithdrawController =
       StreamController<NfcWithdrawInvoiceStatus>.broadcast();
-  Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream =>
-      _nfcWithdrawController.stream;
+  Stream<NfcWithdrawInvoiceStatus> get nfcWithdrawStream => _nfcWithdrawController.stream;
   RegisterNfcSaleRequest _nfcSaleRequest;
 
   LNUrlBloc() {
@@ -67,9 +65,7 @@ class LNUrlBloc with AsyncActionsHandler {
           }
           return result;
         })
-      ])
-          .where((l) => l != null && (isLNURL(l) || isLightningAddress(l)))
-          .asyncMap((l) {
+      ]).where((l) => l != null && (isLNURL(l) || isLightningAddress(l))).asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
         _lnUrlStreamController.add(FetchLNUrlState.started);
@@ -142,11 +138,8 @@ class LNUrlBloc with AsyncActionsHandler {
   }
 
   Future _openChannel(OpenChannel action) async {
-    var openResult = retry(
-        () => _breezLib.connectDirectToLnurl(
-            action.uri, action.k1, action.callback),
-        tryLimit: 3,
-        interval: const Duration(seconds: 5));
+    var openResult = retry(() => _breezLib.connectDirectToLnurl(action.uri, action.k1, action.callback),
+        tryLimit: 3, interval: const Duration(seconds: 5));
     action.resolve(await openResult);
   }
 
@@ -162,8 +155,7 @@ class LNUrlBloc with AsyncActionsHandler {
     RegisterNfcSaleRequest action,
     WithdrawFetchResponse response,
   ) async {
-    if (response.minAmount > action.amount ||
-        response.maxAmount < action.amount) {
+    if (response.minAmount > action.amount || response.maxAmount < action.amount) {
       _log.info(
           "NFC Payment Request rangeError, requested ${action.amount} but the range is ${response.minAmount} - ${response.maxAmount}");
       _nfcWithdrawController.add(NfcWithdrawInvoiceStatus.rangeError(

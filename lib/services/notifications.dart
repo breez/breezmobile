@@ -18,8 +18,7 @@ class FirebaseNotifications implements Notifications {
   final StreamController<Map<dynamic, dynamic>> _notificationController =
       BehaviorSubject<Map<dynamic, dynamic>>();
   @override
-  Stream<Map<dynamic, dynamic>> get notifications =>
-      _notificationController.stream;
+  Stream<Map<dynamic, dynamic>> get notifications => _notificationController.stream;
 
   FirebaseNotifications() {
     _firebaseMessaging = FirebaseMessaging.instance;
@@ -47,10 +46,9 @@ class FirebaseNotifications implements Notifications {
 
   @override
   Future<String> getToken() async {
-    _firebaseNotificationSettings = await _firebaseMessaging.requestPermission(
-        sound: true, badge: true, alert: true);
-    if (_firebaseNotificationSettings.authorizationStatus ==
-        AuthorizationStatus.authorized) {
+    _firebaseNotificationSettings =
+        await _firebaseMessaging.requestPermission(sound: true, badge: true, alert: true);
+    if (_firebaseNotificationSettings.authorizationStatus == AuthorizationStatus.authorized) {
       return _firebaseMessaging.getToken();
     } else {
       return null;

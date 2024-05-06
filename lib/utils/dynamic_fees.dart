@@ -11,6 +11,5 @@ Future<List<LSPInfo>> fetchLSPList(LSPBloc lspBloc) async {
 
 bool hasFeesChanged(OpeningFeeParams oldFees, OpeningFeeParams newFees) {
   // Mark fee as changed only if new fees are higher
-  return (newFees.minMsat > oldFees.minMsat) ||
-      (newFees.proportional > oldFees.proportional);
+  return (newFees.minMsat > oldFees.minMsat) || (newFees.proportional > oldFees.proportional);
 }

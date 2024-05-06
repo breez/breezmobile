@@ -41,8 +41,7 @@ class InitialWalkthroughPage extends StatefulWidget {
   State<InitialWalkthroughPage> createState() => _InitialWalkthroughPageState();
 }
 
-class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
-    with SingleTickerProviderStateMixin {
+class _InitialWalkthroughPageState extends State<InitialWalkthroughPage> with SingleTickerProviderStateMixin {
   final GlobalKey scaffoldKey = GlobalKey<ScaffoldState>();
   AnimationController controller;
   Animation<int> animation;
@@ -120,8 +119,7 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage>
                         child: AnimatedBuilder(
                           animation: animation,
                           builder: (BuildContext context, Widget child) {
-                            String frame =
-                                animation.value.toString().padLeft(2, '0');
+                            String frame = animation.value.toString().padLeft(2, '0');
                             return Image.asset(
                               'src/animations/welcome/frame_${frame}_delay-0.04s.png',
                               gaplessPlayback: true,

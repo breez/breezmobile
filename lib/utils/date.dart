@@ -8,16 +8,13 @@ class BreezDateUtils {
   static final localeName = Platform.localeName ?? "en";
   static final DateFormat _monthDateFormat = DateFormat.Md(localeName);
   static final DateFormat _yearMonthDayFormat = DateFormat.yMd(localeName);
-  static final DateFormat _yearMonthDayHourMinuteFormat =
-      DateFormat.yMd().add_jm();
-  static final DateFormat _yearMonthDayHourMinuteSecondFormat =
-      DateFormat.yMd(localeName).add_Hms();
+  static final DateFormat _yearMonthDayHourMinuteFormat = DateFormat.yMd().add_jm();
+  static final DateFormat _yearMonthDayHourMinuteSecondFormat = DateFormat.yMd(localeName).add_Hms();
   static final DateFormat _hourMinuteDayFormat = DateFormat.jm(localeName);
 
   static String formatMonthDate(DateTime d) => _monthDateFormat.format(d);
   static String formatYearMonthDay(DateTime d) => _yearMonthDayFormat.format(d);
-  static String formatYearMonthDayHourMinute(DateTime d) =>
-      _yearMonthDayHourMinuteFormat.format(d);
+  static String formatYearMonthDayHourMinute(DateTime d) => _yearMonthDayHourMinuteFormat.format(d);
   static String formatYearMonthDayHourMinuteSecond(DateTime d) =>
       _yearMonthDayHourMinuteSecondFormat.format(d);
 
@@ -32,15 +29,12 @@ class BreezDateUtils {
   static String formatHourMinute(DateTime d) => _hourMinuteDayFormat.format(d);
 
   static String formatFilterDateRange(DateTime startDate, DateTime endDate) {
-    var formatter = (startDate.year == endDate.year)
-        ? _monthDateFormat
-        : _yearMonthDayFormat;
+    var formatter = (startDate.year == endDate.year) ? _monthDateFormat : _yearMonthDayFormat;
     return "${formatter.format(startDate)}-${formatter.format(endDate)}";
   }
 
   static void setupLocales() {
-    timeago.setLocaleMessages(
-        'bg', timeago.EnMessages()); // TODO: add bg locale
+    timeago.setLocaleMessages('bg', timeago.EnMessages()); // TODO: add bg locale
     timeago.setLocaleMessages('cs', timeago.CsMessages());
     timeago.setLocaleMessages('de', timeago.DeMessages());
     timeago.setLocaleMessages('el', timeago.GrMessages());
@@ -50,8 +44,7 @@ class BreezDateUtils {
     timeago.setLocaleMessages('fr', timeago.FrMessages());
     timeago.setLocaleMessages('it', timeago.ItMessages());
     timeago.setLocaleMessages('pt', timeago.PtBrMessages());
-    timeago.setLocaleMessages(
-        'sk', timeago.EnMessages()); // TODO: add sk locale
+    timeago.setLocaleMessages('sk', timeago.EnMessages()); // TODO: add sk locale
     timeago.setLocaleMessages('sv', timeago.SvMessages());
   }
 }

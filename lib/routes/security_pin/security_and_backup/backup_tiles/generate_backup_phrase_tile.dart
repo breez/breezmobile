@@ -21,8 +21,7 @@ class GenerateBackupPhraseTile extends StatefulWidget {
   });
 
   @override
-  State<GenerateBackupPhraseTile> createState() =>
-      _GenerateBackupPhraseTileState();
+  State<GenerateBackupPhraseTile> createState() => _GenerateBackupPhraseTileState();
 }
 
 class _GenerateBackupPhraseTileState extends State<GenerateBackupPhraseTile> {

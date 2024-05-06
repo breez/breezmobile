@@ -28,8 +28,8 @@ class PaymentRequestDialog extends StatefulWidget {
   final ScrollController scrollController;
   final Function() onComplete;
 
-  const PaymentRequestDialog(this.context, this.accountBloc, this.invoice,
-      this.firstPaymentItemKey, this.scrollController, this.onComplete);
+  const PaymentRequestDialog(this.context, this.accountBloc, this.invoice, this.firstPaymentItemKey,
+      this.scrollController, this.onComplete);
 
   @override
   State<StatefulWidget> createState() {
@@ -69,8 +69,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     if (_state == PaymentRequestState.PROCESSING_PAYMENT) {
       return false;
     }
-    widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
-        PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+    widget.accountBloc.userActionsSink
+        .add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
     return true;
   }
 
@@ -80,16 +80,10 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
       return ProcessingPaymentDialog(widget.context, () {
         widget.accountBloc.userActionsSink.add(_sendPayment);
         return _sendPayment.future;
-      }, widget.accountBloc, widget.firstPaymentItemKey, _onStateChange,
-          minHeight);
+      }, widget.accountBloc, widget.firstPaymentItemKey, _onStateChange, minHeight);
     } else if (_state == PaymentRequestState.WAITING_FOR_CONFIRMATION) {
-      return PaymentConfirmationDialog(
-          widget.accountBloc,
-          widget.invoice,
-          _amountToPay,
-          _amountToPayStr,
-          () => _onStateChange(PaymentRequestState.USER_CANCELLED),
-          (sendPayment) {
+      return PaymentConfirmationDialog(widget.accountBloc, widget.invoice, _amountToPay, _amountToPayStr,
+          () => _onStateChange(PaymentRequestState.USER_CANCELLED), (sendPayment) {
         setState(() {
           _sendPayment = sendPayment;
           _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
@@ -101,8 +95,7 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
           widget.accountBloc,
           widget.invoice,
           () => _onStateChange(PaymentRequestState.USER_CANCELLED),
-          () => _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION),
-          (sendPayment) {
+          () => _onStateChange(PaymentRequestState.WAITING_FOR_CONFIRMATION), (sendPayment) {
         _sendPayment = sendPayment;
         _onStateChange(PaymentRequestState.PROCESSING_PAYMENT);
       }, (map) => _setAmountToPay(map), minHeight);
@@ -117,8 +110,8 @@ class PaymentRequestDialogState extends State<PaymentRequestDialog> {
     }
     if (state == PaymentRequestState.USER_CANCELLED) {
       Navigator.of(context).removeRoute(_currentRoute);
-      widget.accountBloc.userActionsSink.add(CancelPaymentRequest(
-          PayRequest(widget.invoice.rawPayReq, _amountToPay)));
+      widget.accountBloc.userActionsSink
+          .add(CancelPaymentRequest(PayRequest(widget.invoice.rawPayReq, _amountToPay)));
       widget.onComplete();
       return;
     }

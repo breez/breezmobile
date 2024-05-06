@@ -12,8 +12,7 @@ class ConnectedWidget extends StatefulWidget {
   }
 }
 
-class ConnectedWidgetState extends State<ConnectedWidget>
-    with TickerProviderStateMixin {
+class ConnectedWidgetState extends State<ConnectedWidget> with TickerProviderStateMixin {
   AnimationController _animationController;
   AnimationController _circleController;
   Animation<double> _lineWidthFactor;
@@ -23,10 +22,8 @@ class ConnectedWidgetState extends State<ConnectedWidget>
   @override
   void initState() {
     super.initState();
-    _animationController = AnimationController(
-        vsync: this, duration: widget._connectionEmulationDuration);
-    _circleController = AnimationController(
-        vsync: this, duration: widget._connectionEmulationDuration);
+    _animationController = AnimationController(vsync: this, duration: widget._connectionEmulationDuration);
+    _circleController = AnimationController(vsync: this, duration: widget._connectionEmulationDuration);
     _lineWidthFactor = Tween<double>(
       begin: 0.0,
       end: 1.0,
@@ -84,9 +81,7 @@ class ConnectedWidgetState extends State<ConnectedWidget>
   Widget build(BuildContext context) {
     return CustomPaint(
         painter: _ConnectedCustomPainter(_lineWidthFactor,
-            showCircle: widget._waitingAction,
-            circleLocation: _circleLocation,
-            circleRadius: _circleRadius));
+            showCircle: widget._waitingAction, circleLocation: _circleLocation, circleRadius: _circleRadius));
   }
 }
 
@@ -99,8 +94,7 @@ class _ConnectedCustomPainter extends CustomPainter {
   final int numberOfCircles = 10;
   final double circleHeight = 7.0;
 
-  _ConnectedCustomPainter(this._lineWidthFactor,
-      {this.showCircle, this.circleLocation, this.circleRadius});
+  _ConnectedCustomPainter(this._lineWidthFactor, {this.showCircle, this.circleLocation, this.circleRadius});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -108,34 +102,25 @@ class _ConnectedCustomPainter extends CustomPainter {
       ..strokeWidth = lineHeight
       ..color = Colors.white;
     paintCircles(canvas, size);
-    canvas.drawCircle(
-        Offset(size.width * _lineWidthFactor.value, size.height / 2),
-        lineHeight / 2,
-        paint);
-    canvas.drawLine(Offset(0.0, size.height / 2),
-        Offset(size.width * _lineWidthFactor.value, size.height / 2), paint);
+    canvas.drawCircle(Offset(size.width * _lineWidthFactor.value, size.height / 2), lineHeight / 2, paint);
+    canvas.drawLine(
+        Offset(0.0, size.height / 2), Offset(size.width * _lineWidthFactor.value, size.height / 2), paint);
 
     if (showCircle) {
-      canvas.drawCircle(
-          Offset(size.width * circleLocation.value, size.height / 2),
-          (lineHeight / 2) +
-              (lineHeight * 2) * (0.5 - (circleRadius.value - 0.5).abs()),
-          paint);
+      canvas.drawCircle(Offset(size.width * circleLocation.value, size.height / 2),
+          (lineHeight / 2) + (lineHeight * 2) * (0.5 - (circleRadius.value - 0.5).abs()), paint);
     }
   }
 
   void paintCircles(Canvas canvas, Size size) {
     var width = size.width,
-        marginBetweenCircles =
-            (width - (circleHeight * numberOfCircles)) / (numberOfCircles - 1);
+        marginBetweenCircles = (width - (circleHeight * numberOfCircles)) / (numberOfCircles - 1);
 
     canvas.drawCircle(size.centerLeft(const Offset(2.5, 0.0)), circleHeight / 2,
         Paint()..color = Colors.white.withOpacity(0.3));
     for (var i = 1; i < numberOfCircles; ++i) {
       canvas.drawCircle(
-          size.centerLeft(Offset(
-              i * (circleHeight + marginBetweenCircles) + circleHeight / 2,
-              0.0)),
+          size.centerLeft(Offset(i * (circleHeight + marginBetweenCircles) + circleHeight / 2, 0.0)),
           circleHeight / 2,
           Paint()..color = Colors.white.withOpacity(0.3));
     }

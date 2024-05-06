@@ -29,9 +29,7 @@ class MarketplacePageState extends State<MarketplacePage> {
       ),
       child: Scaffold(
         key: _scaffoldKey,
-        backgroundColor: theme.themeId == "BLUE"
-            ? themeData.colorScheme.background
-            : themeData.canvasColor,
+        backgroundColor: theme.themeId == "BLUE" ? themeData.colorScheme.background : themeData.canvasColor,
         body: StreamBuilder(
           stream: marketplaceBloc.vendorsStream,
           builder: (context, snapshot) {
@@ -58,8 +56,7 @@ class MarketplacePageState extends State<MarketplacePage> {
           texts.market_place_no_vendors,
           textAlign: TextAlign.center,
           style: themeData.textTheme.headlineMedium.copyWith(
-            color:
-                theme.themeId == "BLUE" ? themeData.canvasColor : Colors.white,
+            color: theme.themeId == "BLUE" ? themeData.canvasColor : Colors.white,
           ),
         ),
       ),
@@ -70,9 +67,7 @@ class MarketplacePageState extends State<MarketplacePage> {
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
     return SizedBox(
-      height: MediaQuery.of(context).size.height -
-          kToolbarHeight -
-          MediaQuery.of(context).padding.top,
+      height: MediaQuery.of(context).size.height - kToolbarHeight - MediaQuery.of(context).padding.top,
       child: ListView.builder(
         itemBuilder: (context, i) => VendorRow(accountBloc, vendorModel[i]),
         itemCount: vendorModel.length,

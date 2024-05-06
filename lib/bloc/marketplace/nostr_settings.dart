@@ -1,14 +1,9 @@
-
-
 class NostrSettings {
   final bool showSnort;
   final bool isRememberPubKey;
   final bool isRememberSignEvent;
 
-  NostrSettings(
-      {this.showSnort = true,
-      this.isRememberPubKey = false,
-      this.isRememberSignEvent = false});
+  NostrSettings({this.showSnort = true, this.isRememberPubKey = false, this.isRememberSignEvent = false});
 
   static const String NOSTR_SETTINGS_PREFERENCES_KEY = "nostr_settings";
 
@@ -19,8 +14,7 @@ class NostrSettings {
           isRememberSignEvent: false,
         );
 
-  NostrSettings copyWith(
-      {bool showSnort, bool isRememberPubKey, bool isRememberSignEvent}) {
+  NostrSettings copyWith({bool showSnort, bool isRememberPubKey, bool isRememberSignEvent}) {
     return NostrSettings(
       showSnort: showSnort ?? this.showSnort,
       isRememberPubKey: isRememberPubKey ?? this.isRememberPubKey,

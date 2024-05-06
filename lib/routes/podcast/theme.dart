@@ -6,8 +6,7 @@ import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
 Widget withBreezTheme(BuildContext context, Widget child) {
-  UserProfileBloc userProfileBloc =
-      AppBlocsProvider.of<UserProfileBloc>(context);
+  UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
   return StreamBuilder<BreezUserModel>(
     stream: userProfileBloc.userStream,
     builder: (context, snapshot) {
@@ -57,45 +56,34 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               hintColor: const Color(0x8a000000),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.lightTheme().themeData.buttonTheme.copyWith(
-                    colorScheme: Themes.lightTheme()
-                        .themeData
-                        .buttonTheme
-                        .colorScheme
-                        .copyWith(
-                            primary:
-                                currentTheme.primaryTextTheme.labelLarge.color,
-                            onPrimary: const Color.fromRGBO(0, 133, 251, 1.0),
-                            onSecondary:
-                                const Color.fromRGBO(178, 241, 255, 1.0),
-                            onSurface: Colors.blueGrey),
+                    colorScheme: Themes.lightTheme().themeData.buttonTheme.colorScheme.copyWith(
+                        primary: currentTheme.primaryTextTheme.labelLarge.color,
+                        onPrimary: const Color.fromRGBO(0, 133, 251, 1.0),
+                        onSecondary: const Color.fromRGBO(178, 241, 255, 1.0),
+                        onSurface: Colors.blueGrey),
                   ),
-              primaryTextTheme:
-                  Typography.material2018(platform: TargetPlatform.android)
-                      .black
-                      .apply(fontFamily: 'IBMPlexSans')
-                      .copyWith(
-                        labelLarge: currentTheme.primaryTextTheme.labelLarge,
-                      ),
-              textTheme: Typography.material2018(
-                      platform: TargetPlatform.android)
+              primaryTextTheme: Typography.material2018(platform: TargetPlatform.android)
+                  .black
+                  .apply(fontFamily: 'IBMPlexSans')
+                  .copyWith(
+                    labelLarge: currentTheme.primaryTextTheme.labelLarge,
+                  ),
+              textTheme: Typography.material2018(platform: TargetPlatform.android)
                   .black
                   .apply(
                     fontFamily: 'IBMPlexSans',
                   )
                   .copyWith(
-                    labelLarge: Typography.material2018(
-                            platform: TargetPlatform.android)
+                    labelLarge: Typography.material2018(platform: TargetPlatform.android)
                         .black
                         .labelLarge
                         .copyWith(color: const Color.fromRGBO(5, 93, 235, 1.0)),
-                    titleLarge: Typography.material2018(
-                            platform: TargetPlatform.android)
+                    titleLarge: Typography.material2018(platform: TargetPlatform.android)
                         .black
                         .titleLarge
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
                   ),
-              primaryIconTheme:
-                  const IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
+              primaryIconTheme: const IconThemeData(color: Color.fromRGBO(0, 133, 251, 1.0)),
               iconTheme: const IconThemeData(color: Colors.white, size: 32.0),
               bottomSheetTheme: BottomSheetThemeData(
                 backgroundColor: currentTheme.scaffoldBackgroundColor,
@@ -112,8 +100,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 background: Color(0xFFf3f8fc),
               ).copyWith(error: const Color(0xffffe685)),
               switchTheme: SwitchThemeData(
-                thumbColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                thumbColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -122,8 +109,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   }
                   return null;
                 }),
-                trackColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -134,8 +120,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 }),
               ),
               radioTheme: currentTheme.radioTheme.copyWith(
-                fillColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -146,8 +131,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 }),
               ),
               checkboxTheme: CheckboxThemeData(
-                fillColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -190,31 +174,23 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
               hintColor: const Color(0x80ffffff),
               dialogTheme: currentTheme.dialogTheme,
               buttonTheme: Themes.darkTheme().themeData.buttonTheme.copyWith(
-                    colorScheme: Themes.darkTheme()
-                        .themeData
-                        .buttonTheme
-                        .colorScheme
-                        .copyWith(
-                            primary:
-                                currentTheme.primaryTextTheme.labelLarge.color,
-                            onPrimary: Colors.white,
-                            onSecondary: const Color(0xFF0085fb),
-                            onSurface: const Color(0x77ffffff)),
+                    colorScheme: Themes.darkTheme().themeData.buttonTheme.colorScheme.copyWith(
+                        primary: currentTheme.primaryTextTheme.labelLarge.color,
+                        onPrimary: Colors.white,
+                        onSecondary: const Color(0xFF0085fb),
+                        onSurface: const Color(0x77ffffff)),
                   ),
-              primaryTextTheme:
-                  Typography.material2018(platform: TargetPlatform.android)
-                      .white
-                      .apply(fontFamily: 'IBMPlexSans')
-                      .copyWith(
-                        labelLarge: currentTheme.primaryTextTheme.labelLarge,
-                      ),
-              textTheme: Typography.material2018(
-                      platform: TargetPlatform.android)
+              primaryTextTheme: Typography.material2018(platform: TargetPlatform.android)
                   .white
                   .apply(fontFamily: 'IBMPlexSans')
                   .copyWith(
-                    titleLarge: Typography.material2018(
-                            platform: TargetPlatform.android)
+                    labelLarge: currentTheme.primaryTextTheme.labelLarge,
+                  ),
+              textTheme: Typography.material2018(platform: TargetPlatform.android)
+                  .white
+                  .apply(fontFamily: 'IBMPlexSans')
+                  .copyWith(
+                    titleLarge: Typography.material2018(platform: TargetPlatform.android)
                         .white
                         .titleLarge
                         .copyWith(fontWeight: FontWeight.w400, fontSize: 14.3),
@@ -234,8 +210,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 background: Color(0xFF152a3d),
               ).copyWith(error: const Color(0xFFeddc97)),
               switchTheme: SwitchThemeData(
-                thumbColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                thumbColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -244,8 +219,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                   }
                   return null;
                 }),
-                trackColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                trackColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -256,8 +230,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 }),
               ),
               radioTheme: currentTheme.radioTheme.copyWith(
-                fillColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }
@@ -268,8 +241,7 @@ Widget withPodcastTheme(BreezUserModel user, Widget child) {
                 }),
               ),
               checkboxTheme: CheckboxThemeData(
-                fillColor: MaterialStateProperty.resolveWith<Color>(
-                    (Set<MaterialState> states) {
+                fillColor: MaterialStateProperty.resolveWith<Color>((Set<MaterialState> states) {
                   if (states.contains(MaterialState.disabled)) {
                     return null;
                   }

@@ -9,8 +9,7 @@ final _log = Logger("DeepLinksService");
 class DeepLinksService {
   static const SESSION_SECRET = "sessionSecret";
 
-  final StreamController<String> _linksNotificationsController =
-      BehaviorSubject<String>();
+  final StreamController<String> _linksNotificationsController = BehaviorSubject<String>();
   Stream<String> get linksNotifications => _linksNotificationsController.stream;
 
   FirebaseDynamicLinks _dynamicLinks;
@@ -43,10 +42,8 @@ class DeepLinksService {
     final DynamicLinkParameters parameters = DynamicLinkParameters(
         uriPrefix: "https://breez.page.link",
         link: Uri.parse('https://breez.technology?${link.toLinkQuery()}'),
-        androidParameters:
-            const AndroidParameters(packageName: "com.breez.client"),
-        iosParameters:
-            const IOSParameters(bundleId: "technology.breez.client"));
+        androidParameters: const AndroidParameters(packageName: "com.breez.client"),
+        iosParameters: const IOSParameters(bundleId: "technology.breez.client"));
     final ShortDynamicLink shortLink = await _dynamicLinks.buildShortLink(
       parameters,
       shortLinkType: ShortDynamicLinkType.unguessable,
@@ -77,8 +74,7 @@ class SessionLinkModel {
 
   static SessionLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
-    return SessionLinkModel(
-        query["sessionID"], query["sessionSecret"], query["pubKey"]);
+    return SessionLinkModel(query["sessionID"], query["sessionSecret"], query["pubKey"]);
   }
 }
 
@@ -95,8 +91,6 @@ class PodcastShareLinkModel {
   static PodcastShareLinkModel fromLinkQuery(String queryStr) {
     Map<String, String> query = Uri.splitQueryString(queryStr);
     return PodcastShareLinkModel(Uri.decodeComponent(query["feedURL"]),
-        episodeID: query["episodeID"] == null
-            ? null
-            : Uri.decodeComponent(query["episodeID"]));
+        episodeID: query["episodeID"] == null ? null : Uri.decodeComponent(query["episodeID"]));
   }
 }

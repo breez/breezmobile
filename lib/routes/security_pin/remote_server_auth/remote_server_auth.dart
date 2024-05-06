@@ -128,9 +128,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         padding: const EdgeInsets.only(bottom: 0.0),
         child: SingleButtonBottomBar(
           stickToBottom: true,
-          text: widget.restore
-              ? texts.remote_server_action_restore
-              : texts.remote_server_action_save,
+          text: widget.restore ? texts.remote_server_action_restore : texts.remote_server_action_save,
           onPressed: () async {
             Uri uri = Uri.parse(_urlController.text);
             bool hasError = (await _handleConnectionWarnings(uri) == false);
@@ -165,8 +163,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     bool isAndroid = Platform.isAndroid;
     bool resolvedConnectionWarnings = true;
     if (isAndroid && uri.host.endsWith('onion') && torBloc.torConfig == null) {
-      resolvedConnectionWarnings =
-          await _handleEnableTor(resolvedConnectionWarnings);
+      resolvedConnectionWarnings = await _handleEnableTor(resolvedConnectionWarnings);
     }
     if ((!uri.host.endsWith('.onion') && uri.scheme == 'http')) {
       resolvedConnectionWarnings = await _handleNonSecureConnection();
@@ -184,8 +181,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
         texts.remote_server_warning_onion_message,
         style: Theme.of(context).dialogTheme.contentTextStyle,
       ),
-      optionText:
-          texts.remote_server_onion_warning_dialog_default_action_cancel,
+      optionText: texts.remote_server_onion_warning_dialog_default_action_cancel,
       optionFunc: () {
         resolvedConnectionWarnings = false;
         Navigator.pop(context);
@@ -276,8 +272,7 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     while (true) {
       var testedUrl = Uri.parse(testedAuthData.url);
       var result = await discoverURLInternal(testedAuthData);
-      if (result.authError == DiscoverResult.SUCCESS ||
-          result.authError == DiscoverResult.INVALID_AUTH) {
+      if (result.authError == DiscoverResult.SUCCESS || result.authError == DiscoverResult.INVALID_AUTH) {
         return result;
       }
 
@@ -307,12 +302,10 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     }
   }
 
-  Future<DiscoveryResult> discoverURLInternal(
-      RemoteServerAuthData authData) async {
+  Future<DiscoveryResult> discoverURLInternal(RemoteServerAuthData authData) async {
     // First we try to use the path the user inserted
     var result = await testAuthData(authData);
-    if (result == DiscoverResult.SUCCESS ||
-        result == DiscoverResult.INVALID_AUTH) {
+    if (result == DiscoverResult.SUCCESS || result == DiscoverResult.INVALID_AUTH) {
       return DiscoveryResult(authData, result);
     }
 
@@ -320,18 +313,13 @@ class RemoteServerAuthPageState extends State<RemoteServerAuthPage> {
     // since the user might accidentally insert a wrong path we'll reconstruct
     // the url to be the short url+remote.php/webdav.
     Uri uri = Uri.parse(authData.url); // + "remote.php/webdav/";
-    final nextCloudURL = Uri(
-            scheme: uri.scheme,
-            host: uri.host,
-            port: uri.port,
-            path: "remote.php/webdav/")
-        .toString();
+    final nextCloudURL =
+        Uri(scheme: uri.scheme, host: uri.host, port: uri.port, path: "remote.php/webdav/").toString();
     if (authData.url == nextCloudURL) {
       return DiscoveryResult(authData, result);
     }
     result = await testAuthData(authData.copyWith(url: nextCloudURL));
-    if (result == DiscoverResult.SUCCESS ||
-        result == DiscoverResult.INVALID_AUTH) {
+    if (result == DiscoverResult.SUCCESS || result == DiscoverResult.INVALID_AUTH) {
       return DiscoveryResult(authData.copyWith(url: nextCloudURL), result);
     }
     return DiscoveryResult(authData, result);

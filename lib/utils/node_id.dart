@@ -14,8 +14,7 @@ String parseNodeId(String nodeID) {
   }
 
   if (nodeID.length > NODE_ID_LENGTH &&
-      nodeID.substring(NODE_ID_LENGTH, NODE_ID_LENGTH + 1) ==
-          NODE_URI_SEPARATOR) {
+      nodeID.substring(NODE_ID_LENGTH, NODE_ID_LENGTH + 1) == NODE_URI_SEPARATOR) {
     nodeID = nodeID.substring(0, NODE_ID_LENGTH);
     if (_isParsable(nodeID)) {
       return nodeID;

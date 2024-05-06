@@ -21,8 +21,7 @@ class PaymentDetailsDialogExpiration extends StatelessWidget {
     final texts = context.texts();
     final themeData = Theme.of(context);
 
-    if (!paymentInfo.pending ||
-        paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
+    if (!paymentInfo.pending || paymentInfo.type == PaymentType.CLOSED_CHANNEL) {
       return Container();
     }
 

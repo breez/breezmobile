@@ -6,9 +6,7 @@ class SeenTutorials {
   SeenTutorials.initial() : this._(paymentStripTutorial: false);
 
   SeenTutorials copyWith({bool paymentStripTutorial}) {
-    return SeenTutorials._(
-        paymentStripTutorial:
-            paymentStripTutorial ?? this.paymentStripTutorial);
+    return SeenTutorials._(paymentStripTutorial: paymentStripTutorial ?? this.paymentStripTutorial);
   }
 
   SeenTutorials.fromJson(Map<String, dynamic> json)

@@ -2,10 +2,8 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 class BackgroundTaskService {
-  static const _methodChannel =
-      MethodChannel('com.breez.client/background_task');
-  static const _eventsChannel =
-      EventChannel('com.breez.client/background_task_notifications');
+  static const _methodChannel = MethodChannel('com.breez.client/background_task');
+  static const _eventsChannel = EventChannel('com.breez.client/background_task_notifications');
 
   final Map<dynamic, Function()> _tasksCallbacks = <dynamic, Function()>{};
 

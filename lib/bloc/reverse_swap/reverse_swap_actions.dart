@@ -9,8 +9,7 @@ class NewReverseSwap extends AsyncAction {
   final Int64 claimFees;
   final Int64 received;
 
-  NewReverseSwap(
-      this.amount, this.address, this.feesHash, this.claimFees, this.received);
+  NewReverseSwap(this.amount, this.address, this.feesHash, this.claimFees, this.received);
 }
 
 class PayReverseSwap extends AsyncAction {

@@ -25,9 +25,7 @@ class PaymentDetailsDialogTitle extends StatelessWidget {
                 top: Radius.circular(12.0),
               ),
             ),
-            color: theme.themeId == "BLUE"
-                ? themeData.primaryColorDark
-                : themeData.canvasColor,
+            color: theme.themeId == "BLUE" ? themeData.primaryColorDark : themeData.canvasColor,
           ),
           height: 64.0,
           width: mediaQuery.size.width,

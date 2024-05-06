@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 class AppBlocsProvider extends InheritedWidget {
   final AppBlocs appBlocs;
 
-  const AppBlocsProvider({Key key, Widget child, this.appBlocs})
-      : super(key: key, child: child);
+  const AppBlocsProvider({Key key, Widget child, this.appBlocs}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
@@ -13,8 +12,7 @@ class AppBlocsProvider extends InheritedWidget {
   }
 
   static T of<T>(BuildContext context) {
-    AppBlocsProvider widget =
-        context.dependOnInheritedWidgetOfExactType<AppBlocsProvider>();
+    AppBlocsProvider widget = context.dependOnInheritedWidgetOfExactType<AppBlocsProvider>();
     if (widget == null) {
       return null;
     }
@@ -66,8 +64,7 @@ class _BlocProviderState<T extends Bloc> extends State<BlocProvider<T>> {
 class _Inherited<T> extends InheritedWidget {
   final T bloc;
 
-  const _Inherited({Key key, Widget child, this.bloc})
-      : super(key: key, child: child);
+  const _Inherited({Key key, Widget child, this.bloc}) : super(key: key, child: child);
 
   @override
   bool updateShouldNotify(InheritedWidget oldWidget) {
@@ -75,8 +72,7 @@ class _Inherited<T> extends InheritedWidget {
   }
 
   static T of<T>(BuildContext context) {
-    _Inherited widget =
-        context.dependOnInheritedWidgetOfExactType<_Inherited<T>>();
+    _Inherited widget = context.dependOnInheritedWidgetOfExactType<_Inherited<T>>();
     if (widget == null) {
       return null;
     }

@@ -20,8 +20,7 @@ String extractBitcoinAddress(String address) {
   if (address.toLowerCase().startsWith(URN_SCHEME)) {
     try {
       int split = address.indexOf("?");
-      String addr =
-          address.substring(URN_SCHEME.length, split == -1 ? null : split);
+      String addr = address.substring(URN_SCHEME.length, split == -1 ? null : split);
       if (addr.isNotEmpty) {
         isLegacyOrNestedSegwit(addr) ? addr : addr = addr.toLowerCase();
         return addr;

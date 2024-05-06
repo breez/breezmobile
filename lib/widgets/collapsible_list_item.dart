@@ -53,9 +53,7 @@ class CollapsibleListItem extends StatelessWidget {
                       textAlign: TextAlign.left,
                       overflow: TextOverflow.clip,
                       maxLines: 4,
-                      style: textTheme.displaySmall
-                          .copyWith(fontSize: 10)
-                          .merge(userStyle),
+                      style: textTheme.displaySmall.copyWith(fontSize: 10).merge(userStyle),
                     ),
                   ),
                 ),
@@ -77,9 +75,7 @@ class CollapsibleListItem extends StatelessWidget {
                             IconData(0xe90b, fontFamily: 'icomoon'),
                           ),
                           onPressed: () {
-                            ServiceInjector()
-                                .device
-                                .setClipboardText(sharedValue);
+                            ServiceInjector().device.setClipboardText(sharedValue);
                             Navigator.pop(context);
                             showFlushbar(
                               context,

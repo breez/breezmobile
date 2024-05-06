@@ -19,16 +19,13 @@ class PaymentOptionsBloc with AsyncActionsHandler {
 
   final _paymentOptionsFeeEnabledStreamController = BehaviorSubject<bool>();
 
-  Stream<bool> get paymentOptionsFeeEnabledStream =>
-      _paymentOptionsFeeEnabledStreamController.stream;
+  Stream<bool> get paymentOptionsFeeEnabledStream => _paymentOptionsFeeEnabledStreamController.stream;
 
   final _paymentOptionsBaseFeeStreamController = BehaviorSubject<int>();
 
-  Stream<int> get paymentOptionsBaseFeeStream =>
-      _paymentOptionsBaseFeeStreamController.stream;
+  Stream<int> get paymentOptionsBaseFeeStream => _paymentOptionsBaseFeeStreamController.stream;
 
-  final _paymentOptionsProportionalFeeStreamController =
-      BehaviorSubject<double>();
+  final _paymentOptionsProportionalFeeStreamController = BehaviorSubject<double>();
 
   Stream<double> get paymentOptionsProportionalFeeStream =>
       _paymentOptionsProportionalFeeStreamController.stream;
@@ -145,8 +142,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
     }
   }
 
-  void _listenRestoreRequests(
-      Stream<Map<String, dynamic>> restoreLightningFeesStream) {
+  void _listenRestoreRequests(Stream<Map<String, dynamic>> restoreLightningFeesStream) {
     restoreLightningFeesStream.listen((lightningFeesPreferences) {
       _restoreLightningFees(lightningFeesPreferences);
     });
@@ -160,8 +156,7 @@ class PaymentOptionsBloc with AsyncActionsHandler {
       UpdatePaymentBaseFee(lightningFeesPreferences[_kPaymentOptionBaseFee]),
     );
     _updatePaymentOptionsProportionalFee(
-      UpdatePaymentProportionalFee(
-          lightningFeesPreferences[_kPaymentOptionProportionalFee]),
+      UpdatePaymentProportionalFee(lightningFeesPreferences[_kPaymentOptionProportionalFee]),
     );
   }
 }

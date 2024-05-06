@@ -50,8 +50,8 @@ class EnableBackupDialogState extends State<EnableBackupDialog> {
           }
 
           final backupSettings = snapshot.data;
-          bool isRemoteServer = (backupSettings != null &&
-              backupSettings.backupProvider?.isRemoteServer == true);
+          bool isRemoteServer =
+              (backupSettings != null && backupSettings.backupProvider?.isRemoteServer == true);
 
           return AlertDialog(
             titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
@@ -118,8 +118,7 @@ class _DoNotPromptAgainCheckbox extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  State<_DoNotPromptAgainCheckbox> createState() =>
-      _DoNotPromptAgainCheckboxState();
+  State<_DoNotPromptAgainCheckbox> createState() => _DoNotPromptAgainCheckboxState();
 }
 
 class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
@@ -201,8 +200,7 @@ class _BackupNowButtonState extends State<_BackupNowButton> {
         bool hasAuthError = false;
         final backupError = backupStateSnapshot.error;
         if (backupError.runtimeType == BackupFailedException) {
-          hasAuthError =
-              (backupError as BackupFailedException).authenticationError;
+          hasAuthError = (backupError as BackupFailedException).authenticationError;
         }
 
         return TextButton(

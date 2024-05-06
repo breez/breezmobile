@@ -76,9 +76,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
         hintColor: themeData.dialogTheme.contentTextStyle.color,
         colorScheme: ColorScheme.dark(
           primary: themeData.textTheme.labelLarge.color,
-          error: theme.themeId == "BLUE"
-              ? Colors.red
-              : themeData.colorScheme.error,
+          error: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
         ),
         primaryColor: themeData.textTheme.labelLarge.color,
       ),
@@ -138,9 +136,8 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
                   texts.payment_info_dialog_hint_expanded,
                   style: theme.FieldTextStyle.labelStyle.copyWith(
                     fontSize: 13.0,
-                    color: theme.themeId == "BLUE"
-                        ? theme.BreezColors.grey[500]
-                        : theme.BreezColors.white[200],
+                    color:
+                        theme.themeId == "BLUE" ? theme.BreezColors.grey[500] : theme.BreezColors.white[200],
                   ),
                 ),
               ),
@@ -190,8 +187,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
             }
 
             if (_decodeInvoice(_paymentInfoController.text) != null) {
-              widget.invoiceBloc.decodeInvoiceSink
-                  .add(_paymentInfoController.text);
+              widget.invoiceBloc.decodeInvoiceSink.add(_paymentInfoController.text);
             }
             if (isLNURL(_paymentInfoController.text)) {
               widget.lnurlBloc.lnurlInputSink.add(_paymentInfoController.text);
@@ -228,8 +224,7 @@ class EnterPaymentInfoDialogState extends State<EnterPaymentInfoDialog> {
   }
 
   String _decodeInvoice(String invoiceString) {
-    String normalized =
-        extractBolt11FromBip21(invoiceString) ?? invoiceString?.toLowerCase();
+    String normalized = extractBolt11FromBip21(invoiceString) ?? invoiceString?.toLowerCase();
     if (normalized == null) {
       return null;
     }

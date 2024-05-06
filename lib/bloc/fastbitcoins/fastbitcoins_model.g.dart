@@ -7,24 +7,18 @@ part of 'fastbitcoins_model.dart';
 // **************************************************************************
 
 ValidateRequestModel _$ValidateRequestModelFromJson(Map<String, dynamic> json) {
-  return ValidateRequestModel(
-      json['email_address'] as String,
-      json['code'] as String,
-      (json['value'] as num)?.toDouble(),
-      json['currency'] as String);
+  return ValidateRequestModel(json['email_address'] as String, json['code'] as String,
+      (json['value'] as num)?.toDouble(), json['currency'] as String);
 }
 
-Map<String, dynamic> _$ValidateRequestModelToJson(
-        ValidateRequestModel instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ValidateRequestModelToJson(ValidateRequestModel instance) => <String, dynamic>{
       'email_address': instance.emailAddress,
       'code': instance.code,
       'value': instance.value,
       'currency': instance.currency
     };
 
-ValidateResponseModel _$ValidateResponseModelFromJson(
-    Map<String, dynamic> json) {
+ValidateResponseModel _$ValidateResponseModelFromJson(Map<String, dynamic> json) {
   return ValidateResponseModel(
       json['error'] as int,
       json['error_message'] as String,
@@ -39,9 +33,7 @@ ValidateResponseModel _$ValidateResponseModelFromJson(
       json['satoshi_amount'] as int);
 }
 
-Map<String, dynamic> _$ValidateResponseModelToJson(
-        ValidateResponseModel instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ValidateResponseModelToJson(ValidateResponseModel instance) => <String, dynamic>{
       'error': instance.error,
       'error_message': instance.errorMessage,
       'kyc_required': instance.kycRequired,
@@ -66,8 +58,7 @@ RedeemRequestModel _$RedeemRequestModelFromJson(Map<String, dynamic> json) {
     ..lightningInvoice = json['lightning_invoice'] as String;
 }
 
-Map<String, dynamic> _$RedeemRequestModelToJson(RedeemRequestModel instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$RedeemRequestModelToJson(RedeemRequestModel instance) => <String, dynamic>{
       'email_address': instance.emailAddress,
       'code': instance.code,
       'value': instance.value,
@@ -78,13 +69,8 @@ Map<String, dynamic> _$RedeemRequestModelToJson(RedeemRequestModel instance) =>
     };
 
 RedeemResponseModel _$RedeemResponseModelFromJson(Map<String, dynamic> json) {
-  return RedeemResponseModel(
-      json['error'] as int, json['error_message'] as String);
+  return RedeemResponseModel(json['error'] as int, json['error_message'] as String);
 }
 
-Map<String, dynamic> _$RedeemResponseModelToJson(
-        RedeemResponseModel instance) =>
-    <String, dynamic>{
-      'error': instance.error,
-      'error_message': instance.errorMessage
-    };
+Map<String, dynamic> _$RedeemResponseModelToJson(RedeemResponseModel instance) =>
+    <String, dynamic>{'error': instance.error, 'error_message': instance.errorMessage};

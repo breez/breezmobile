@@ -69,8 +69,7 @@ class NetworkPageState extends State<NetworkPage> {
   Future<void> _loadPeers() async {
     loadPeersAction = Completer();
     Peers peers = await _breezLib.getPeers();
-    peers.peer.forEachIndexed(
-        (index, peer) => peerControllers.elementAt(index).text = peer);
+    peers.peer.forEachIndexed((index, peer) => peerControllers.elementAt(index).text = peer);
     loadPeersAction.complete(true);
   }
 
@@ -99,9 +98,7 @@ class NetworkPageState extends State<NetworkPage> {
                 children: [
                   if (_data.showTor)
                     SimpleSwitch(
-                      text: _data.torIsActive
-                          ? texts.network_tor_disable
-                          : texts.network_tor_enable,
+                      text: _data.torIsActive ? texts.network_tor_disable : texts.network_tor_enable,
                       switchValue: _data.torIsActive,
                       onChanged: _torSwitchChanged,
                     ),
@@ -168,8 +165,7 @@ class NetworkPageState extends State<NetworkPage> {
 
   bool _areNodesDistinct(String value) {
     return peerControllers[0].text.isNotEmpty &&
-        peerControllers[0].text.toLowerCase().trim() ==
-            value.toLowerCase().trim();
+        peerControllers[0].text.toLowerCase().trim() == value.toLowerCase().trim();
   }
 
   void _resetNodes() async {
@@ -177,8 +173,7 @@ class NetworkPageState extends State<NetworkPage> {
     final nodeIsValid = await _testNode();
     if (nodeIsValid) {
       await _breezLib.setPeers([]);
-      peerControllers = List<TextEditingController>.generate(
-          2, (_) => TextEditingController());
+      peerControllers = List<TextEditingController>.generate(2, (_) => TextEditingController());
       await _loadPeers();
       setState(() {});
       _promptForRestart();
@@ -284,9 +279,7 @@ class NetworkPageState extends State<NetworkPage> {
             context,
             null,
             Text(
-              value
-                  ? texts.network_tor_enable_error
-                  : texts.network_tor_disable,
+              value ? texts.network_tor_enable_error : texts.network_tor_disable,
               style: themeData.dialogTheme.contentTextStyle,
             ),
           );
@@ -374,9 +367,7 @@ class _TestingPeerDialogState extends State<_TestingPeerDialog> {
       onWillPop: () => Future.value(_allowPop),
       child: createAnimatedLoaderDialog(
         context,
-        widget.peer.isNotEmpty
-            ? "${texts.network_testing_node}: ${widget.peer}"
-            : texts.network_testing_node,
+        widget.peer.isNotEmpty ? "${texts.network_testing_node}: ${widget.peer}" : texts.network_testing_node,
         withOKButton: false,
       ),
     );
@@ -387,8 +378,7 @@ class _SetTorActiveDialog extends StatefulWidget {
   final Future testFuture;
   final bool enable;
 
-  const _SetTorActiveDialog({Key key, this.testFuture, this.enable})
-      : super(key: key);
+  const _SetTorActiveDialog({Key key, this.testFuture, this.enable}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
@@ -414,10 +404,7 @@ class _SetTorActiveDialogState extends State<_SetTorActiveDialog> {
     return WillPopScope(
         onWillPop: () => Future.value(_allowPop),
         child: createAnimatedLoaderDialog(
-            context,
-            widget.enable
-                ? texts.network_tor_enabling
-                : texts.network_tor_disabling,
+            context, widget.enable ? texts.network_tor_enabling : texts.network_tor_disabling,
             withOKButton: false));
   }
 }

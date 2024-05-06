@@ -30,8 +30,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
     if (_accountBloc == null && widget.closeOnSync) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _accountBloc.accountStream
-          .firstWhere((a) => a?.syncedToChain == true && a.serverReady,
-              orElse: () => null)
+          .firstWhere((a) => a?.syncedToChain == true && a.serverReady, orElse: () => null)
           .then((a) {
         if (mounted) {
           Navigator.of(context).pop(true);
@@ -59,9 +58,7 @@ class SyncProgressDialogState extends State<SyncProgressDialog> {
             color: widget.progressColor ?? themeData.textTheme.labelLarge.color,
             size: 100.0,
             value: acc.serverReady ? acc.syncProgress : null,
-            title: acc.serverReady
-                ? texts.sync_progress_server_ready
-                : texts.sync_progress_waiting_network,
+            title: acc.serverReady ? texts.sync_progress_server_ready : texts.sync_progress_waiting_network,
           ),
         );
       },

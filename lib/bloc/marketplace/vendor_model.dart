@@ -4,8 +4,7 @@ import 'dart:core';
 List<VendorModel> vendorListFromJson(String str) {
   List<VendorModel> vendorList = [];
   Map.from(json.decode(str))
-      .map((k, v) =>
-          MapEntry<String, VendorModel>(k, VendorModel.fromJson(k, v)))
+      .map((k, v) => MapEntry<String, VendorModel>(k, VendorModel.fromJson(k, v)))
       .forEach((k, v) => vendorList.add(v));
   return vendorList;
 }
@@ -36,8 +35,7 @@ class VendorModel {
           json["displayName"] ?? id,
           endpointURI: json["endpointURI"],
           onlyShowLogo: json["onlyShowLogo"] ?? true,
-          responseID: json["endpointURI"] != null && json["responseID"] != null
-              ? json["responseID"]
-              : "lnurl_auth",
+          responseID:
+              json["endpointURI"] != null && json["responseID"] != null ? json["responseID"] : "lnurl_auth",
         );
 }

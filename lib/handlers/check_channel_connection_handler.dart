@@ -43,9 +43,7 @@ class CheckChannelConnection {
 
   void startSubscription(AccountBloc accountBloc, BuildContext context) {
     _subscription = accountBloc.accountStream
-        .map((acc) =>
-            !(acc.connected && !acc.readyForPayments) ||
-            acc.nodeUpgrading == true)
+        .map((acc) => !(acc.connected && !acc.readyForPayments) || acc.nodeUpgrading == true)
         .distinct()
         .listen((ready) {
       if (ready) {

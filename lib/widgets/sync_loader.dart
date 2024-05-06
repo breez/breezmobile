@@ -6,11 +6,10 @@ class SyncUIRoute<T> extends TransparentPageRoute<T> {
   SyncUIRoute(Widget Function(BuildContext context) builder) : super(builder);
 
   @override
-  Widget buildTransitions(BuildContext context, Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child) {
+  Widget buildTransitions(
+      BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation, Widget child) {
     var curve = CurvedAnimation(parent: controller, curve: Curves.easeOut);
-    return ScaleTransition(
-        scale: curve, alignment: Alignment.topRight, child: child);
+    return ScaleTransition(scale: curve, alignment: Alignment.topRight, child: child);
   }
 
   @override
@@ -23,8 +22,7 @@ class TransparentRouteLoader extends StatefulWidget {
   final double value;
   final Function onClose;
 
-  const TransparentRouteLoader(
-      {Key key, this.message, this.opacity = 0.5, this.value, this.onClose})
+  const TransparentRouteLoader({Key key, this.message, this.opacity = 0.5, this.value, this.onClose})
       : super(key: key);
 
   @override
@@ -72,9 +70,7 @@ class TransparentRouteLoaderState extends State<TransparentRouteLoader> {
             child: Align(
               alignment: Alignment.topRight,
               child: IconButton(
-                  color: Colors.white,
-                  onPressed: widget.onClose,
-                  icon: const Icon(Icons.unfold_less)),
+                  color: Colors.white, onPressed: widget.onClose, icon: const Icon(Icons.unfold_less)),
             ),
           ),
         ],
@@ -88,9 +84,7 @@ class SyncProgressLoader extends StatelessWidget {
   final String title;
   final Color progressColor;
 
-  const SyncProgressLoader(
-      {Key key, this.value, this.title, this.progressColor})
-      : super(key: key);
+  const SyncProgressLoader({Key key, this.value, this.title, this.progressColor}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

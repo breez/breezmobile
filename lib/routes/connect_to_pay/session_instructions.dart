@@ -44,9 +44,7 @@ class SessionInstructions extends StatelessWidget {
                       Expanded(
                         flex: 1,
                         child: Padding(
-                          padding: hasActions
-                              ? const EdgeInsets.only(bottom: 36.0)
-                              : const EdgeInsets.only(),
+                          padding: hasActions ? const EdgeInsets.only(bottom: 36.0) : const EdgeInsets.only(),
                           child: Center(child: _child),
                         ),
                       ),
@@ -77,9 +75,7 @@ class SessionInstructions extends StatelessWidget {
                         style: BorderStyle.solid,
                       ),
                     ),
-                    onPressed: _disabledActions.contains(action)
-                        ? null
-                        : () => _onAction(action),
+                    onPressed: _disabledActions.contains(action) ? null : () => _onAction(action),
                     child: Text(
                       action.toUpperCase(),
                       style: theme.sessionActionBtnStyle,

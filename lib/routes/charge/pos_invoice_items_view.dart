@@ -137,9 +137,7 @@ class PosInvoiceItemsView extends StatelessWidget {
         final themeData = Theme.of(context);
         final newOption = await showMenu(
           context: context,
-          color: theme.themeId == "BLUE"
-              ? themeData.canvasColor
-              : themeData.colorScheme.background,
+          color: theme.themeId == "BLUE" ? themeData.canvasColor : themeData.colorScheme.background,
           position: RelativeRect.fromLTRB(offset.dx, offset.dy, 0, 0),
           items: items.map((e) => _dropdownItem(context, e, sort)).toList(),
         );

@@ -24,8 +24,7 @@ bool isLNURL(String url) {
     Uri uri = Uri.parse(lower);
     String lightning = uri.queryParameters["lightning"];
     return lightning != null &&
-        (_lnurlPrefix.firstMatch(lightning) != null ||
-            _lnurlRfc17Prefix.firstMatch(lightning) != null);
+        (_lnurlPrefix.firstMatch(lightning) != null || _lnurlRfc17Prefix.firstMatch(lightning) != null);
   } on FormatException {
     // do nothing.
   }
@@ -43,8 +42,7 @@ bool isLightningAddressURI(String uri) {
   var result = false;
 
   if (uri != null) {
-    result = uri.toLowerCase().startsWith(_lightningProtocolPrefix) &&
-        isLightningAddress(uri);
+    result = uri.toLowerCase().startsWith(_lightningProtocolPrefix) && isLightningAddress(uri);
   }
   return result;
 }

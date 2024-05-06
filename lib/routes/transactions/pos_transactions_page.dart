@@ -275,9 +275,7 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
   }
 
   Widget _buildDateFilterChip(PaymentFilterModel filter) {
-    return (filter.startDate != null && filter.endDate != null)
-        ? _filterChip(filter)
-        : Container();
+    return (filter.startDate != null && filter.endDate != null) ? _filterChip(filter) : Container();
   }
 
   Widget _filterChip(PaymentFilterModel filter) {

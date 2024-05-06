@@ -7,8 +7,7 @@ class CustomClipsDurationDialog extends StatefulWidget {
   const CustomClipsDurationDialog({Key key}) : super(key: key);
 
   @override
-  State<CustomClipsDurationDialog> createState() =>
-      _CustomClipsDurationDialogState();
+  State<CustomClipsDurationDialog> createState() => _CustomClipsDurationDialogState();
 }
 
 class _CustomClipsDurationDialogState extends State<CustomClipsDurationDialog> {

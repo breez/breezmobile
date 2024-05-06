@@ -20,18 +20,14 @@ class PeersConnection extends StatelessWidget {
   bool _isPayerWaiting() {
     final payerData = _sessionState.payerData;
     final payeeData = _sessionState.payeeData;
-    return _sessionState.payer &&
-        payerData.amount != null &&
-        payeeData.paymentRequest == null;
+    return _sessionState.payer && payerData.amount != null && payeeData.paymentRequest == null;
   }
 
   bool _isPayeeWaiting() {
     final payerData = _sessionState.payerData;
     final payeeData = _sessionState.payeeData;
     return !_sessionState.payer &&
-        (payerData.amount == null ||
-            payeeData.paymentRequest != null &&
-                !_sessionState.paymentFulfilled);
+        (payerData.amount == null || payeeData.paymentRequest != null && !_sessionState.paymentFulfilled);
   }
 
   @override
@@ -57,10 +53,8 @@ class PeersConnection extends StatelessWidget {
     double peerContainerSize = 110.0;
     double nameContainerSize = 20.0;
     double peerAvatarWidth = 60.0;
-    double connectionLineMargin =
-        (peerContainerSize - peerAvatarWidth) / 2 + peerAvatarWidth;
-    double nameMargin =
-        (peerContainerSize - peerAvatarWidth) / 2 + peerAvatarWidth + 8.0;
+    double connectionLineMargin = (peerContainerSize - peerAvatarWidth) / 2 + peerAvatarWidth;
+    double nameMargin = (peerContainerSize - peerAvatarWidth) / 2 + peerAvatarWidth + 8.0;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,

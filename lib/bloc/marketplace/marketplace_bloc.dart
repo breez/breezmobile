@@ -15,10 +15,8 @@ class MarketplaceBloc {
   bool _isSnortToggled;
 
   final _nostrSettingsController = BehaviorSubject<NostrSettings>();
-  Stream<NostrSettings> get nostrSettingsStream =>
-      _nostrSettingsController.stream;
-  Sink<NostrSettings> get nostrSettingsSettingsSink =>
-      _nostrSettingsController.sink;
+  Stream<NostrSettings> get nostrSettingsStream => _nostrSettingsController.stream;
+  Sink<NostrSettings> get nostrSettingsSettingsSink => _nostrSettingsController.sink;
 
   MarketplaceBloc() {
     loadVendors();
@@ -35,8 +33,7 @@ class MarketplaceBloc {
     SharedPreferences pref = await SharedPreferences.getInstance();
     nostrSettingsStream.listen((settings) async {
       _isSnortToggled = settings.showSnort;
-      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY,
-          json.encode(settings.toJson()));
+      pref.setString(NostrSettings.NOSTR_SETTINGS_PREFERENCES_KEY, json.encode(settings.toJson()));
       await loadVendors();
     });
   }

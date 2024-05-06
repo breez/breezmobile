@@ -146,17 +146,15 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
             style: theme.FieldTextStyle.textStyle,
             validator: (text) {
               if (text.isEmpty ||
-                  text.toLowerCase().trim() !=
-                      _mnemonicsList[_randomlySelectedIndexes[index]]) {
+                  text.toLowerCase().trim() != _mnemonicsList[_randomlySelectedIndexes[index]]) {
                 setState(() {
                   _hasError = true;
                 });
               }
               return null;
             },
-            onEditingComplete: () => (index == 2)
-                ? FocusScope.of(context).unfocus()
-                : FocusScope.of(context).nextFocus(),
+            onEditingComplete: () =>
+                (index == 2) ? FocusScope.of(context).unfocus() : FocusScope.of(context).nextFocus(),
           ),
         );
       },

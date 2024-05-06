@@ -30,16 +30,14 @@ final _log = Logger("BreezBridge");
 // dart pub global activate protoc_plugin 20.0.1
 class BreezBridge {
   static const _methodChannel = MethodChannel('com.breez.client/breez_lib');
-  static const _eventChannel =
-      EventChannel('com.breez.client/breez_lib_notifications');
+  static const _eventChannel = EventChannel('com.breez.client/breez_lib_notifications');
 
   final DownloadTaskManager downloadManager;
   final Future<SharedPreferences> sharedPreferences;
   String _selectedLspID;
   Completer _readyCompleter = Completer();
   final Completer _startedCompleter = Completer();
-  final StreamController _eventsController =
-      StreamController<NotificationEvent>.broadcast();
+  final StreamController _eventsController = StreamController<NotificationEvent>.broadcast();
   Stream<NotificationEvent> get notificationStream => _eventsController.stream;
   bool ready = false;
   Future<Directory> _tempDirFuture;
@@ -55,8 +53,7 @@ class BreezBridge {
         ready = true;
         _readyCompleter.complete();
       }
-      if (notification.type ==
-          NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
+      if (notification.type == NotificationEvent_NotificationType.LIGHTNING_SERVICE_DOWN) {
         _readyCompleter = Completer();
       }
       _eventsController.add(NotificationEvent()..mergeFromBuffer(event));
@@ -76,8 +73,7 @@ class BreezBridge {
     var graphDBName = pathComponents.last;
     pathComponents.removeLast();
     pathComponents.add("MD5SUMS");
-    var checksumURL =
-        graphUri.replace(path: pathComponents.join("/")).toString();
+    var checksumURL = graphUri.replace(path: pathComponents.join("/")).toString();
     _log.info("graph checksum url: $checksumURL");
     var response = await Dio().get(checksumURL);
     var content = response.data.toString();
@@ -99,12 +95,9 @@ class BreezBridge {
     if (downloadURL.isNotEmpty) {
       _log.info("GraphDownloader fetching graph checksum");
       var checksum = await fetchGraphChecksum(downloadURL);
-      _log.info(
-          "GraphDownloader graph checksum = $checksum, downloading graph");
-      _inProgressGraphSync =
-          _graphDownloader.downloadGraph(downloadURL).then((file) async {
-        final fileChecksum =
-            await Md5FileChecksum.getFileChecksum(filePath: file.path);
+      _log.info("GraphDownloader graph checksum = $checksum, downloading graph");
+      _inProgressGraphSync = _graphDownloader.downloadGraph(downloadURL).then((file) async {
+        final fileChecksum = await Md5FileChecksum.getFileChecksum(filePath: file.path);
         var rawBytes = base64.decode(fileChecksum);
         var hexChecksum = HEX.encode(rawBytes);
         if (hexChecksum != checksum) {
@@ -232,8 +225,7 @@ class BreezBridge {
   }
 
   Future<String> getNostrKeyPair() {
-    return _invokeMethodWhenReady("getNostrKeyPair")
-        .then((value) => value as String);
+    return _invokeMethodWhenReady("getNostrKeyPair").then((value) => value as String);
   }
 
   Future<LNUrlPayInfo> fetchLNUrlPayInvoice(PayFetchResponse response) {
@@ -250,8 +242,7 @@ class BreezBridge {
   }
 
   Future<int> lastSyncedHeaderTimestamp() {
-    return _invokeMethodImmediate("lastSyncedHeaderTimestamp")
-        .then((res) => res as int);
+    return _invokeMethodImmediate("lastSyncedHeaderTimestamp").then((res) => res as int);
   }
 
   Future<Account> getAccount() {
@@ -260,8 +251,7 @@ class BreezBridge {
   }
 
   Future<bool> isConnectedToRoutingNode() {
-    return _invokeMethodWhenReady("isConnectedToRoutingNode")
-        .then((result) => result as bool);
+    return _invokeMethodWhenReady("isConnectedToRoutingNode").then((result) => result as bool);
   }
 
   Future connectAccount() {
@@ -269,8 +259,7 @@ class BreezBridge {
   }
 
   Future<LSPList> getLSPList() {
-    return _invokeMethodWhenReady("lspList")
-        .then((result) => LSPList()..mergeFromBuffer(result ?? []));
+    return _invokeMethodWhenReady("lspList").then((result) => LSPList()..mergeFromBuffer(result ?? []));
   }
 
   Future connectToLSP(String lspID) {
@@ -308,8 +297,7 @@ class BreezBridge {
   }
 
   Future<int> maxReverseSwapAmount() {
-    return _invokeMethodWhenReady("maxReverseSwapAmount", {})
-        .then((res) => res as int);
+    return _invokeMethodWhenReady("maxReverseSwapAmount", {}).then((res) => res as int);
   }
 
   Future<ReverseSwapInfo> getReverseSwapPolicy() {
@@ -402,8 +390,7 @@ class BreezBridge {
     return _invokeMethodWhenReady("receiverNode").then((s) => s as String);
   }
 
-  Future<PaymentResponse> sendSpontaneousPayment(
-      String destNode, Int64 amount, String description,
+  Future<PaymentResponse> sendSpontaneousPayment(String destNode, Int64 amount, String description,
       {Int64 feeLimitMsat = Int64.ZERO,
       String groupKey = "",
       String groupName = "",
@@ -604,21 +591,18 @@ class BreezBridge {
       var lsps = await getLSPList();
       if (_selectedLspID != null) {
         request.lspInfo = lsps.lsps[_selectedLspID];
-        request.openingFeeParams =
-            lsps.lsps[_selectedLspID].cheapestOpeningFeeParams;
+        request.openingFeeParams = lsps.lsps[_selectedLspID].cheapestOpeningFeeParams;
       } else {
         // if we only have one lsp in our options, let's use it.
         var keys = lsps.lsps.keys.toList();
         if (keys.length == 1) {
           request.lspInfo = lsps.lsps[keys[0]];
-          request.openingFeeParams =
-              lsps.lsps[keys[0]].cheapestOpeningFeeParams;
+          request.openingFeeParams = lsps.lsps[keys[0]].cheapestOpeningFeeParams;
         }
       }
     }
 
-    return _invokeMethodWhenReady(
-            "addInvoice", {"argument": request.writeToBuffer()})
+    return _invokeMethodWhenReady("addInvoice", {"argument": request.writeToBuffer()})
         .then((res) => AddInvoiceReply()..mergeFromBuffer(res ?? []));
   }
 
@@ -630,20 +614,17 @@ class BreezBridge {
     return _invokeMethodWhenReady(
       "checkLSPClosedChannelMismatch",
       {"argument": request.writeToBuffer()},
-    ).then((res) =>
-        CheckLSPClosedChannelMismatchResponse()..mergeFromBuffer(res ?? []));
+    ).then((res) => CheckLSPClosedChannelMismatchResponse()..mergeFromBuffer(res ?? []));
   }
 
-  Future<ResetClosedChannelChainInfoReply> resetClosedChannelChainInfo(
-      Int64 blockHeight, String chanPoint) {
+  Future<ResetClosedChannelChainInfoReply> resetClosedChannelChainInfo(Int64 blockHeight, String chanPoint) {
     var request = ResetClosedChannelChainInfoRequest()
       ..blockHeight = blockHeight
       ..chanPoint = chanPoint;
     return _invokeMethodWhenReady(
       "resetClosedChannelChainInfo",
       {"argument": request.writeToBuffer()},
-    ).then((res) =>
-        ResetClosedChannelChainInfoReply()..mergeFromBuffer(res ?? []));
+    ).then((res) => ResetClosedChannelChainInfoReply()..mergeFromBuffer(res ?? []));
   }
 
   Future<CreateRatchetSessionReply> createRatchetSession(
@@ -684,8 +665,7 @@ class BreezBridge {
     var request = RatchetEncryptRequest()
       ..message = message
       ..sessionID = sessionID;
-    return _invokeMethodImmediate(
-            "ratchetEncrypt", {"argument": request.writeToBuffer()})
+    return _invokeMethodImmediate("ratchetEncrypt", {"argument": request.writeToBuffer()})
         .then((res) => res as String);
   }
 
@@ -788,8 +768,7 @@ class BreezBridge {
 
   Future<String> validateAddress(String address) {
     address = extractBitcoinAddress(address);
-    return _invokeMethodWhenReady("validateAddress", {"argument": address})
-        .then((response) => address);
+    return _invokeMethodWhenReady("validateAddress", {"argument": address}).then((response) => address);
   }
 
   Future<Int64> getDefaultOnChainFeeRate() {
@@ -814,10 +793,8 @@ class BreezBridge {
     List<int> encryptionKey,
     String encryptionType,
   ) {
-    return _invokeMethodImmediate("setBackupEncryptionKey", {
-      "encryptionKey": encryptionKey,
-      "encryptionType": encryptionType ?? ""
-    });
+    return _invokeMethodImmediate(
+        "setBackupEncryptionKey", {"encryptionKey": encryptionKey, "encryptionType": encryptionType ?? ""});
   }
 
   Future setBackupProvider(String backupProvider, String backupAuthData) {
@@ -828,14 +805,11 @@ class BreezBridge {
   }
 
   Future<String> getAvailableBackups() async {
-    return await _methodChannel
-        .invokeMethod("availableSnapshots")
-        .then((res) => res as String);
+    return await _methodChannel.invokeMethod("availableSnapshots").then((res) => res as String);
   }
 
   Future<int> getLatestBackupTime() async {
-    return _invokeMethodImmediate("latestBackupTime")
-        .then((value) => value as int);
+    return _invokeMethodImmediate("latestBackupTime").then((value) => value as int);
   }
 
   Future<DownloadBackupResponse> downloadBackup(String nodeId) async {
@@ -917,8 +891,7 @@ class BreezBridge {
   }
 
   Future<bool> getTorActive() {
-    return _invokeMethodImmediate('getTorActive')
-        .then((result) => result as bool);
+    return _invokeMethodImmediate('getTorActive').then((result) => result as bool);
   }
 
   Future setBackupTorConfig(TorConfig torConfig) {
@@ -935,9 +908,7 @@ class BreezBridge {
       _log.info("before invoking method $methodName");
     }
     return _readyCompleter.future.then((completed) {
-      return _methodChannel
-          .invokeMethod(methodName, arguments)
-          .catchError((err) {
+      return _methodChannel.invokeMethod(methodName, arguments).catchError((err) {
         if (methodName != "log") {
           _log.severe("failed to invoke method $methodName $err");
         }

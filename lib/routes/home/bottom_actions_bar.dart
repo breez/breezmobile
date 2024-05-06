@@ -120,8 +120,7 @@ class _BottomActionsBarState extends State<BottomActionsBar> {
                       if (clipBoardSnapshot.hasData) {
                         await clipBoardSnapshot.data.then((clipboardData) {
                           if (clipboardData != null) {
-                            if (clipboardData.type == "lnurl" ||
-                                clipboardData.type == "lightning-address") {
+                            if (clipboardData.type == "lnurl" || clipboardData.type == "lightning-address") {
                               lnurlBloc.lnurlInputSink.add(clipboardData.data);
                             } else if (clipboardData.type == "invoice") {
                               invoiceBloc.decodeInvoiceSink.add(
@@ -173,9 +172,7 @@ class _BottomActionsBarState extends State<BottomActionsBar> {
                   ),
                   ListTile(
                     enabled: account.connected,
-                    leading: _ActionImage(
-                        iconAssetPath: "src/icon/bitcoin.png",
-                        enabled: account.connected),
+                    leading: _ActionImage(iconAssetPath: "src/icon/bitcoin.png", enabled: account.connected),
                     title: Text(
                       texts.bottom_action_bar_send_btc_address,
                       style: theme.bottomSheetTextStyle,
@@ -203,8 +200,7 @@ class _BottomActionsBarState extends State<BottomActionsBar> {
                             ListTile(
                               enabled: account.connected,
                               leading: _ActionImage(
-                                  iconAssetPath: "src/icon/escher.png",
-                                  enabled: account.connected),
+                                  iconAssetPath: "src/icon/escher.png", enabled: account.connected),
                               title: Text(
                                 texts.bottom_action_bar_escher,
                                 style: theme.bottomSheetTextStyle,
@@ -342,8 +338,7 @@ Future showReceiveOptions(
                   return const SizedBox();
                 }
 
-                List<Widget> children =
-                    snapshot.data.where((v) => v.isAllowed).map(
+                List<Widget> children = snapshot.data.where((v) => v.isAllowed).map(
                   (v) {
                     return Column(
                       children: [
@@ -353,12 +348,10 @@ Future showReceiveOptions(
                           indent: 72.0,
                         ),
                         ListTile(
-                          enabled: v.enabled &&
-                              (account.connected || !v.requireActiveChannel),
+                          enabled: v.enabled && (account.connected || !v.requireActiveChannel),
                           leading: _ActionImage(
                             iconAssetPath: v.icon,
-                            enabled:
-                                account.connected || !v.requireActiveChannel,
+                            enabled: account.connected || !v.requireActiveChannel,
                           ),
                           title: Text(
                             v.shortName ?? v.name,
@@ -378,16 +371,13 @@ Future showReceiveOptions(
                                       navigator.removeRoute(loaderRoute);
                                     }
                                     var refreshedLSP = lspList.firstWhere(
-                                      (lsp) =>
-                                          lsp.lspID ==
-                                          lspSnapshot.data.selectedLSP,
+                                      (lsp) => lsp.lspID == lspSnapshot.data.selectedLSP,
                                     );
                                     (v.showLSPFee)
                                         ? promptLSPFeeAndNavigate(
                                             parentContext,
                                             account,
-                                            refreshedLSP
-                                                .longestValidOpeningFeeParams,
+                                            refreshedLSP.longestValidOpeningFeeParams,
                                             v.route,
                                           )
                                         : navigator.pushNamed(v.route);
@@ -446,8 +436,7 @@ Future showReceiveOptions(
                                   account.warningMaxChanReserveAmount,
                                 ),
                               ),
-                              maxFontSize:
-                                  themeData.textTheme.titleMedium.fontSize,
+                              maxFontSize: themeData.textTheme.titleMedium.fontSize,
                               style: themeData.textTheme.titleLarge,
                               textAlign: TextAlign.center,
                             ),

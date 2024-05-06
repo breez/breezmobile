@@ -61,8 +61,8 @@ class AnytimePodcastApp extends StatefulWidget {
 
   AnytimePodcastApp(this.mobileSettingsService, this.repository, this.child)
       : podcastApi = PodcastIndexAPI() {
-    downloadService = MobileDownloadService(
-        repository: repository, downloadManager: AnytimeDownloadManager());
+    downloadService =
+        MobileDownloadService(repository: repository, downloadManager: AnytimeDownloadManager());
     podcastService = MobilePodcastService(
         api: podcastApi,
         repository: repository,
@@ -72,8 +72,7 @@ class AnytimePodcastApp extends StatefulWidget {
         repository: repository,
         podcastService: podcastService,
         settingsService: mobileSettingsService,
-        loadEpisodeMetadata: (episode) =>
-            metadataLoader.loadEpisodeMetadata(episode: episode));
+        loadEpisodeMetadata: (episode) => metadataLoader.loadEpisodeMetadata(episode: episode));
     settingsBloc = SettingsBloc(mobileSettingsService);
   }
 
@@ -90,9 +89,7 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
 
     widget.settingsBloc.settings.listen((event) {
       setState(() {
-        var newTheme = event.theme == 'dark'
-            ? Themes.darkTheme().themeData
-            : Themes.lightTheme().themeData;
+        var newTheme = event.theme == 'dark' ? Themes.darkTheme().themeData : Themes.lightTheme().themeData;
 
         /// Only update the theme if it has changed.
         if (newTheme != theme) {
@@ -162,8 +159,7 @@ class AnytimePodcastAppState extends State<AnytimePodcastApp> {
           dispose: (_, value) => value.dispose(),
         ),
         Provider<AudioBloc>(
-          create: (_) =>
-              AudioBloc(audioPlayerService: widget.audioPlayerService),
+          create: (_) => AudioBloc(audioPlayerService: widget.audioPlayerService),
           dispose: (_, value) => value.dispose(),
         ),
         Provider<SettingsBloc>(
@@ -234,14 +230,12 @@ class NowPlayingTransportState extends State<NowPlayingTransport> {
               List<Widget> widgets = [];
               widgets.add(const Divider(height: 0.0, thickness: 1));
               // We'll also show add funds message if user tries to boost and has no balance
-              if (snapshot.data.balance <
-                  userModel.paymentOptions.preferredSatsPerMinValue) {
+              if (snapshot.data.balance < userModel.paymentOptions.preferredSatsPerMinValue) {
                 widgets.add(AddFundsMessage(accountModel: snapshot.data));
                 widgets.add(const Divider(height: 0.0, thickness: 1));
               }
               widgets.add(WithConfettiPaymentEffect(
-                  type: PaymentEventType.StreamCompleted,
-                  child: PlayerPositionControls()));
+                  type: PaymentEventType.StreamCompleted, child: PlayerPositionControls()));
               widgets.add(PlayerTransportControls());
               widgets.add(const Padding(
                 padding: EdgeInsets.only(top: 8.0, bottom: 24.0),
@@ -278,19 +272,14 @@ WidgetBuilder errorPlaceholderBuilder() {
   return builder;
 }
 
-WidgetBuilder sharePodcastButtonBuilder(
-    String podcastTitle, String podcastURL) {
-  builder(BuildContext context) =>
-      SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
+WidgetBuilder sharePodcastButtonBuilder(String podcastTitle, String podcastURL) {
+  builder(BuildContext context) => SharePodcastButton(podcastTitle: podcastTitle, podcastURL: podcastURL);
   return builder;
 }
 
-WidgetBuilder shareEpisodeButtonBuilder(String podcastTitle, String podcastURL,
-    String episodeTitle, String episodeID) {
+WidgetBuilder shareEpisodeButtonBuilder(
+    String podcastTitle, String podcastURL, String episodeTitle, String episodeID) {
   builder(BuildContext context) => ShareEpisodeButton(
-      podcastTitle: podcastTitle,
-      podcastURL: podcastURL,
-      episodeTitle: episodeTitle,
-      episodeID: episodeID);
+      podcastTitle: podcastTitle, podcastURL: podcastURL, episodeTitle: episodeTitle, episodeID: episodeID);
   return builder;
 }

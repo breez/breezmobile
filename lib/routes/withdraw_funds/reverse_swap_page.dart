@@ -291,9 +291,7 @@ class UnconfirmedChannels extends StatelessWidget {
       padding: const EdgeInsets.only(top: 48, left: 16, right: 16),
       child: AnimatedCrossFade(
         duration: const Duration(milliseconds: 300),
-        crossFadeState: accountModel.synced
-            ? CrossFadeState.showSecond
-            : CrossFadeState.showFirst,
+        crossFadeState: accountModel.synced ? CrossFadeState.showSecond : CrossFadeState.showFirst,
         firstChild: Column(
           mainAxisSize: MainAxisSize.min,
           children: [

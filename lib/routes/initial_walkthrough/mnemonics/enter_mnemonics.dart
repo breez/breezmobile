@@ -32,9 +32,7 @@ class EnterMnemonicsPageState extends State<EnterMnemonicsPage> {
       widget.is24Word ? 24 : 12,
       (_) => TextEditingController(),
     );
-    for (var i = 0;
-        i < textEditingControllers.length && i < widget.initialWords.length;
-        i++) {
+    for (var i = 0; i < textEditingControllers.length && i < widget.initialWords.length; i++) {
       textEditingControllers[i].text = widget.initialWords[i];
     }
   }

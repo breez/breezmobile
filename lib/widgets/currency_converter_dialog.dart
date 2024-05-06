@@ -126,16 +126,14 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
           return Container();
         }
 
-        if (account.preferredFiatConversionList.isEmpty ||
-            account.fiatCurrency == null) {
+        if (account.preferredFiatConversionList.isEmpty || account.fiatCurrency == null) {
           return const Loader();
         }
 
         double exchangeRate = account.preferredFiatConversionList
             .firstWhere(
               (fiatConversion) =>
-                  fiatConversion.currencyData.symbol ==
-                  account.fiatCurrency.currencyData.symbol,
+                  fiatConversion.currencyData.symbol == account.fiatCurrency.currencyData.symbol,
               orElse: () => null,
             )
             .exchangeRate;
@@ -305,8 +303,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
     ];
 
     // Show done button only when the converted amount is bigger than 0
-    if (_fiatAmountController.text.isNotEmpty &&
-        _convertedSatoshies(account) > 0) {
+    if (_fiatAmountController.text.isNotEmpty && _convertedSatoshies(account) > 0) {
       actions.add(
         TextButton(
           onPressed: () {

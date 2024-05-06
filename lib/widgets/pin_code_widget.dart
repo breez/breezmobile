@@ -30,8 +30,7 @@ class PinCodeWidget extends StatefulWidget {
   }
 }
 
-class PinCodeWidgetState extends State<PinCodeWidget>
-    with WidgetsBindingObserver {
+class PinCodeWidgetState extends State<PinCodeWidget> with WidgetsBindingObserver {
   String _enteredPinCode;
   String _errorMessage;
   LocalAuthenticationOption _enrolledBiometrics;
@@ -91,8 +90,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
   void _validateBiometrics({bool force = false}) async {
     if (mounted && (!biometricsValidated || force)) {
       biometricsValidated = true;
-      var validateBiometricsAction =
-          ValidateBiometrics(localizedReason: widget.localizedReason);
+      var validateBiometricsAction = ValidateBiometrics(localizedReason: widget.localizedReason);
       widget.userProfileBloc.userActionsSink.add(validateBiometricsAction);
       validateBiometricsAction.future.then((isValid) async {
         setState(() => _enteredPinCode = (isValid) ? "123456" : "");
@@ -122,11 +120,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
             flex: 30,
             child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(widget.label),
-                  _buildPinCircles(),
-                  _buildErrorMessage()
-                ]),
+                children: <Widget>[Text(widget.label), _buildPinCircles(), _buildErrorMessage()]),
           ),
           Flexible(flex: 50, child: Container(child: _numPad(context)))
         ],
@@ -169,8 +163,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
         width: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         height: _enteredPinCode.length == PIN_CODE_LENGTH ? 28 : 24,
         decoration: BoxDecoration(
-            color:
-                i < _enteredPinCode.length ? Colors.white : Colors.transparent,
+            color: i < _enteredPinCode.length ? Colors.white : Colors.transparent,
             shape: BoxShape.circle,
             border: Border.all(color: Colors.white, width: 2.0)),
       ));
@@ -182,17 +175,11 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return _errorMessage.isNotEmpty
         ? Text(
             _errorMessage,
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium
-                .copyWith(fontSize: 12),
+            style: Theme.of(context).textTheme.headlineMedium.copyWith(fontSize: 12),
           )
         : Text(
             "",
-            style: Theme.of(context)
-                .textTheme
-                .headlineMedium
-                .copyWith(fontSize: 12),
+            style: Theme.of(context).textTheme.headlineMedium.copyWith(fontSize: 12),
           );
   }
 
@@ -206,8 +193,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
-            children: List<Widget>.generate(
-                3, (i) => _numberButton((i + 1).toString())),
+            children: List<Widget>.generate(3, (i) => _numberButton((i + 1).toString())),
           ),
         ),
         Flexible(
@@ -215,8 +201,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
-            children: List<Widget>.generate(
-                3, (i) => _numberButton((i + 4).toString())),
+            children: List<Widget>.generate(3, (i) => _numberButton((i + 4).toString())),
           ),
         ),
         Flexible(
@@ -224,8 +209,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             mainAxisSize: MainAxisSize.max,
-            children: List<Widget>.generate(
-                3, (i) => _numberButton((i + 7).toString())),
+            children: List<Widget>.generate(3, (i) => _numberButton((i + 7).toString())),
           ),
         ),
         Flexible(
@@ -237,15 +221,12 @@ class PinCodeWidgetState extends State<PinCodeWidget>
               _buildClearButton(),
               _numberButton("0"),
               widget.onFingerprintEntered == null ||
-                      ((widget.onFingerprintEntered != null) &&
-                          _enteredPinCode.isNotEmpty)
+                      ((widget.onFingerprintEntered != null) && _enteredPinCode.isNotEmpty)
                   ? _buildEraseButton()
                   : StreamBuilder<BreezUserModel>(
                       stream: widget.userProfileBloc.userStream,
                       builder: (context, snapshot) {
-                        if (!snapshot.hasData ||
-                            _enrolledBiometrics ==
-                                LocalAuthenticationOption.NONE) {
+                        if (!snapshot.hasData || _enrolledBiometrics == LocalAuthenticationOption.NONE) {
                           return _buildEraseButton();
                         } else {
                           return _buildBiometricsButton(snapshot, context);
@@ -259,8 +240,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     );
   }
 
-  Widget _buildBiometricsButton(
-      AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
+  Widget _buildBiometricsButton(AsyncSnapshot<BreezUserModel> snapshot, BuildContext context) {
     return CircularButton(
       onTap: _inputEnabled ? () => _validateBiometrics(force: true) : null,
       child: Icon(
@@ -291,8 +271,7 @@ class PinCodeWidgetState extends State<PinCodeWidget>
     return InkWell(
       customBorder: const CircleBorder(),
       onTap: _inputEnabled
-          ? () => _setPinCodeInput(
-              _enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
+          ? () => _setPinCodeInput(_enteredPinCode.substring(0, max(_enteredPinCode.length, 1) - 1))
           : null,
       child: TextButton(
         style: TextButton.styleFrom(padding: const EdgeInsets.all(0)),

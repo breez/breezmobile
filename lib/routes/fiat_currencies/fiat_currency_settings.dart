@@ -52,8 +52,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (!snapshot.hasData) return Container();
           final account = snapshot.data;
 
-          if (account.fiatConversionList.isEmpty ||
-              account.fiatCurrency == null) {
+          if (account.fiatConversionList.isEmpty || account.fiatCurrency == null) {
             return const Center(
               child: Loader(
                 color: Colors.white,
@@ -80,8 +79,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
                   lastItemTargetHeight: 8,
                   scrollController: _scrollController,
                   onListReorder: (oldListIndex, newListIndex) => {},
-                  onItemReorder: (from, oldListIndex, to, newListIndex) =>
-                      _onReorder(
+                  onItemReorder: (from, oldListIndex, to, newListIndex) => _onReorder(
                     context,
                     account,
                     from,
@@ -129,8 +127,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
   ) {
     for (var i = 0; i < preferredFiatCurrencies.length; i++) {
       if (isAboveMinAmount(account, i)) {
-        widget.userProfileBloc.fiatConversionSink
-            .add(preferredFiatCurrencies[i]);
+        widget.userProfileBloc.fiatConversionSink.add(preferredFiatCurrencies[i]);
         break;
       }
     }
@@ -173,8 +170,7 @@ class FiatCurrencySettingsState extends State<FiatCurrencySettings> {
           if (checked) {
             prefCurrencies.add(currencyData.shortName);
             // center item in viewport
-            if (_scrollController.offset >=
-                (ITEM_HEIGHT * (prefCurrencies.length - 1))) {
+            if (_scrollController.offset >= (ITEM_HEIGHT * (prefCurrencies.length - 1))) {
               _scrollController.animateTo(
                 ((2 * prefCurrencies.length - 1) * ITEM_HEIGHT -
                         _scrollController.position.viewportDimension) /

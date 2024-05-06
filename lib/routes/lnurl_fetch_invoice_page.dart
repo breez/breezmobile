@@ -134,10 +134,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
             }
             var account = snapshot.data;
             return Padding(
-              padding: EdgeInsets.only(
-                  bottom: (Platform.isIOS && _amountFocusNode.hasFocus)
-                      ? 40.0
-                      : 0.0),
+              padding: EdgeInsets.only(bottom: (Platform.isIOS && _amountFocusNode.hasFocus) ? 40.0 : 0.0),
               child: SingleButtonBottomBar(
                 stickToBottom: true,
                 text: texts.lnurl_fetch_invoice_action_continue,
@@ -216,8 +213,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                           style: theme.FieldTextStyle.labelStyle,
                           children: <TextSpan>[
                             TextSpan(
-                              text: texts.lnurl_fetch_invoice_min(
-                                  acc.currency.format(response.minAmount)),
+                              text: texts.lnurl_fetch_invoice_min(acc.currency.format(response.minAmount)),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => _pasteAmount(
                                       acc.currency,
@@ -225,8 +221,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
                                     ),
                             ),
                             TextSpan(
-                              text: texts.lnurl_fetch_invoice_and(
-                                  acc.currency.format(response.maxAmount)),
+                              text: texts.lnurl_fetch_invoice_and(acc.currency.format(response.maxAmount)),
                               recognizer: TapGestureRecognizer()
                                 ..onTap = () => _pasteAmount(
                                       acc.currency,
@@ -373,8 +368,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
     _loaderRoute = createLoaderRoute(context);
     navigator.push(_loaderRoute);
 
-    _payFetchResponse.amount =
-        account.currency.parse(_amountController.text) * 1000;
+    _payFetchResponse.amount = account.currency.parse(_amountController.text) * 1000;
     _payFetchResponse.comment = _commentController.text;
 
     var action = FetchInvoice(_payFetchResponse);
@@ -393,8 +387,7 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
       );
     }).then((payinfo) {
       invoiceBloc.decodeInvoiceSink.add(payinfo.invoice);
-      _log.info(
-          '_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');
+      _log.info('_getInvoice: Found LNUrlPayInfo. Beginning payment request flow.');
       _removeLoader();
 
       /*

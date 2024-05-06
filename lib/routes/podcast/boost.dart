@@ -137,8 +137,7 @@ class BoostWidget extends StatelessWidget {
                             builder: (c) => CustomAmountDialog(
                               userModel.paymentOptions.customBoostValue,
                               userModel.paymentOptions.presetBoostAmountsList,
-                              (boostAmount) =>
-                                  _setBoostAmount(userBloc, boostAmount),
+                              (boostAmount) => _setBoostAmount(userBloc, boostAmount),
                             ),
                           ),
                         ),

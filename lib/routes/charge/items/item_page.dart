@@ -198,8 +198,8 @@ class ItemPageState extends State<ItemPage> {
         FilteringTextInputFormatter.allow(
           _selectedCurrency.whitelistedPattern,
         ),
-        TextInputFormatter.withFunction((oldValue, newValue) =>
-            newValue.copyWith(text: newValue.text.replaceAll(',', '.'))),
+        TextInputFormatter.withFunction(
+            (oldValue, newValue) => newValue.copyWith(text: newValue.text.replaceAll(',', '.'))),
       ],
       controller: _priceController,
       decoration: InputDecoration(
@@ -396,17 +396,13 @@ class ItemPageState extends State<ItemPage> {
       ),
       body: body,
       bottomNavigationBar: SingleButtonBottomBar(
-        text: widget.item != null
-            ? texts.pos_invoice_item_management_title_save
-            : _title.toUpperCase(),
+        text: widget.item != null ? texts.pos_invoice_item_management_title_save : _title.toUpperCase(),
         onPressed: () {
           if (_formKey.currentState.validate()) {
             if (widget.item != null) {
               UpdateItem updateItem = UpdateItem(
                 widget.item.copyWith(
-                  imageURL: _itemImage != null && _itemImage.isNotEmpty
-                      ? _itemImage
-                      : null,
+                  imageURL: _itemImage != null && _itemImage.isNotEmpty ? _itemImage : null,
                   name: _nameController.text.trimRight(),
                   currency: _selectedCurrency.shortName,
                   price: double.parse(_priceController.text),
