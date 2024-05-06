@@ -50,11 +50,9 @@ class AppBlocs {
   factory AppBlocs(Stream<bool> backupAnytimeDBStream) {
     var blocsByType = <Type, Object>{};
     final sqliteRepository = SqliteRepository();
-    UserProfileBloc userProfileBloc =
-        _registerBloc(UserProfileBloc(), blocsByType);
-    BackupBloc backupBloc = _registerBloc(
-        BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream),
-        blocsByType);
+    UserProfileBloc userProfileBloc = _registerBloc(UserProfileBloc(), blocsByType);
+    BackupBloc backupBloc =
+        _registerBloc(BackupBloc(userProfileBloc.userStream, backupAnytimeDBStream), blocsByType);
     PaymentOptionsBloc paymentOptionsBloc = _registerBloc(
       PaymentOptionsBloc(backupBloc.restoreLightningFeesStream),
       blocsByType,
@@ -69,13 +67,10 @@ class AppBlocs {
     TorBloc torBloc = _registerBloc(accountBloc.torBloc, blocsByType);
     InvoiceBloc invoicesBloc = _registerBloc(InvoiceBloc(), blocsByType);
     ConnectPayBloc connectPayBloc = _registerBloc(
-        ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream,
-            accountBloc.userActionsSink),
+        ConnectPayBloc(userProfileBloc.userStream, accountBloc.accountStream, accountBloc.userActionsSink),
         blocsByType);
-    MarketplaceBloc marketplaceBloc =
-        _registerBloc(MarketplaceBloc(), blocsByType);
-    LSPBloc lspBloc =
-        _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
+    MarketplaceBloc marketplaceBloc = _registerBloc(MarketplaceBloc(), blocsByType);
+    LSPBloc lspBloc = _registerBloc(LSPBloc(accountBloc.accountStream), blocsByType);
     LNUrlBloc lnurlBloc = _registerBloc(LNUrlBloc(), blocsByType);
     ReverseSwapBloc reverseSwapBloc = _registerBloc(
         ReverseSwapBloc(
@@ -92,8 +87,7 @@ class AppBlocs {
           sqliteRepository,
         ),
         blocsByType);
-    FastbitcoinsBloc fastbitcoinsBloc =
-        _registerBloc(FastbitcoinsBloc(), blocsByType);
+    FastbitcoinsBloc fastbitcoinsBloc = _registerBloc(FastbitcoinsBloc(), blocsByType);
     PodcastHistoryBloc podCastHistoryBloc = _registerBloc(
       PodcastHistoryBloc(),
       blocsByType,

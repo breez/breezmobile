@@ -41,15 +41,11 @@ class CurrencyAmountFieldFormatter extends TextInputFormatter {
           return oldValue;
         }
         final digits = parts.last.substring(0, currencyData.fractionSize);
-        final dotted = rightSideSymbol
-            ? "${parts.first}.$digits $symbol"
-            : "$symbol ${parts.first}.$digits";
+        final dotted = rightSideSymbol ? "${parts.first}.$digits $symbol" : "$symbol ${parts.first}.$digits";
         return TextEditingValue(
           text: dotted,
           selection: TextSelection.collapsed(
-            offset: rightSideSymbol
-                ? dotted.length - symbol.length - 1
-                : dotted.length,
+            offset: rightSideSymbol ? dotted.length - symbol.length - 1 : dotted.length,
           ),
         );
       }
@@ -59,9 +55,7 @@ class CurrencyAmountFieldFormatter extends TextInputFormatter {
     return TextEditingValue(
       text: formatted,
       selection: TextSelection.collapsed(
-        offset: rightSideSymbol
-            ? formatted.length - symbol.length - 1
-            : formatted.length,
+        offset: rightSideSymbol ? formatted.length - symbol.length - 1 : formatted.length,
       ),
     );
   }

@@ -29,8 +29,7 @@ class ServiceInjector {
   LightningLinksService _lightningLinksService;
   Device _device;
   TorBloc _torBloc;
-  Future<SharedPreferences> _sharedPreferences =
-      SharedPreferences.getInstance();
+  Future<SharedPreferences> _sharedPreferences = SharedPreferences.getInstance();
   Permissions _permissions;
   BackgroundTaskService _backgroundTaskService;
   CurrencyService _currencyService;
@@ -74,11 +73,9 @@ class ServiceInjector {
 
   DeepLinksService get deepLinks => _deepLinksService ??= DeepLinksService();
 
-  LightningLinksService get lightningLinks =>
-      _lightningLinksService ??= LightningLinksService();
+  LightningLinksService get lightningLinks => _lightningLinksService ??= LightningLinksService();
 
-  Future<SharedPreferences> get sharedPreferences =>
-      _sharedPreferences ??= SharedPreferences.getInstance();
+  Future<SharedPreferences> get sharedPreferences => _sharedPreferences ??= SharedPreferences.getInstance();
 
   Permissions get permissions {
     return _permissions ??= Permissions();

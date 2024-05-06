@@ -66,8 +66,7 @@ class StreamBuilder3<A, B, C> extends StatelessWidget {
         stream: streamB,
         builder: (context, snapshotB) => StreamBuilder(
           stream: streamC,
-          builder: (context, snapshotC) =>
-              builder(context, snapshotA, snapshotB, snapshotC),
+          builder: (context, snapshotC) => builder(context, snapshotA, snapshotB, snapshotC),
         ),
       ),
     );
@@ -113,8 +112,7 @@ class StreamBuilder4<A, B, C, D> extends StatelessWidget {
           stream: streamC,
           builder: (context, snapshotC) => StreamBuilder(
             stream: streamD,
-            builder: (context, snapshotD) =>
-                builder(context, snapshotA, snapshotB, snapshotC, snapshotD),
+            builder: (context, snapshotD) => builder(context, snapshotA, snapshotB, snapshotC, snapshotD),
           ),
         ),
       ),

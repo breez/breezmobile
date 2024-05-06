@@ -5,12 +5,8 @@ import 'package:breez/widgets/loader.dart';
 import 'package:flutter/material.dart';
 
 class CTPJoinSessionHandler {
-  CTPJoinSessionHandler(
-      UserProfileBloc userProfileBloc,
-      ConnectPayBloc ctpBloc,
-      BuildContext context,
-      Function(RemoteSession session) onValidSession,
-      Function(Object error) onError) {
+  CTPJoinSessionHandler(UserProfileBloc userProfileBloc, ConnectPayBloc ctpBloc, BuildContext context,
+      Function(RemoteSession session) onValidSession, Function(Object error) onError) {
     ctpBloc.sessionInvites.listen(
       (sessionLink) async {
         if (ctpBloc.currentSession?.sessionID != sessionLink.sessionID) {

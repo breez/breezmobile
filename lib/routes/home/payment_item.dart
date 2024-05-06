@@ -89,8 +89,7 @@ class _PaymentItemState extends State<PaymentItem> {
                       Text(
                         BreezDateUtils.formatTimelineRelative(
                           DateTime.fromMillisecondsSinceEpoch(
-                            widget._paymentInfo.creationTimestamp.toInt() *
-                                1000,
+                            widget._paymentInfo.creationTimestamp.toInt() * 1000,
                           ),
                         ),
                         style: themeData.paymentItemSubtitleTextStyle,
@@ -102,8 +101,7 @@ class _PaymentItemState extends State<PaymentItem> {
                 trailing: SizedBox(
                   height: 44,
                   child: Column(
-                    mainAxisAlignment: widget._paymentInfo.fee == 0 ||
-                            widget._paymentInfo.pending
+                    mainAxisAlignment: widget._paymentInfo.fee == 0 || widget._paymentInfo.pending
                         ? MainAxisAlignment.center
                         : MainAxisAlignment.spaceAround,
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -150,9 +148,8 @@ class _PaymentItemState extends State<PaymentItem> {
     final themeData = Theme.of(context);
 
     final type = widget._paymentInfo.type;
-    final negative = type == PaymentType.SENT ||
-        type == PaymentType.WITHDRAWAL ||
-        type == PaymentType.CLOSED_CHANNEL;
+    final negative =
+        type == PaymentType.SENT || type == PaymentType.WITHDRAWAL || type == PaymentType.CLOSED_CHANNEL;
     final amount = widget._paymentInfo.currency.format(
       widget._paymentInfo.amount,
       includeDisplayName: false,

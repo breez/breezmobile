@@ -10,8 +10,7 @@ class ItemAvatar extends StatelessWidget {
   final String itemName;
   final bool useDecoration;
 
-  const ItemAvatar(this.avatarURL,
-      {Key key, this.radius = 20.0, this.itemName, this.useDecoration = false})
+  const ItemAvatar(this.avatarURL, {Key key, this.radius = 20.0, this.itemName, this.useDecoration = false})
       : super(key: key);
 
   @override
@@ -93,11 +92,9 @@ class _IconAvatar extends StatelessWidget {
       decoration: useDecoration
           ? BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                  color: Colors.white, width: 1.0, style: BorderStyle.solid),
+              border: Border.all(color: Colors.white, width: 1.0, style: BorderStyle.solid),
               image: DecorationImage(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColorLight, BlendMode.srcATop),
                   image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
@@ -158,11 +155,9 @@ class _UnknownAvatar extends StatelessWidget {
       decoration: useDecoration
           ? BoxDecoration(
               shape: BoxShape.circle,
-              border: Border.all(
-                  color: Colors.white, width: 1.0, style: BorderStyle.solid),
+              border: Border.all(color: Colors.white, width: 1.0, style: BorderStyle.solid),
               image: DecorationImage(
-                  colorFilter: ColorFilter.mode(
-                      Theme.of(context).primaryColorLight, BlendMode.srcATop),
+                  colorFilter: ColorFilter.mode(Theme.of(context).primaryColorLight, BlendMode.srcATop),
                   image: const AssetImage("src/images/avatarbg.png"),
                   fit: BoxFit.cover))
           : null,
@@ -184,11 +179,7 @@ class _UnknownAvatar extends StatelessWidget {
   String _getFirstTwoLetters() {
     var whitespaceRemovedName = itemName.replaceAll(RegExp(r"\s+\b|\b\s"), "");
     return whitespaceRemovedName
-        .substring(
-            0,
-            whitespaceRemovedName.length >= 2
-                ? 2
-                : whitespaceRemovedName.length)
+        .substring(0, whitespaceRemovedName.length >= 2 ? 2 : whitespaceRemovedName.length)
         .trim();
   }
 }

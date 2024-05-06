@@ -124,8 +124,7 @@ class DevViewState extends State<DevView> {
           children: defaultCliCommandsText(
             (command) {
               _cliInputController.text = "$command ";
-              FocusScope.of(_scaffoldKey.currentState.context)
-                  .requestFocus(_cliEntryFocusNode);
+              FocusScope.of(_scaffoldKey.currentState.context).requestFocus(_cliEntryFocusNode);
             },
           ),
         ),
@@ -149,8 +148,7 @@ class DevViewState extends State<DevView> {
     BackupBloc backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     AddFundsBloc addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
     UserProfileBloc userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-    MarketplaceBloc marketplaceBloc =
-        AppBlocsProvider.of<MarketplaceBloc>(context);
+    MarketplaceBloc marketplaceBloc = AppBlocsProvider.of<MarketplaceBloc>(context);
     return StreamBuilder<BackupState>(
       stream: backupBloc.backupStateStream,
       builder: (ctx, backupSnapshot) => StreamBuilder(
@@ -223,8 +221,7 @@ class DevViewState extends State<DevView> {
                                           focusNode: _cliEntryFocusNode,
                                           controller: _cliInputController,
                                           decoration: const InputDecoration(
-                                            hintText:
-                                                'Enter a command or use the links below',
+                                            hintText: 'Enter a command or use the links below',
                                           ),
                                           onSubmitted: (command) {
                                             _sendCommand(command);
@@ -279,40 +276,29 @@ class DevViewState extends State<DevView> {
                                       ),
                                       child: Column(
                                         mainAxisSize: MainAxisSize.max,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: <Widget>[
                                           _showDefaultCommands
                                               ? Container()
                                               : Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment.end,
+                                                  mainAxisAlignment: MainAxisAlignment.end,
                                                   children: <Widget>[
                                                     IconButton(
                                                       icon: const Icon(
                                                         Icons.content_copy,
                                                       ),
-                                                      tooltip:
-                                                          'Copy to Clipboard',
+                                                      tooltip: 'Copy to Clipboard',
                                                       iconSize: 19.0,
                                                       onPressed: () {
-                                                        ServiceInjector()
-                                                            .device
-                                                            .setClipboardText(
-                                                                _cliText);
-                                                        ScaffoldMessenger.of(
-                                                                context)
-                                                            .showSnackBar(
+                                                        ServiceInjector().device.setClipboardText(_cliText);
+                                                        ScaffoldMessenger.of(context).showSnackBar(
                                                           SnackBar(
                                                             content: Text(
                                                               'Copied to clipboard.',
-                                                              style: theme
-                                                                  .snackBarStyle,
+                                                              style: theme.snackBarStyle,
                                                             ),
-                                                            backgroundColor: theme
-                                                                .snackBarBackgroundColor,
-                                                            duration:
-                                                                const Duration(
+                                                            backgroundColor: theme.snackBarBackgroundColor,
+                                                            duration: const Duration(
                                                               seconds: 2,
                                                             ),
                                                           ),
@@ -327,8 +313,7 @@ class DevViewState extends State<DevView> {
                                                       tooltip: 'Share',
                                                       onPressed: () {
                                                         _shareFile(
-                                                          _lastCommand
-                                                              .split(" ")[0],
+                                                          _lastCommand.split(" ")[0],
                                                           _cliText,
                                                         );
                                                       },
@@ -437,8 +422,7 @@ class DevViewState extends State<DevView> {
     }
     choices.add(
       Choice(
-        title:
-            "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
+        title: "${addFundsSettings.moonpayIpCheck ? "Disable" : "Enable"} MoonPay IP Check",
         icon: Icons.network_check,
         function: () => _enableMoonpayIpCheck(addFundsBloc, addFundsSettings),
       ),
@@ -479,8 +463,7 @@ class DevViewState extends State<DevView> {
         icon: Icons.phone_android,
         function: () async {
           await widget._breezBridge.setNonBlockingUnconfirmedSwaps();
-          await widget._breezBridge
-              .resetUnconfirmedReverseSwapClaimTransaction();
+          await widget._breezBridge.resetUnconfirmedReverseSwapClaimTransaction();
         },
       ),
     );
@@ -491,16 +474,14 @@ class DevViewState extends State<DevView> {
         function: () async {
           Directory tempDir = await getTemporaryDirectory();
           tempDir = await tempDir.createTemp("graph");
-          var walletFiles =
-              await ServiceInjector().breezBridge.getWalletDBpFilePath();
+          var walletFiles = await ServiceInjector().breezBridge.getWalletDBpFilePath();
           var encoder = ZipFileEncoder();
           var zipFilePath = '${tempDir.path}/wallet-files.zip';
           encoder.create(zipFilePath);
           var i = 1;
           for (var f in walletFiles) {
             var file = File(f);
-            encoder.addFile(file,
-                "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
+            encoder.addFile(file, "${i.toString()}_${file.path.split(Platform.pathSeparator).last}");
             i += 1;
           }
           encoder.close();
@@ -710,9 +691,7 @@ class DevViewState extends State<DevView> {
     String filePath = '${tempDir.path}/graph.json';
     navigator.push(loaderRoute).whenComplete(() => userCancelled = true);
 
-    widget._breezBridge
-        .sendCommand("describegraph $filePath --include_unannounced")
-        .then((_) {
+    widget._breezBridge.sendCommand("describegraph $filePath --include_unannounced").then((_) {
       var encoder = ZipFileEncoder();
       encoder.create('${tempDir.path}/graph.zip');
       encoder.addFile(File(filePath));

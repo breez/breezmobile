@@ -17,9 +17,7 @@ class SingleButtonBottomBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.only(
-        bottom: stickToBottom
-            ? MediaQuery.of(context).viewInsets.bottom + 40.0
-            : 40.0,
+        bottom: stickToBottom ? MediaQuery.of(context).viewInsets.bottom + 40.0 : 40.0,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,

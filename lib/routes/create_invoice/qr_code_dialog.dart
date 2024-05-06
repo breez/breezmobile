@@ -37,8 +37,7 @@ class QrCodeDialog extends StatefulWidget {
   }
 }
 
-class QrCodeDialogState extends State<QrCodeDialog>
-    with SingleTickerProviderStateMixin {
+class QrCodeDialogState extends State<QrCodeDialog> with SingleTickerProviderStateMixin {
   Animation<double> _opacityAnimation;
   StreamSubscription<PaymentRequestModel> _invoiceSubscription;
   ModalRoute _currentRoute;
@@ -159,8 +158,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe917,
                                   fontFamily: "icomoon",
                                 )),
-                                color:
-                                    themeData.primaryTextTheme.labelLarge.color,
+                                color: themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
                                   Share.share(
                                     "lightning:${requestModel.rawPayReq}",
@@ -183,12 +181,9 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   0xe90b,
                                   fontFamily: "icomoon",
                                 )),
-                                color:
-                                    themeData.primaryTextTheme.labelLarge.color,
+                                color: themeData.primaryTextTheme.labelLarge.color,
                                 onPressed: () {
-                                  ServiceInjector()
-                                      .device
-                                      .setClipboardText(requestModel.rawPayReq);
+                                  ServiceInjector().device.setClipboardText(requestModel.rawPayReq);
                                   showFlushbar(
                                     context,
                                     message: texts.qr_code_dialog_copied,
@@ -238,8 +233,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   valueColor: AlwaysStoppedAnimation<Color>(
                                     themeData.primaryTextTheme.labelLarge.color,
                                   ),
-                                  backgroundColor:
-                                      themeData.colorScheme.background,
+                                  backgroundColor: themeData.colorScheme.background,
                                 ),
                               ),
                             ),
@@ -264,8 +258,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                                   ),
                                 ),
                               ),
-                              const Padding(
-                                  padding: EdgeInsets.only(top: 16.0)),
+                              const Padding(padding: EdgeInsets.only(top: 16.0)),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width,
                                 child: _buildExpiryAndFeeMessage(
@@ -279,9 +272,7 @@ class QrCodeDialogState extends State<QrCodeDialog>
                             ],
                           ),
                     duration: const Duration(seconds: 1),
-                    crossFadeState: (!snapshot.hasData ||
-                            requestModel?.rawPayReq == null ||
-                            !synced)
+                    crossFadeState: (!snapshot.hasData || requestModel?.rawPayReq == null || !synced)
                         ? CrossFadeState.showFirst
                         : CrossFadeState.showSecond,
                   );
@@ -304,10 +295,8 @@ class QrCodeDialogState extends State<QrCodeDialog>
     return StreamBuilder<AccountModel>(
       stream: widget._accountBloc.accountStream,
       builder: (context, accSnapshot) {
-        bool hasError = accSnapshot.hasError ||
-            !accSnapshot.hasData ||
-            snapshot.hasError ||
-            !snapshot.hasData;
+        bool hasError =
+            accSnapshot.hasError || !accSnapshot.hasData || snapshot.hasError || !snapshot.hasData;
 
         return WarningBox(
           boxPadding: const EdgeInsets.symmetric(
@@ -317,15 +306,12 @@ class QrCodeDialogState extends State<QrCodeDialog>
             vertical: 12,
             horizontal: 8,
           ),
-          backgroundColor:
-              theme.themeId == "BLUE" ? const Color(0xFFf3f8fc) : null,
+          backgroundColor: theme.themeId == "BLUE" ? const Color(0xFFf3f8fc) : null,
           borderColor: theme.themeId == "BLUE" ? const Color(0xFF0085fb) : null,
           child: Text(
             _warningMessage(context, hasError, snapshot, accSnapshot),
             textAlign: TextAlign.center,
-            style: (hasError)
-                ? themeData.dialogTheme.contentTextStyle
-                : themeData.primaryTextTheme.bodySmall,
+            style: (hasError) ? themeData.dialogTheme.contentTextStyle : themeData.primaryTextTheme.bodySmall,
           ),
         );
       },

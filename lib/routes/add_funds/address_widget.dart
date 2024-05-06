@@ -63,8 +63,7 @@ class AddressWidget extends StatelessWidget {
                           ServiceInjector().device.setClipboardText(address);
                           showFlushbar(
                             context,
-                            message: texts
-                                .invoice_btc_address_deposit_address_copied,
+                            message: texts.invoice_btc_address_deposit_address_copied,
                           );
                         },
                         child: Text(

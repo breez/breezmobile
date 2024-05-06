@@ -21,15 +21,13 @@ final _log = Logger("InvoiceBloc");
 
 class InvoiceBloc with AsyncActionsHandler {
   final _newInvoiceRequestController = StreamController<InvoiceRequestModel>();
-  Sink<InvoiceRequestModel> get newInvoiceRequestSink =>
-      _newInvoiceRequestController.sink;
+  Sink<InvoiceRequestModel> get newInvoiceRequestSink => _newInvoiceRequestController.sink;
 
   final _newLightningLinkController = StreamController<String>();
   Sink<String> get newLightningLinkSink => _newLightningLinkController.sink;
 
   final _readyInvoicesController = BehaviorSubject<PaymentRequestModel>();
-  Stream<PaymentRequestModel> get readyInvoicesStream =>
-      _readyInvoicesController.stream;
+  Stream<PaymentRequestModel> get readyInvoicesStream => _readyInvoicesController.stream;
 
   final _sentInvoicesController = StreamController<String>.broadcast();
   Stream<String> get sentInvoicesStream => _sentInvoicesController.stream;
@@ -38,13 +36,10 @@ class InvoiceBloc with AsyncActionsHandler {
   Sink<String> get decodeInvoiceSink => _decodeInvoiceController.sink;
 
   final _receivedInvoicesController = BehaviorSubject<PaymentRequestModel>();
-  Stream<PaymentRequestModel> get receivedInvoicesStream =>
-      _receivedInvoicesController.stream;
+  Stream<PaymentRequestModel> get receivedInvoicesStream => _receivedInvoicesController.stream;
 
-  final _paidInvoicesController =
-      StreamController<PaymentRequestModel>.broadcast();
-  Stream<PaymentRequestModel> get paidInvoicesStream =>
-      _paidInvoicesController.stream;
+  final _paidInvoicesController = StreamController<PaymentRequestModel>.broadcast();
+  Stream<PaymentRequestModel> get paidInvoicesStream => _paidInvoicesController.stream;
 
   Int64 payBlankAmount = Int64(-1);
   BreezBridge _breezLib;
@@ -59,8 +54,7 @@ class InvoiceBloc with AsyncActionsHandler {
     device = injector.device;
 
     _listenInvoiceRequests(_breezLib, nfc);
-    _listenIncomingInvoices(
-        notificationsService, _breezLib, nfc, lightningLinks, device);
+    _listenIncomingInvoices(notificationsService, _breezLib, nfc, lightningLinks, device);
     _listenPaidInvoices(_breezLib);
     registerAsyncHandlers({
       NewInvoice: _newInvoice,
@@ -68,8 +62,7 @@ class InvoiceBloc with AsyncActionsHandler {
     listenActions();
   }
 
-  Stream<Future<DecodedClipboardData>> get decodedClipboardStream =>
-      device.clipboardStream
+  Stream<Future<DecodedClipboardData>> get decodedClipboardStream => device.clipboardStream
           .distinct()
           .skip(1) // Skip previous session clipboard
           .map((clipboardData) async {
@@ -116,10 +109,9 @@ class InvoiceBloc with AsyncActionsHandler {
           .then((payReq) async {
         _log.info("Payment Request: ${payReq.paymentRequest}");
         var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
-        var paymentHash =
-            await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
-        _readyInvoicesController.add(PaymentRequestModel(
-            memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
+        var paymentHash = await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
+        _readyInvoicesController
+            .add(PaymentRequestModel(memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
       }).catchError(_readyInvoicesController.addError);
     });
   }
@@ -135,18 +127,12 @@ class InvoiceBloc with AsyncActionsHandler {
       inputLSP: invoiceRequest.lspInformation,
     );
     var memo = await _breezLib.decodePaymentRequest(payReq.paymentRequest);
-    var paymentHash =
-        await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
-    action.resolve(PaymentRequestModel(
-        memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
+    var paymentHash = await _breezLib.getPaymentRequestHash(payReq.paymentRequest);
+    action.resolve(PaymentRequestModel(memo, payReq.paymentRequest, paymentHash, payReq.lspFee));
   }
 
-  void _listenIncomingInvoices(
-      Notifications notificationService,
-      BreezBridge breezLib,
-      NFCService nfc,
-      LightningLinksService links,
-      Device device) {
+  void _listenIncomingInvoices(Notifications notificationService, BreezBridge breezLib, NFCService nfc,
+      LightningLinksService links, Device device) {
     Rx.merge([
       notificationService.notifications
           .where((message) => message.containsKey("payment_request"))
@@ -186,16 +172,14 @@ class InvoiceBloc with AsyncActionsHandler {
         .where((s) => !s.toLowerCase().startsWith("lnurl"))
         .asyncMap((paymentRequest) async {
           // add stream event before processing and decoding
-          _receivedInvoicesController
-              .add(PaymentRequestModel(null, paymentRequest, null, Int64(0)));
+          _receivedInvoicesController.add(PaymentRequestModel(null, paymentRequest, null, Int64(0)));
 
           //filter out our own payment requests
           try {
             await breezLib.getRelatedInvoice(paymentRequest);
             _log.info("filtering our invoice from clipboard");
             _receivedInvoicesController.add(null);
-            _receivedInvoicesController.addError(
-                PaymentRequestModel(null, paymentRequest, null, Int64(0)));
+            _receivedInvoicesController.addError(PaymentRequestModel(null, paymentRequest, null, Int64(0)));
             return null;
           } catch (e) {
             _log.info("detected not our invoice, continue to decoding");
@@ -205,14 +189,10 @@ class InvoiceBloc with AsyncActionsHandler {
         .where((paymentRequest) => paymentRequest != null)
         .asyncMap((paymentRequest) {
           _log.info('Decoding invoice.');
-          return breezLib.decodePaymentRequest(paymentRequest).then(
-              (invoice) async {
-            var paymentHash =
-                await breezLib.getPaymentRequestHash(paymentRequest);
-            return PaymentRequestModel(
-                invoice, paymentRequest, paymentHash, Int64(0));
-          }).catchError((err) =>
-              throw PaymentRequestError("Lightning invoice was not found."));
+          return breezLib.decodePaymentRequest(paymentRequest).then((invoice) async {
+            var paymentHash = await breezLib.getPaymentRequestHash(paymentRequest);
+            return PaymentRequestModel(invoice, paymentRequest, paymentHash, Int64(0));
+          }).catchError((err) => throw PaymentRequestError("Lightning invoice was not found."));
         })
         .listen(_receivedInvoicesController.add)
         .onError(_receivedInvoicesController.addError);
@@ -220,14 +200,12 @@ class InvoiceBloc with AsyncActionsHandler {
 
   void _listenPaidInvoices(BreezBridge breezLib) {
     breezLib.notificationStream
-        .where((event) =>
-            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .where((event) => event.type == NotificationEvent_NotificationType.INVOICE_PAID)
         .listen((invoice) async {
       var payReq = invoice.data[0];
       var memo = await _breezLib.decodePaymentRequest(payReq);
       var paymentHash = await _breezLib.getPaymentRequestHash(payReq);
-      _paidInvoicesController
-          .add(PaymentRequestModel(memo, payReq, paymentHash, Int64(0)));
+      _paidInvoicesController.add(PaymentRequestModel(memo, payReq, paymentHash, Int64(0)));
     });
   }
 

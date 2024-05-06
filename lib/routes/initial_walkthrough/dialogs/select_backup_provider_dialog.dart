@@ -29,8 +29,7 @@ class SelectBackupProviderDialog extends StatefulWidget {
   }
 }
 
-class SelectBackupProviderDialogState
-    extends State<SelectBackupProviderDialog> {
+class SelectBackupProviderDialogState extends State<SelectBackupProviderDialog> {
   int _selectedProviderIndex = 0;
   List<BackupProvider> _backupProviders;
   @override
@@ -193,9 +192,7 @@ class SelectBackupProviderDialogState
     return listBackupsAction.future.then((snapshots) {
       EasyLoading.dismiss();
 
-      if (snapshots != null &&
-          snapshots.isNotEmpty &&
-          snapshots is List<SnapshotInfo>) {
+      if (snapshots != null && snapshots.isNotEmpty && snapshots is List<SnapshotInfo>) {
         Navigator.pop(context, snapshots);
       } else {
         throw context.texts().initial_walk_through_error_backup_location;
@@ -210,7 +207,7 @@ class SelectBackupProviderDialogState
 
     switch (error.runtimeType) {
       case InsufficientScopeException:
-        if(Platform.isIOS){
+        if (Platform.isIOS) {
           Navigator.pop(context);
         }
         showFlushbar(

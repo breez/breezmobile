@@ -18,8 +18,7 @@ class GenerateBackupPhrasePage extends StatefulWidget {
   );
 
   @override
-  GenerateBackupPhrasePageState createState() =>
-      GenerateBackupPhrasePageState();
+  GenerateBackupPhrasePageState createState() => GenerateBackupPhrasePageState();
 }
 
 class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {

@@ -23,8 +23,9 @@ class ReverseSwapConfirmation extends StatefulWidget {
   final ReverseSwapRequest swap;
   final ReverseSwapBloc bloc;
   final Function() onPrevious;
-  final Future Function(String address, Int64 toSend, Int64 boltzFees,
-      Int64 claimFees, Int64 received, String feesHash) onFeeConfirmed;
+  final Future Function(
+          String address, Int64 toSend, Int64 boltzFees, Int64 claimFees, Int64 received, String feesHash)
+      onFeeConfirmed;
 
   const ReverseSwapConfirmation({
     Key key,
@@ -71,9 +72,7 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           key: (e) => e,
           value: (e) {
             final toSend = widget.swap.amount;
-            final boltzFees = Int64(
-                    (toSend.toDouble() * widget.swap.policy.percentage / 100)
-                        .ceil()) +
+            final boltzFees = Int64((toSend.toDouble() * widget.swap.policy.percentage / 100).ceil()) +
                 widget.swap.policy.lockup;
             final received = toSend - boltzFees - feeEstimates.fees[e];
             return ReverseSwapAmounts(
@@ -91,10 +90,9 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
           value: (e) {
             final received = widget.swap.amount;
             final p = widget.swap.policy.percentage / 100;
-            final boltzFees = Int64(
-                ((received + feeEstimates.fees[e]).toDouble() * p / (1 - p) +
-                        widget.swap.policy.lockup.toDouble() / (1 - p))
-                    .ceil());
+            final boltzFees = Int64(((received + feeEstimates.fees[e]).toDouble() * p / (1 - p) +
+                    widget.swap.policy.lockup.toDouble() / (1 - p))
+                .ceil());
             final toSend = received + boltzFees + feeEstimates.fees[e];
 
             return ReverseSwapAmounts(
@@ -132,10 +130,9 @@ class ReverseSwapConfirmationState extends State<ReverseSwapConfirmation> {
 
     final accountBloc = AppBlocsProvider.of<AccountBloc>(context);
 
-    final rsAmounts =
-        (feeOptions != null && feeOptions[selectedFeeIndex] != null)
-            ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
-            : null;
+    final rsAmounts = (feeOptions != null && feeOptions[selectedFeeIndex] != null)
+        ? amounts[feeOptions[selectedFeeIndex].confirmationTarget]
+        : null;
 
     return Scaffold(
       appBar: AppBar(

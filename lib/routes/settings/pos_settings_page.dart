@@ -67,8 +67,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
     super.initState();
     final user = widget.currentProfile;
     _timeoutValue = user.cancellationTimeoutValue;
-    _cancellationTimeoutController.text =
-        user.cancellationTimeoutValue.toStringAsFixed(0);
+    _cancellationTimeoutController.text = user.cancellationTimeoutValue.toStringAsFixed(0);
     _addressLine1Controller.text = user.businessAddress?.addressLine1 ?? "";
     _addressLine2Controller.text = user.businessAddress?.addressLine2 ?? "";
     _defaultNoteController.text = user.defaultPosNote;
@@ -135,8 +134,7 @@ class PosSettingsPageState extends State<_PosSettingsPage> {
                       Padding(
                         padding: const EdgeInsets.only(left: 8.0, right: 16.0),
                         child: Text(
-                          num.parse(_cancellationTimeoutController.text)
-                              .toStringAsFixed(0),
+                          num.parse(_cancellationTimeoutController.text).toStringAsFixed(0),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 12.4,

@@ -23,8 +23,7 @@ class EnableBiometricAuthTile extends StatefulWidget {
   });
 
   @override
-  State<EnableBiometricAuthTile> createState() =>
-      _EnableBiometricAuthTileState();
+  State<EnableBiometricAuthTile> createState() => _EnableBiometricAuthTileState();
 }
 
 class _EnableBiometricAuthTileState extends State<EnableBiometricAuthTile> {

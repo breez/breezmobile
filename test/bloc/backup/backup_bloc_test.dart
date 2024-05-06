@@ -78,8 +78,7 @@ void main() {
       final newSettings = await action.future;
 
       expect(newSettings, googleSettings);
-      expect(injectorMock.breezLibMock.backupProviderSet,
-          googleSettings.backupProvider.name);
+      expect(injectorMock.breezLibMock.backupProviderSet, googleSettings.backupProvider.name);
       expect(injectorMock.breezLibMock.backupAuthDataSet, isNull);
     });
   });

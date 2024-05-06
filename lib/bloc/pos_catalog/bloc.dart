@@ -28,8 +28,7 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   final Stream<BreezUserModel> _userStream;
 
-  final StreamController<List<Item>> _itemsStreamController =
-      BehaviorSubject<List<Item>>();
+  final StreamController<List<Item>> _itemsStreamController = BehaviorSubject<List<Item>>();
 
   Stream<List<Item>> get itemsStream => _itemsStreamController.stream;
 
@@ -37,11 +36,9 @@ class PosCatalogBloc with AsyncActionsHandler {
 
   Stream<Sale> get currentSaleStream => _currentSaleController.stream;
 
-  final BehaviorSubject<List<ProductIcon>> _productIconsController =
-      BehaviorSubject<List<ProductIcon>>();
+  final BehaviorSubject<List<ProductIcon>> _productIconsController = BehaviorSubject<List<ProductIcon>>();
 
-  Stream<List<ProductIcon>> get productIconsStream =>
-      _productIconsController.stream;
+  Stream<List<ProductIcon>> get productIconsStream => _productIconsController.stream;
 
   final BehaviorSubject<String> _selectedCurrency = BehaviorSubject();
 
@@ -114,11 +111,9 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   Future _loadIcons() async {
-    String iconsJson =
-        await rootBundle.loadString('src/json/pos-icons-meta.json');
+    String iconsJson = await rootBundle.loadString('src/json/pos-icons-meta.json');
     List<dynamic> decoded = json.decode(iconsJson);
-    _productIconsController
-        .add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
+    _productIconsController.add(decoded.map((e) => ProductIcon.fromJson(e)).toList());
   }
 
   void _loadSelectedCurrency() async {
@@ -158,8 +153,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     var breezBridge = ServiceInjector().breezBridge;
 
     breezBridge.notificationStream
-        .where((event) =>
-            event.type == NotificationEvent_NotificationType.INVOICE_PAID)
+        .where((event) => event.type == NotificationEvent_NotificationType.INVOICE_PAID)
         .listen((event) async {
       var paymentHash = await breezBridge.getPaymentRequestHash(event.data[0]);
       await _repository.salePaymentCompleted(paymentHash);
@@ -248,8 +242,7 @@ class PosCatalogBloc with AsyncActionsHandler {
   }
 
   _importItems(ImportItems action) async {
-    action.resolve(await importItems(
-        await PosCsvUtils().retrieveItemListFromCSV(action.importFile)));
+    action.resolve(await importItems(await PosCsvUtils().retrieveItemListFromCSV(action.importFile)));
     _loadItems();
   }
 
@@ -290,8 +283,7 @@ class PosCatalogBloc with AsyncActionsHandler {
     if (action.id != null) {
       action.resolve(await _repository.fetchSaleByID(action.id));
     } else {
-      action.resolve(
-          await _repository.fetchSaleByPaymentHash(action.paymentHash));
+      action.resolve(await _repository.fetchSaleByPaymentHash(action.paymentHash));
     }
   }
 

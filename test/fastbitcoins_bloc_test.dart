@@ -54,8 +54,7 @@ void main() {
         }
         expect(res, isNotNull);
         expect(res.error, 1);
-      }, fastBitcoinsBloc.validateRequestSink,
-          ValidateRequestModel("test@gmail.com", "code", 1, "USD"));
+      }, fastBitcoinsBloc.validateRequestSink, ValidateRequestModel("test@gmail.com", "code", 1, "USD"));
       await tester.run();
     });
 
@@ -73,12 +72,10 @@ void main() {
         }""",
       );
       FastbitcoinsBloc fastBitcoinsBloc = _make();
-      var redeemRequest =
-          RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
-            ..validateResponse =
-                ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
-      var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
-          fastBitcoinsBloc.redeemResponseStream, (res) {
+      var redeemRequest = RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
+        ..validateResponse = ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var tester =
+          BlocTester<RedeemRequestModel, RedeemResponseModel>(fastBitcoinsBloc.redeemResponseStream, (res) {
         if (kDebugMode) {
           print(jsonEncode(res.toJson()));
         }
@@ -131,10 +128,8 @@ void main() {
         }""",
       );
       FastbitcoinsBloc fastBitcoinsBloc = _make();
-      var redeemRequest =
-          RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
-            ..validateResponse =
-                ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var redeemRequest = RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
+        ..validateResponse = ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
       var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
           fastBitcoinsBloc.redeemResponseStream,
           (res) {
@@ -180,10 +175,8 @@ void main() {
         }""",
       );
       FastbitcoinsBloc fastBitcoinsBloc = _make();
-      var redeemRequest =
-          RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
-            ..validateResponse =
-                ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
+      var redeemRequest = RedeemRequestModel("test@gmail.com", "code", 1, "USD", 0, "")
+        ..validateResponse = ValidateResponseModel(0, "", 0, 0, "", 0, 1.0, 1.0, 0, 0.0, 0);
       var tester = BlocTester<RedeemRequestModel, RedeemResponseModel>(
           fastBitcoinsBloc.redeemResponseStream,
           (res) {

@@ -11,8 +11,7 @@ void main() {
     });
 
     test("should extract bolt11 from bip21 no amount", () async {
-      String bolt11 = extractBolt11FromBip21(
-          "bitcoin:1DamianM2k8WfNEeJmyqSe2YW1upB7UATx?lightning=1234");
+      String bolt11 = extractBolt11FromBip21("bitcoin:1DamianM2k8WfNEeJmyqSe2YW1upB7UATx?lightning=1234");
       expect(bolt11, "1234");
     });
 
@@ -31,8 +30,7 @@ void main() {
     });
 
     test("should extract bolt11 from bip21 negative, no lightning", () async {
-      String bolt11 = extractBolt11FromBip21(
-          "bitcoin:1DamianM2k8WfNEeJmyqSe2YW1upB7UATx?amount=0.000001");
+      String bolt11 = extractBolt11FromBip21("bitcoin:1DamianM2k8WfNEeJmyqSe2YW1upB7UATx?amount=0.000001");
       expect(bolt11, null);
     });
 
@@ -58,20 +56,17 @@ void main() {
     });
 
     test("should extract the same address as it receives", () {
-      String bitcoinAddress =
-          extractBitcoinAddress("3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
+      String bitcoinAddress = extractBitcoinAddress("3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
       expect(bitcoinAddress, "3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
     });
 
     test("should extract the address from bip21 scheme", () async {
-      String bitcoinAddress = extractBitcoinAddress(
-          "BITCOIN:BC1QYLH3U67J673H6Y6ALV70M0PL2YZ53TZHVXGG7U");
+      String bitcoinAddress = extractBitcoinAddress("BITCOIN:BC1QYLH3U67J673H6Y6ALV70M0PL2YZ53TZHVXGG7U");
       expect(bitcoinAddress, "bc1qylh3u67j673h6y6alv70m0pl2yz53tzhvxgg7u");
     });
 
     test("should extract the same address as it receives", () {
-      String bitcoinAddress =
-          extractBitcoinAddress("BItCOiN:3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
+      String bitcoinAddress = extractBitcoinAddress("BItCOiN:3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
       expect(bitcoinAddress, "3K2CfYmqYuD99CDyqrdzt481F9jkLKirEn");
     });
   });

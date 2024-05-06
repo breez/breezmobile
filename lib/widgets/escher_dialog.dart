@@ -129,9 +129,7 @@ class EscherDialogState extends State<EscherDialog> {
         primaryColor: themeData.textTheme.labelLarge.color,
         colorScheme: ColorScheme.dark(
           primary: themeData.textTheme.labelLarge.color,
-          error: theme.themeId == "BLUE"
-              ? Colors.red
-              : themeData.colorScheme.error,
+          error: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
         ),
       ),
       child: Form(

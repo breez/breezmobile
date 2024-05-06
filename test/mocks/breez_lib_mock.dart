@@ -20,8 +20,7 @@ class BreezLibMock extends Mock implements BreezBridge {
     return Future.value(AddInvoiceReply());
   }
 
-  StreamController eventsController =
-      StreamController<NotificationEvent>.broadcast();
+  StreamController eventsController = StreamController<NotificationEvent>.broadcast();
 
   @override
   Stream<NotificationEvent> get notificationStream => eventsController.stream;

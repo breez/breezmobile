@@ -9,38 +9,25 @@ class OnlineStatusUpdater {
   StreamSubscription _onRemoteConnectSubscription;
   DatabaseReference _userStatusPath;
 
-  void startStatusUpdates(
-      String localKey,
-      Function(PeerStatus) onLocalStatusChanged,
-      String remoteKey,
+  void startStatusUpdates(String localKey, Function(PeerStatus) onLocalStatusChanged, String remoteKey,
       Function(PeerStatus) onRemoteStatusChanged) {
     if (_onLocalConnectSubscription != null) {
       final texts = getSystemAppLocalizations();
-      throw Exception(
-          texts.connect_to_pay_error_status_tracking_already_started);
+      throw Exception(texts.connect_to_pay_error_status_tracking_already_started);
     }
     _userStatusPath = FirebaseDatabase.instance.ref().child(localKey);
 
-    _onLocalConnectSubscription = FirebaseDatabase.instance
-        .ref()
-        .child('.info/connected')
-        .onValue
-        .listen((event) {
-      onLocalStatusChanged(PeerStatus(
-          event.snapshot.value, DateTime.now().millisecondsSinceEpoch));
+    _onLocalConnectSubscription =
+        FirebaseDatabase.instance.ref().child('.info/connected').onValue.listen((event) {
+      onLocalStatusChanged(PeerStatus(event.snapshot.value, DateTime.now().millisecondsSinceEpoch));
       if (event.snapshot.value) {
         pushOnline();
       }
     });
 
-    _onRemoteConnectSubscription = FirebaseDatabase.instance
-        .ref()
-        .child(remoteKey)
-        .onValue
-        .listen((event) {
+    _onRemoteConnectSubscription = FirebaseDatabase.instance.ref().child(remoteKey).onValue.listen((event) {
       var connected = (event.snapshot.value as Map)["online"] ?? false;
-      onRemoteStatusChanged(
-          PeerStatus(connected, DateTime.now().millisecondsSinceEpoch));
+      onRemoteStatusChanged(PeerStatus(connected, DateTime.now().millisecondsSinceEpoch));
     });
   }
 
@@ -56,10 +43,8 @@ class OnlineStatusUpdater {
       return Future.value(null);
     }
     _userStatusPath.onDisconnect().remove();
-    return Future.wait([
-      _onRemoteConnectSubscription.cancel(),
-      _onLocalConnectSubscription.cancel()
-    ]).then((_) {
+    return Future.wait([_onRemoteConnectSubscription.cancel(), _onLocalConnectSubscription.cancel()])
+        .then((_) {
       _onLocalConnectSubscription = null;
       _onRemoteConnectSubscription = null;
     });

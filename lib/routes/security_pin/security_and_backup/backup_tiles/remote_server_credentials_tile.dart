@@ -13,12 +13,10 @@ class RemoteServerCredentialsTile extends StatefulWidget {
   });
 
   @override
-  State<RemoteServerCredentialsTile> createState() =>
-      _RemoteServerCredentialsTileState();
+  State<RemoteServerCredentialsTile> createState() => _RemoteServerCredentialsTileState();
 }
 
-class _RemoteServerCredentialsTileState
-    extends State<RemoteServerCredentialsTile> {
+class _RemoteServerCredentialsTileState extends State<RemoteServerCredentialsTile> {
   @override
   Widget build(BuildContext context) {
     return ListTile(

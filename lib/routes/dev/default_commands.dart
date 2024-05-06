@@ -14,8 +14,7 @@ class Command extends StatelessWidget {
         },
         child: Container(
             alignment: Alignment.centerLeft,
-            padding:
-                const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
+            padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 24.0),
             child: Text(
               command,
               textAlign: TextAlign.left,

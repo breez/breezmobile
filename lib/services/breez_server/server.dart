@@ -42,8 +42,7 @@ class BreezServer {
     return response.breezID;
   }
 
-  Future<String> sendInvoice(
-      String breezId, String bolt11, String payee, Int64 amount) async {
+  Future<String> sendInvoice(String breezId, String bolt11, String payee, Int64 amount) async {
     await _ensureValidChannel();
     var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);
     var response = await invoicerClient.sendInvoice(PaymentRequest()
@@ -57,18 +56,14 @@ class BreezServer {
 
   Future<String> uploadLogo(List<int> logo) async {
     await _ensureValidChannel();
-    var posClient = PosClient(_channel,
-        options: CallOptions(timeout: const Duration(seconds: 30)));
-    return posClient
-        .uploadLogo(UploadFileRequest()..content = logo)
-        .then((reply) => reply.url);
+    var posClient = PosClient(_channel, options: CallOptions(timeout: const Duration(seconds: 30)));
+    return posClient.uploadLogo(UploadFileRequest()..content = logo).then((reply) => reply.url);
   }
 
-  Future<OrderReply> orderCard(String fullName, String email, String address,
-      String city, String state, String zip, String country) async {
+  Future<OrderReply> orderCard(String fullName, String email, String address, String city, String state,
+      String zip, String country) async {
     await _ensureValidChannel();
-    var cardOrderClient =
-        CardOrdererClient(_channel, options: defaultCallOptions);
+    var cardOrderClient = CardOrdererClient(_channel, options: defaultCallOptions);
     var response = await cardOrderClient.order(OrderRequest()
       ..fullName = fullName
       ..email = email
@@ -90,9 +85,7 @@ class BreezServer {
     await _ensureValidChannel();
     var ctpClient = CTPClient(_channel, options: defaultCallOptions);
     return await ctpClient.joinCTPSession(JoinCTPSessionRequest()
-      ..partyType = payer
-          ? JoinCTPSessionRequest_PartyType.PAYER
-          : JoinCTPSessionRequest_PartyType.PAYEE
+      ..partyType = payer ? JoinCTPSessionRequest_PartyType.PAYER : JoinCTPSessionRequest_PartyType.PAYEE
       ..partyName = userName
       ..notificationToken = notificationToken
       ..sessionID = sessionID ?? "");
@@ -101,8 +94,7 @@ class BreezServer {
   Future<TerminateCTPSessionResponse> terminateSession(String sessionID) async {
     await _ensureValidChannel();
     var ctpClient = CTPClient(_channel, options: defaultCallOptions);
-    return await ctpClient.terminateCTPSession(
-        TerminateCTPSessionRequest()..sessionID = sessionID);
+    return await ctpClient.terminateCTPSession(TerminateCTPSessionRequest()..sessionID = sessionID);
   }
 
   Future _ensureValidChannel() async {
@@ -111,8 +103,7 @@ class BreezServer {
       return;
     }
 
-    var infoClient = InformationClient(_channel,
-        options: CallOptions(timeout: const Duration(seconds: 2)));
+    var infoClient = InformationClient(_channel, options: CallOptions(timeout: const Duration(seconds: 2)));
     try {
       await infoClient.ping(PingRequest());
     } catch (e) {

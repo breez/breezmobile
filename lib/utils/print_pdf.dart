@@ -281,13 +281,9 @@ class PrintService {
             : [
                 pw.Text(
                   "${addParenthesis ? "(" : ""}${_buildPriceValue(saleCurrency, amount)}${addParenthesis ? ")" : ""}",
-                  textDirection: saleCurrency.rtl
-                      ? pw.TextDirection.rtl
-                      : pw.TextDirection.ltr,
+                  textDirection: saleCurrency.rtl ? pw.TextDirection.rtl : pw.TextDirection.ltr,
                   style: pw.TextStyle(
-                    font: saleCurrency.rtl
-                        ? pw.Font.ttf(fontMap["rtl"])
-                        : pw.Font.ttf(fontMap["ltr"]),
+                    font: saleCurrency.rtl ? pw.Font.ttf(fontMap["rtl"]) : pw.Font.ttf(fontMap["ltr"]),
                     fontSize: 12.3,
                   ),
                 ),

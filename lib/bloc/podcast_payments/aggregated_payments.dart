@@ -12,8 +12,7 @@ class AggregatedPayments {
   SharedPreferences sharedPreferences;
 
   AggregatedPayments(this.sharedPreferences) {
-    var persistedAggregation =
-        sharedPreferences.getString(AGGREGATED_PAYMENTS_KEY);
+    var persistedAggregation = sharedPreferences.getString(AGGREGATED_PAYMENTS_KEY);
     if (persistedAggregation != null) {
       try {
         Map<String, dynamic> amounts = json.decode(persistedAggregation);
@@ -26,10 +25,8 @@ class AggregatedPayments {
   }
 
   Future<double> addAmount(String destination, double amount) async {
-    aggregatedAmount[destination] =
-        (aggregatedAmount[destination] ?? 0) + amount;
-    await sharedPreferences.setString(
-        AGGREGATED_PAYMENTS_KEY, json.encode(aggregatedAmount));
+    aggregatedAmount[destination] = (aggregatedAmount[destination] ?? 0) + amount;
+    await sharedPreferences.setString(AGGREGATED_PAYMENTS_KEY, json.encode(aggregatedAmount));
     return aggregatedAmount[destination];
   }
 

@@ -157,9 +157,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
 
   @override
   Widget build(BuildContext context) {
-    return _animating
-        ? _createAnimatedContent(context)
-        : _createContentDialog(context);
+    return _animating ? _createAnimatedContent(context) : _createContentDialog(context);
   }
 
   List<Widget> _buildProcessingPaymentDialog(BuildContext context) {
@@ -173,9 +171,7 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
           themeData.loaderAssetPath,
           height: 64.0,
           colorBlendMode: themeData.loaderColorBlendMode ?? BlendMode.srcIn,
-          color: theme.themeId == "BLUE"
-              ? colorAnimation?.value ?? Colors.transparent
-              : null,
+          color: theme.themeId == "BLUE" ? colorAnimation?.value ?? Colors.transparent : null,
           gaplessPlayback: true,
         ),
       )

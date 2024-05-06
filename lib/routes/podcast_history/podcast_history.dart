@@ -44,8 +44,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
-    PodcastHistoryTimeRange timeRange =
-        await podcastHistoryBloc.getPodcastHistoryTimeRageFromLocalDb();
+    PodcastHistoryTimeRange timeRange = await podcastHistoryBloc.getPodcastHistoryTimeRageFromLocalDb();
 
     podcastHistoryBloc.fetchPodcastHistory(
       startDate: timeRange.startDate,
@@ -84,8 +83,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                     height: 24.0,
                   ),
                   onSelected: (value) {
-                    podcastHistoryBloc.actionsSink
-                        .add(UpdatePodcastHistoryTimeRange(value));
+                    podcastHistoryBloc.actionsSink.add(UpdatePodcastHistoryTimeRange(value));
                   },
                   itemBuilder: (ctx) => [
                     PodcastHistoryTimeRange.weekly(),
@@ -152,34 +150,27 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                 builder: (context, snapshot) {
                                   return snapshot.data != null
                                       ? Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                           children: [
                                             _PodcastStatItem(
                                               svg: "src/icon/schedule_icon.svg",
                                               label:
                                                   '${_podcastListingTimeMap(durationInMins: snapshot.data.totalDurationInMinsSum)["unit"]} listened',
                                               value: _podcastListingTimeMap(
-                                                durationInMins: snapshot.data
-                                                    .totalDurationInMinsSum,
+                                                durationInMins: snapshot.data.totalDurationInMinsSum,
                                               )["value"],
                                             ),
                                             _PodcastStatItem(
                                               svg: "src/icon/satoshi_icon.svg",
-                                              label: texts
-                                                  .podcast_history_sats_streamed,
+                                              label: texts.podcast_history_sats_streamed,
                                               value: _getCompactNumber(
-                                                snapshot
-                                                    .data.totalSatsStreamedSum,
+                                                snapshot.data.totalSatsStreamedSum,
                                               ),
                                             ),
                                             _PodcastStatItem(
-                                              svg:
-                                                  "src/icon/rocket_launch_icon.svg",
-                                              label: texts
-                                                  .podcast_history_boostagrams_sent,
-                                              value: _getCompactNumber(snapshot
-                                                  .data.totalBoostagramSentSum),
+                                              svg: "src/icon/rocket_launch_icon.svg",
+                                              label: texts.podcast_history_boostagrams_sent,
+                                              value: _getCompactNumber(snapshot.data.totalBoostagramSentSum),
                                             ),
                                           ],
                                         )
@@ -205,18 +196,13 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                           : theme.BreezColors.white[400],
                                     ),
                                     onSelected: (value) {
-                                      podcastHistoryBloc
-                                          .updateSortOption(value);
+                                      podcastHistoryBloc.updateSortOption(value);
                                     },
                                     itemBuilder: (ctx) => [
-                                      PodcastHistorySortEnum
-                                          .SORT_RECENTLY_HEARD,
-                                      PodcastHistorySortEnum
-                                          .SORT_DURATION_DESCENDING,
-                                      PodcastHistorySortEnum
-                                          .SORT_SATS_DESCENDING,
-                                      PodcastHistorySortEnum
-                                          .SORT_BOOSTS_DESCENDING,
+                                      PodcastHistorySortEnum.SORT_RECENTLY_HEARD,
+                                      PodcastHistorySortEnum.SORT_DURATION_DESCENDING,
+                                      PodcastHistorySortEnum.SORT_SATS_DESCENDING,
+                                      PodcastHistorySortEnum.SORT_BOOSTS_DESCENDING,
                                     ]
                                         .map(
                                           (e) => _listSortDropdownItem(
@@ -263,10 +249,8 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
                                 ),
                                 Padding(
                                   padding: EdgeInsets.only(
-                                    bottom:
-                                        MediaQuery.of(context).size.height / 25,
-                                    top: MediaQuery.of(context).size.height /
-                                        2.82,
+                                    bottom: MediaQuery.of(context).size.height / 25,
+                                    top: MediaQuery.of(context).size.height / 2.82,
                                   ),
                                   child: SubmitButton(
                                     texts.podcast_history_open_podcast_button,
@@ -313,8 +297,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
       await imagePath.writeAsBytes(image);
       await Share.shareXFiles(
         [XFile(imagePath.path)],
-        text:
-            "My $appBarDisplayString in Breez ⚡ Download here: https://breez.technology",
+        text: "My $appBarDisplayString in Breez ⚡ Download here: https://breez.technology",
       );
     }
   }
@@ -392,35 +375,27 @@ Widget _getPodcastHistoryList({
         //This enables sharing of up to 5 podcasts
         int podcastHistoryLength = 0;
         if (getScreenshotWidget) {
-          podcastHistoryLength =
-              podcastHistoryListSnapshot.data.podcastHistoryList.length <= 5
-                  ? podcastHistoryListSnapshot.data.podcastHistoryList.length
-                  : 5;
+          podcastHistoryLength = podcastHistoryListSnapshot.data.podcastHistoryList.length <= 5
+              ? podcastHistoryListSnapshot.data.podcastHistoryList.length
+              : 5;
         } else {
-          podcastHistoryLength =
-              podcastHistoryListSnapshot.data.podcastHistoryList.length;
+          podcastHistoryLength = podcastHistoryListSnapshot.data.podcastHistoryList.length;
         }
 
         return Column(
-          mainAxisSize:
-              getScreenshotWidget ? MainAxisSize.min : MainAxisSize.max,
+          mainAxisSize: getScreenshotWidget ? MainAxisSize.min : MainAxisSize.max,
           children: [
             for (var i = 0; i < podcastHistoryLength; i++)
               Padding(
                 padding: const EdgeInsets.only(bottom: 12),
                 child: _PodcastListTile(
-                  podcastUrl: podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].podcastUrl,
-                  title: podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].podcastName,
-                  sats: _getCompactNumber(podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].satsSpent),
-                  boostagrams: _getCompactNumber(podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].boostagramsSent),
-                  durationInMins: podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].durationInMins,
-                  imageUrl: podcastHistoryListSnapshot
-                      .data.podcastHistoryList[i].podcastImageUrl,
+                  podcastUrl: podcastHistoryListSnapshot.data.podcastHistoryList[i].podcastUrl,
+                  title: podcastHistoryListSnapshot.data.podcastHistoryList[i].podcastName,
+                  sats: _getCompactNumber(podcastHistoryListSnapshot.data.podcastHistoryList[i].satsSpent),
+                  boostagrams: _getCompactNumber(
+                      podcastHistoryListSnapshot.data.podcastHistoryList[i].boostagramsSent),
+                  durationInMins: podcastHistoryListSnapshot.data.podcastHistoryList[i].durationInMins,
+                  imageUrl: podcastHistoryListSnapshot.data.podcastHistoryList[i].podcastImageUrl,
                 ),
               ),
           ],
@@ -532,9 +507,7 @@ class _PodcastStatItem extends StatelessWidget {
             height: 16,
             width: 36,
             colorFilter: ColorFilter.mode(
-              theme.themeId != "BLUE"
-                  ? Colors.white
-                  : theme.BreezColors.white[400],
+              theme.themeId != "BLUE" ? Colors.white : theme.BreezColors.white[400],
               BlendMode.srcATop,
             ),
           ),
@@ -649,8 +622,7 @@ class _PodcastListTile extends StatelessWidget {
                                 const SizedBox(width: 4),
                                 Text(
                                   _podcastListingTimeString(
-                                    podcastListeningTimeMap:
-                                        _podcastListingTimeMap(
+                                    podcastListeningTimeMap: _podcastListingTimeMap(
                                       durationInMins: durationInMins,
                                     ),
                                   ),
@@ -674,8 +646,7 @@ class _PodcastListTile extends StatelessWidget {
                           padding: const EdgeInsets.only(right: 16),
                           child: Text(
                             "$sats sats",
-                            style: themeData.primaryTextTheme.displaySmall
-                                .copyWith(
+                            style: themeData.primaryTextTheme.displaySmall.copyWith(
                               fontSize: 16,
                               color: Colors.white,
                               fontWeight: FontWeight.w500,
@@ -701,10 +672,7 @@ Map<String, String> _podcastListingTimeMap({
   if (durationInMins < 1) {
     return {"value": "${(durationInMins * 60).toInt()}", "unit": "secs"};
   } else if (durationInMins >= 60) {
-    return {
-      "value": "${_truncateDecimals(durationInMins / 60, 2)}",
-      "unit": "hours"
-    };
+    return {"value": "${_truncateDecimals(durationInMins / 60, 2)}", "unit": "hours"};
   } else {
     return {"value": "${(durationInMins).toInt()}", "unit": "mins"};
   }
@@ -735,9 +703,8 @@ class _BubblePainterPodcastHistory extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final size = MediaQuery.of(context).size;
     final bubblePaint = Paint()
-      ..color = theme.themeId == "BLUE"
-          ? Colors.white.withOpacity(0.3)
-          : const Color(0xff4D88EC).withOpacity(0.2)
+      ..color =
+          theme.themeId == "BLUE" ? Colors.white.withOpacity(0.3) : const Color(0xff4D88EC).withOpacity(0.2)
       ..style = PaintingStyle.fill;
     const bubbleRadius = 12.0;
     final height = size.height - kToolbarHeight;

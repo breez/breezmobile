@@ -25,8 +25,7 @@ class CsvExporter {
 
   Future export() async {
     _log.info("export payments started");
-    String tmpFilePath =
-        await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
+    String tmpFilePath = await _saveCsvFile(const ListToCsvConverter().convert(_generateList()));
     _log.info("export payments finished");
     return tmpFilePath;
   }
@@ -108,11 +107,9 @@ class CsvExporter {
 
   String _appendFilterInformation(String filePath) {
     _log.info("add filter information to path started");
-    if (listEquals(
-        filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
+    if (listEquals(filter.paymentType, [PaymentType.SENT, PaymentType.WITHDRAWAL])) {
       filePath += "_sent";
-    } else if (listEquals(
-        filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
+    } else if (listEquals(filter.paymentType, [PaymentType.RECEIVED, PaymentType.DEPOSIT])) {
       filePath += "_received";
     }
     if (filter.startDate != null && filter.endDate != null) {

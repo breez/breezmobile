@@ -3,17 +3,14 @@ import 'package:fixnum/fixnum.dart';
 abstract class NfcWithdrawInvoiceStatus {
   const NfcWithdrawInvoiceStatus();
 
-  factory NfcWithdrawInvoiceStatus.started() =>
-      const NfcWithdrawInvoiceStatusStarted();
+  factory NfcWithdrawInvoiceStatus.started() => const NfcWithdrawInvoiceStatusStarted();
 
-  factory NfcWithdrawInvoiceStatus.completed() =>
-      const NfcWithdrawInvoiceStatusCompleted();
+  factory NfcWithdrawInvoiceStatus.completed() => const NfcWithdrawInvoiceStatusCompleted();
 
   factory NfcWithdrawInvoiceStatus.rangeError(Int64 min, Int64 max) =>
       NfcWithdrawInvoiceStatusRangeError(min, max);
 
-  factory NfcWithdrawInvoiceStatus.error(String message) =>
-      NfcWithdrawInvoiceStatusError(message);
+  factory NfcWithdrawInvoiceStatus.error(String message) => NfcWithdrawInvoiceStatusError(message);
 }
 
 class NfcWithdrawInvoiceStatusStarted extends NfcWithdrawInvoiceStatus {

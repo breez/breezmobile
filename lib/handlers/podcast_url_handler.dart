@@ -86,8 +86,7 @@ Future handleDeeplink(
           throw texts.handler_podcast_error_load_episode;
         } else if (blocState is BlocPopulatedState) {
           // Retrieve episode list and play matching episode
-          var episodeList = await podcastBloc.episodes
-              .firstWhere((episodeList) => episodeList.isNotEmpty);
+          var episodeList = await podcastBloc.episodes.firstWhere((episodeList) => episodeList.isNotEmpty);
           var episode = episodeList.firstWhere(
             (episode) => episode.guid == episodeID,
             orElse: () => null,

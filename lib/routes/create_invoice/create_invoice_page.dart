@@ -85,10 +85,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       if (widget.lnurlWithdraw != null) {
         _log.info("lnurlw = ${widget.lnurlWithdraw}");
         accBloc.accountStream
-            .firstWhere(
-                (account) =>
-                    (account != null && account != AccountModel.initial()),
-                orElse: null)
+            .firstWhere((account) => (account != null && account != AccountModel.initial()), orElse: null)
             .then((state) {
           _log.info("we have currency state ${state.currency}");
           setState(() {
@@ -146,8 +143,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
               return Padding(
                 padding: EdgeInsets.only(
-                  bottom:
-                      Platform.isIOS && _amountFocusNode.hasFocus ? 40.0 : 0.0,
+                  bottom: Platform.isIOS && _amountFocusNode.hasFocus ? 40.0 : 0.0,
                 ),
                 child: SingleButtonBottomBar(
                   stickToBottom: true,
@@ -165,16 +161,14 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                               _log.info(
                                 "lsp status ${lspStatus.lastConnectionError}",
                               );
-                              final tempFees =
-                                  lspStatus.currentLSP.cheapestOpeningFeeParams;
+                              final tempFees = lspStatus.currentLSP.cheapestOpeningFeeParams;
                               fetchLSPList(lspBloc).then(
                                 (lspList) {
                                   if (loaderRoute.isActive) {
                                     navigator.removeRoute(loaderRoute);
                                   }
                                   var refreshedLSP = lspList.firstWhere(
-                                    (lsp) =>
-                                        lsp.lspID == lspStatus.currentLSP.lspID,
+                                    (lsp) => lsp.lspID == lspStatus.currentLSP.lspID,
                                   );
                                   // Show fee dialog if necessary and create invoice dialog
                                   showSetupFeesDialog(
@@ -243,8 +237,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
       body: StreamBuilder<AccountModel>(
         stream: accountBloc.accountStream,
         builder: (context, snapshot) {
-          if (snapshot.connectionState != ConnectionState.done &&
-              !snapshot.hasData) {
+          if (snapshot.connectionState != ConnectionState.done && !snapshot.hasData) {
             return StaticLoader();
           }
           final acc = snapshot.data;
@@ -254,11 +247,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
               LSPStatus lspStatus = snapshot.data;
               String validatePayment(Int64 amount) {
                 if (lspStatus?.currentLSP != null) {
-                  final channelMinimumFee =
-                      lspStatus.currentLSP.cheapestOpeningFeeParams.minMsat ~/
-                          1000;
-                  if (amount > acc.maxInboundLiquidity &&
-                      amount <= channelMinimumFee) {
+                  final channelMinimumFee = lspStatus.currentLSP.cheapestOpeningFeeParams.minMsat ~/ 1000;
+                  if (amount > acc.maxInboundLiquidity && amount <= channelMinimumFee) {
                     return texts.invoice_insufficient_amount_fee(
                       acc.currency.format(channelMinimumFee),
                     );
@@ -298,8 +288,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                             validatorFn: validatePayment,
                             style: theme.FieldTextStyle.textStyle,
                           ),
-                          if (_withdrawFetchResponse != null &&
-                              !_withdrawFetchResponse.isFixedAmount) ...[
+                          if (_withdrawFetchResponse != null && !_withdrawFetchResponse.isFixedAmount) ...[
                             Padding(
                               padding: const EdgeInsets.only(top: 8),
                               child: RichText(
@@ -319,10 +308,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                                             ),
                                     ),
                                     TextSpan(
-                                      text: texts.lnurl_fetch_invoice_and(acc
-                                          .currency
-                                          .format(_withdrawFetchResponse
-                                              .maxAmount)),
+                                      text: texts.lnurl_fetch_invoice_and(
+                                          acc.currency.format(_withdrawFetchResponse.maxAmount)),
                                       recognizer: TapGestureRecognizer()
                                         ..onTap = () => _pasteAmount(
                                               acc.currency,
@@ -465,13 +452,10 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     LSPInfo lspInfo,
   ) {
     final connected = accountModel.connected;
-    final minFee = (lspInfo != null)
-        ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000
-        : Int64(0);
+    final minFee = (lspInfo != null) ? lspInfo.cheapestOpeningFeeParams.minMsat ~/ 1000 : Int64(0);
     final minFeeFormatted = accountModel.currency.format(minFee);
     final showMinFeeMessage = minFee > 0;
-    final setUpFee =
-        (lspInfo.cheapestOpeningFeeParams.proportional / 10000).toString();
+    final setUpFee = (lspInfo.cheapestOpeningFeeParams.proportional / 10000).toString();
     final liquidity = accountModel.currency.format(
       connected ? accountModel.maxInboundLiquidity : Int64(0),
     );
@@ -493,8 +477,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
         minFeeFormatted,
       );
     } else {
-      return texts
-          .invoice_lightning_warning_without_min_fee_account_not_connected(
+      return texts.invoice_lightning_warning_without_min_fee_account_not_connected(
         setUpFee,
       );
     }
@@ -535,8 +518,7 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
                 context,
                 texts.qr_action_button_error_code_not_processed,
                 Text(
-                  texts.invoice_receive_fail_message(
-                      extractExceptionMessage(error)),
+                  texts.invoice_receive_fail_message(extractExceptionMessage(error)),
                   style: themeData.dialogTheme.contentTextStyle,
                 ),
               );

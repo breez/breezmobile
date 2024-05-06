@@ -95,8 +95,8 @@ class BreezLogger {
 
   String _recordToString(LogRecord record) =>
       "[${record.loggerName}] {${record.level.name}} (${_formatTime(record.time)}) : ${record.message}"
-          "${record.error != null ? "\n${record.error}" : ""}"
-          "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
+      "${record.error != null ? "\n${record.error}" : ""}"
+      "${record.stackTrace != null ? "\n${record.stackTrace}" : ""}";
 
   String _formatTime(DateTime time) => time.toUtc().toIso8601String();
 

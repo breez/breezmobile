@@ -36,9 +36,7 @@ class ActionButton extends StatelessWidget {
           _backgroundColor(themeData),
         ),
         padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          text != null
-              ? const EdgeInsets.symmetric(horizontal: 16.0)
-              : const EdgeInsets.all(0.0),
+          text != null ? const EdgeInsets.symmetric(horizontal: 16.0) : const EdgeInsets.all(0.0),
         ),
         minimumSize: MaterialStateProperty.all<Size>(
           const Size(40, 40),
@@ -101,9 +99,7 @@ class ActionButton extends StatelessWidget {
             ? themeData.colorScheme.onSurface
             : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
       case Variant.fab:
-        return enabled
-            ? theme.buttonColor
-            : theme.buttonColor.withOpacity(_kDisabledOpacity);
+        return enabled ? theme.buttonColor : theme.buttonColor.withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }
@@ -121,8 +117,7 @@ class ActionButton extends StatelessWidget {
       case Variant.fab:
         return enabled
             ? themeData.textTheme.labelLarge.color
-            : themeData.textTheme.labelLarge.color
-                .withOpacity(_kDisabledOpacity);
+            : themeData.textTheme.labelLarge.color.withOpacity(_kDisabledOpacity);
     }
     throw Exception('Unknown variant: $variant');
   }

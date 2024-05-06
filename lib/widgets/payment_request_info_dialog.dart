@@ -136,10 +136,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         ? null
         : Text(
             widget.invoice.payeeName,
-            style: Theme.of(context)
-                .primaryTextTheme
-                .headlineMedium
-                .copyWith(fontSize: 16),
+            style: Theme.of(context).primaryTextTheme.headlineMedium.copyWith(fontSize: 16),
             textAlign: TextAlign.center,
           );
   }
@@ -173,9 +170,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           hintColor: themeData.dialogTheme.contentTextStyle.color,
           colorScheme: ColorScheme.dark(
             primary: themeData.textTheme.labelLarge.color,
-            error: theme.themeId == "BLUE"
-                ? Colors.red
-                : themeData.colorScheme.error,
+            error: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
           ),
           primaryColor: themeData.textTheme.labelLarge.color,
         ),
@@ -194,8 +189,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 focusNode: _amountFocusNode,
                 controller: _invoiceAmountController,
                 validatorFn: account.validateOutgoingPayment,
-                style: themeData.dialogTheme.contentTextStyle
-                    .copyWith(height: 1.0),
+                style: themeData.dialogTheme.contentTextStyle.copyWith(height: 1.0),
               ),
             ),
           ),
@@ -242,12 +236,10 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
                 child: SingleChildScrollView(
                   child: AutoSizeText(
                     description,
-                    style: themeData.primaryTextTheme.displaySmall
-                        .copyWith(fontSize: 16),
-                    textAlign:
-                        description.length > 40 && !description.contains("\n")
-                            ? TextAlign.start
-                            : TextAlign.center,
+                    style: themeData.primaryTextTheme.displaySmall.copyWith(fontSize: 16),
+                    textAlign: description.length > 40 && !description.contains("\n")
+                        ? TextAlign.start
+                        : TextAlign.center,
                   ),
                 ),
               ),
@@ -273,9 +265,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
         textAlign: TextAlign.center,
         style: themeData.primaryTextTheme.displaySmall.copyWith(
           fontSize: 16,
-          color: theme.themeId == "BLUE"
-              ? Colors.red
-              : themeData.colorScheme.error,
+          color: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
         ),
       ),
     );
@@ -302,8 +292,7 @@ class PaymentRequestInfoDialogState extends State<PaymentRequestInfoDialog> {
           if (widget.invoice.amount > 0 || _formKey.currentState.validate()) {
             if (widget.invoice.amount == 0) {
               _amountToPayMap["_amountToPay"] = toPay;
-              _amountToPayMap["_amountToPayStr"] =
-                  account.currency.format(amountToPay(account));
+              _amountToPayMap["_amountToPayStr"] = account.currency.format(amountToPay(account));
               widget._setAmountToPay(_amountToPayMap);
               widget._onWaitingConfirmation();
             } else {

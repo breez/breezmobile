@@ -26,8 +26,7 @@ class _TransferFundsInProgressDialog extends StatefulWidget {
   }
 }
 
-class _TransferFundsInProgressDialogState
-    extends State<_TransferFundsInProgressDialog> {
+class _TransferFundsInProgressDialogState extends State<_TransferFundsInProgressDialog> {
   StreamSubscription<AccountModel> _stateSubscription;
   ModalRoute _currentRoute;
 

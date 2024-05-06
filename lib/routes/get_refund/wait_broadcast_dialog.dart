@@ -37,8 +37,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
   @override
   void initState() {
     super.initState();
-    _broadcastSubscription =
-        widget._accountBloc.broadcastRefundResponseStream.listen((response) {
+    _broadcastSubscription = widget._accountBloc.broadcastRefundResponseStream.listen((response) {
       setState(() {
         _error = null;
         _response = response;
@@ -202,9 +201,7 @@ class _WaitBroadcastDialog extends State<WaitBroadcastDialog> {
                           fontFamily: "icomoon",
                         ),
                       ),
-                      onPressed: () => ServiceInjector()
-                          .device
-                          .setClipboardText(_response.txID),
+                      onPressed: () => ServiceInjector().device.setClipboardText(_response.txID),
                     ),
                     IconButton(
                       alignment: Alignment.topRight,

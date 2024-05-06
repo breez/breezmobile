@@ -22,10 +22,8 @@ class WebLNHandlers {
   AccountModel _account;
 
   WebLNHandlers(this.context, this.accountBloc, this.invoiceBloc) {
-    _readyInvoicesSubscription = invoiceBloc.readyInvoicesStream
-        .asBroadcastStream()
-        .where((p) => p != null)
-        .listen((bolt11) {
+    _readyInvoicesSubscription =
+        invoiceBloc.readyInvoicesStream.asBroadcastStream().where((p) => p != null).listen((bolt11) {
       _currentInvoiceRequestCompleter?.complete(bolt11.rawPayReq);
       _currentInvoiceRequestCompleter = null;
     }, onError: (_) {
@@ -33,17 +31,13 @@ class WebLNHandlers {
       _currentInvoiceRequestCompleter = null;
     });
 
-    _accountModelSubscription =
-        accountBloc.accountStream.listen((acc) => _account = acc);
+    _accountModelSubscription = accountBloc.accountStream.listen((acc) => _account = acc);
   }
 
-  Future<String> get initWebLNScript =>
-      rootBundle.loadString('src/scripts/initializeWebLN.js');
+  Future<String> get initWebLNScript => rootBundle.loadString('src/scripts/initializeWebLN.js');
 
   Future<String> handleMessage(postMessage) async {
-    Map<String,
-            Future<Map<String, dynamic>> Function(Map<String, dynamic> data)>
-        handlersMapping = {
+    Map<String, Future<Map<String, dynamic>> Function(Map<String, dynamic> data)> handlersMapping = {
       "sendPayment": _sendPayment,
       "makeInvoice": _makeInvoice,
       "enable": (_) => Future.value({}),
@@ -105,13 +99,11 @@ class WebLNHandlers {
         context: context,
         barrierDismissible: false,
         builder: (ctx) {
-          return MakeInvoiceRequest(
-              amount: amount, description: memo, account: _account);
+          return MakeInvoiceRequest(amount: amount, description: memo, account: _account);
         });
 
     if (accept == true) {
-      invoiceBloc.newInvoiceRequestSink
-          .add(InvoiceRequestModel(null, memo, null, Int64(amount)));
+      invoiceBloc.newInvoiceRequestSink.add(InvoiceRequestModel(null, memo, null, Int64(amount)));
       return _trackInvoice().then((bolt11) => {"paymentRequest": bolt11});
     }
     return Future.error("Request denied");
@@ -131,8 +123,7 @@ class WebLNHandlers {
   Future _trackPayment(String bolt11) {
     Completer paymentCompleter = Completer();
     _sentPaymentResultSubscription?.cancel();
-    _sentPaymentResultSubscription =
-        accountBloc.completedPaymentsStream.listen((payment) {
+    _sentPaymentResultSubscription = accountBloc.completedPaymentsStream.listen((payment) {
       if (payment.paymentRequest.paymentRequest == bolt11) {
         if (payment.cancelled) {
           paymentCompleter.completeError("canceled");

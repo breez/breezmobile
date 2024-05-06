@@ -59,9 +59,7 @@ class LNURLWebViewPageState extends State<LNURLWebViewPage> {
   Future _handleLNUrlAuth() async {
     final texts = context.texts();
     Uri uri = widget.endpointURI;
-    var response = widget.vendorModel.id == "lnmarkets"
-        ? await http.post(uri)
-        : await http.get(uri);
+    var response = widget.vendorModel.id == "lnmarkets" ? await http.post(uri) : await http.get(uri);
     if (response.statusCode != 200 && response.statusCode != 201) {
       throw Exception(
         texts.lnurl_webview_error_message(widget.vendorModel.displayName),

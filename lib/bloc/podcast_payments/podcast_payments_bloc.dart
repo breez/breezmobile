@@ -39,8 +39,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   final _paymentEventsController = StreamController<PaymentEvent>.broadcast();
 
-  Stream<PaymentEvent> get paymentEventsStream =>
-      _paymentEventsController.stream;
+  Stream<PaymentEvent> get paymentEventsStream => _paymentEventsController.stream;
 
   BreezBridge _breezLib;
   AggregatedPayments _aggregatedPayments;
@@ -76,8 +75,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
     _log.info("paying boost $action");
     var currentEpisode = await _getCurrentPlayingEpisode();
     _log.info("currentEpisode = ${currentEpisode.guid}");
-    _paymentEventsController
-        .add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
+    _paymentEventsController.add(PaymentEvent(PaymentEventType.BoostStarted, action.sats));
     if (currentEpisode != null) {
       final value = await _applyValueFromTimeSplit(
         await _getLightningPaymentValue(currentEpisode),
@@ -126,15 +124,12 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       }
       secondsPassed += 1;
       // minutes before next payment
-      var paidMinutes = Duration(
-              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
-          .inMinutes;
+      var paidMinutes = Duration(seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor()).inMinutes;
       _listeningTime[currentPlayedEpisode.contentUrl] += playbackSpeed;
 
       // minutes after next payment
-      final nextPaidMinutes = Duration(
-              seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor())
-          .inMinutes;
+      final nextPaidMinutes =
+          Duration(seconds: _listeningTime[currentPlayedEpisode.contentUrl].floor()).inMinutes;
 
       if (secondsPassed % updatePodcastHistoryFrequencyInSeconds == 0) {
         _addToPodcastHistory(
@@ -143,8 +138,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             podcastImageUrl: currentPlayedEpisode.metadata["feed"]["image"],
             satsSpent: 0,
             podcastUrl: currentPlayedEpisode.metadata["feed"]["originalUrl"],
-            durationInMins:
-                (updatePodcastHistoryFrequencyInSeconds * playbackSpeed) / 60);
+            durationInMins: (updatePodcastHistoryFrequencyInSeconds * playbackSpeed) / 60);
       }
 
       // if minutes increased
@@ -161,8 +155,8 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           boostTime,
         );
         if (value != null) {
-          _payRecipients(currentPlayedEpisode, value.recipients,
-              user.paymentOptions.preferredSatsPerMinValue);
+          _payRecipients(
+              currentPlayedEpisode, value.recipients, user.paymentOptions.preferredSatsPerMinValue);
         }
       }
     });
@@ -186,8 +180,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Future<double> _getCurrentPlaybackSpeed() async {
     try {
-      var settings =
-          await settingsBloc.settings.first.timeout(const Duration(seconds: 1));
+      var settings = await settingsBloc.settings.first.timeout(const Duration(seconds: 1));
       return settings?.playbackSpeed;
     } catch (e) {
       return 1.0;
@@ -210,24 +203,17 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         _log.severe("failed to fetch receiver node: ", err);
       }
     }
-    double totalSplits =
-        recipients.map((r) => r.split).reduce((agg, next) => agg + next);
+    double totalSplits = recipients.map((r) => r.split).reduce((agg, next) => agg + next);
     final breezShare = totalSplits / 20;
     totalSplits += breezShare;
-    final withBreez = List<ValueDestination>.from([
-      ValueDestination(
-          address: breezReceiverNode,
-          name: "Breez",
-          type: "keysend",
-          split: breezShare)
-    ])
+    final withBreez = List<ValueDestination>.from(
+        [ValueDestination(address: breezReceiverNode, name: "Breez", type: "keysend", split: breezShare)])
       ..addAll(recipients);
 
     // get current podcast listening position
     PositionState position;
     try {
-      position = await audioBloc.playPosition.first
-          .timeout(const Duration(seconds: 1));
+      position = await audioBloc.playPosition.first.timeout(const Duration(seconds: 1));
     } catch (e) {
       // do nothing.
     }
@@ -240,8 +226,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
     // in case not boost we want to ensure any minutes is not paid more than one time.
     if (!boost && paidPositions[paidPositionKey] == true) {
-      _log.info(
-          "skipping paying minute $minuteToPay for episode ${episode.title}");
+      _log.info("skipping paying minute $minuteToPay for episode ${episode.title}");
       return;
     }
     paidPositions[paidPositionKey] = true;
@@ -249,8 +234,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
       final amount = (d.split * total / totalSplits);
       var payPart = amount.toInt();
       if (!boost) {
-        payPart =
-            (await _aggregatedPayments.addAmount(d.address, amount)).toInt();
+        payPart = (await _aggregatedPayments.addAmount(d.address, amount)).toInt();
       }
       final customKey = d.customKey?.toString();
       final customValue = d.customValue?.toString();
@@ -283,8 +267,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
             .then((payResponse) async {
           if (payResponse.paymentError?.isNotEmpty == true) {
             if (!boost) {
-              await _aggregatedPayments.addAmount(
-                  d.address, payPart.toDouble());
+              await _aggregatedPayments.addAmount(d.address, payPart.toDouble());
             }
             _log.info(
                 "failed to pay $netPay to destination ${d.address}, error=${payResponse.paymentError} trying next time...");
@@ -294,15 +277,13 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
           netPaySplitSum = netPaySplitSum + netPay;
 
           if (!boost) {
-            _paymentEventsController
-                .add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
+            _paymentEventsController.add(PaymentEvent(PaymentEventType.StreamCompleted, payPart));
           }
         }).catchError((err) async {
           if (!boost) {
             await _aggregatedPayments.addAmount(d.address, payPart.toDouble());
           }
-          _log.info(
-              "failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
+          _log.info("failed to pay $netPay to destination ${d.address}, error=$err trying next time...");
         });
       }
     });
@@ -336,8 +317,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
     _log.info("Looking for split for boost time $boostTime");
     for (var split in value.timeSplits) {
-      if (boostTime >= split.startTime &&
-          boostTime <= (split.startTime + split.duration)) {
+      if (boostTime >= split.startTime && boostTime <= (split.startTime + split.duration)) {
         _log.info("Found a split for boost time ${split.toMap()}");
         return split;
       } else {
@@ -559,8 +539,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
 
   Future<Int64> _lastFeeForDestination(String address) {
     return accountBloc.paymentsStream
-        .map((ps) => ps.nonFilteredItems
-            .firstWhere((i) => i.destination == address, orElse: () => null))
+        .map((ps) => ps.nonFilteredItems.firstWhere((i) => i.destination == address, orElse: () => null))
         .where((pi) => pi != null)
         .map(((pi) => pi.fee))
         .first
@@ -588,8 +567,7 @@ class PodcastPaymentsBloc with AsyncActionsHandler {
         durationInMins: durationInMins ?? 0,
         podcastImageUrl: podcastImageUrl);
 
-    await PodcastHistoryDatabase.instance
-        .addToPodcastHistoryRecord(podcastHistoryItem);
+    await PodcastHistoryDatabase.instance.addToPodcastHistoryRecord(podcastHistoryItem);
   }
 
   Map<Int64, String> _getTlv({
@@ -711,9 +689,7 @@ class ValueModel {
 
   factory ValueModel.fromJson(Map<String, dynamic> map) {
     return ValueModel(
-        type: map['type'] as String,
-        method: map['method'] as String,
-        suggested: map['suggested'] as String);
+        type: map['type'] as String, method: map['method'] as String, suggested: map['suggested'] as String);
   }
 
   Map<String, dynamic> toJson() {

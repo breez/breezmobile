@@ -29,9 +29,7 @@ AlertDialog createAnimatedLoaderDialog(
           textAlign: TextAlign.center,
         ),
         Image.asset(
-          theme.themeId == "BLUE"
-              ? 'src/images/breez_loader_blue.gif'
-              : 'src/images/breez_loader_dark.gif',
+          theme.themeId == "BLUE" ? 'src/images/breez_loader_blue.gif' : 'src/images/breez_loader_dark.gif',
           height: 64.0,
           gaplessPlayback: true,
         ),

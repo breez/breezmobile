@@ -96,8 +96,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
   _handleNavigationRequest(NavigationRequest request) {
     if (request.url.startsWith('lightning:')) {
       return NavigationDecision.prevent;
-    } else if (request.url.startsWith('tg:') ||
-        request.url.startsWith('fold:')) {
+    } else if (request.url.startsWith('tg:') || request.url.startsWith('fold:')) {
       launchUrlString(request.url);
       return NavigationDecision.prevent;
     }
@@ -106,18 +105,16 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   void _onPageFinished(String url) async {
     // intercept ln link clicks
-    _webViewController.runJavaScript(
-        await rootBundle.loadString('src/scripts/lightningLinkInterceptor.js'));
+    _webViewController.runJavaScript(await rootBundle.loadString('src/scripts/lightningLinkInterceptor.js'));
     // redirect post messages to javascript channel
-    _webViewController.runJavaScript(
-        'window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
+    _webViewController
+        .runJavaScript('window.onmessage = (message) => window.BreezWebView.postMessage(message.data);');
 
     _webViewController.runJavaScript(await _weblnHandlers.initWebLNScript);
 
     // inject nostr-provider for Snort
     if (widget._title == "Snort") {
-      _webViewController
-          .runJavaScript(await _nostrEventHandler.initNostrProvider);
+      _webViewController.runJavaScript(await _nostrEventHandler.initNostrProvider);
     }
 
     if (kDebugMode) {
@@ -143,8 +140,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
       // handle lightning links and WebLN payments
       if (postMessage["lightningLink"] != null &&
           postMessage["lightningLink"].toLowerCase().startsWith("lightning:")) {
-        _invoiceBloc.newLightningLinkSink
-            .add(postMessage["lightningLink"].substring(10));
+        _invoiceBloc.newLightningLinkSink.add(postMessage["lightningLink"].substring(10));
       } else {
         _weblnHandlers.handleMessage(postMessage).then((resScript) {
           if (resScript != null) {

@@ -50,8 +50,7 @@ String _formatFeeMessage(
   final minFeeFormatted = acc.currency.format(
     longestValidOpeningFeeParams.minMsat ~/ 1000,
   );
-  final setUpFee =
-      (longestValidOpeningFeeParams.proportional / 10000).toString();
+  final setUpFee = (longestValidOpeningFeeParams.proportional / 10000).toString();
   final liquidity = acc.currency.format(acc.maxInboundLiquidity);
 
   if (connected && showMinFeeMessage) {
@@ -71,8 +70,7 @@ String _formatFeeMessage(
       minFeeFormatted,
     );
   } else {
-    return texts
-        .invoice_lightning_warning_without_min_fee_account_not_connected(
+    return texts.invoice_lightning_warning_without_min_fee_account_not_connected(
       setUpFee,
     );
   }

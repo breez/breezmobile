@@ -240,16 +240,14 @@ class Sale implements DBItem {
     }).toList();
 
     if (!hasSaleLine) {
-      saleLines.add(SaleLine.fromItem(item, quantity, satConversionRate)
-          .copyWith(saleID: id));
+      saleLines.add(SaleLine.fromItem(item, quantity, satConversionRate).copyWith(saleID: id));
     }
     return copyWith(saleLines: saleLines);
   }
 
   Sale removeItem(bool Function(SaleLine) predicate) {
     var saleLines = this.saleLines.toList();
-    return copyWith(
-        saleLines: saleLines..removeWhere((element) => predicate(element)));
+    return copyWith(saleLines: saleLines..removeWhere((element) => predicate(element)));
   }
 
   Sale updateItems(SaleLine Function(SaleLine) predicate) {
@@ -260,8 +258,7 @@ class Sale implements DBItem {
     }).toList());
   }
 
-  Sale incrementQuantity(int itemID, double satConversionRate,
-      {int quantity = 1}) {
+  Sale incrementQuantity(int itemID, double satConversionRate, {int quantity = 1}) {
     var saleLines = this.saleLines.map((sl) {
       if (sl.itemID == itemID) {
         return sl.copyWith(quantity: sl.quantity + quantity);
@@ -273,8 +270,7 @@ class Sale implements DBItem {
   }
 
   Sale addCustomItem(double price, String currency, double satConversionRate) {
-    int customItemsCount =
-        saleLines.where((element) => element.itemID == null).length;
+    int customItemsCount = saleLines.where((element) => element.itemID == null).length;
     var newSaleLines = saleLines.toList()
       ..add(SaleLine(
         itemName: getSystemAppLocalizations().pos_custom_item_name(
@@ -294,8 +290,7 @@ class Sale implements DBItem {
     Map<double, double> perCurrency = {};
     for (var element in saleLines) {
       perCurrency[element.satConversionRate] =
-          (perCurrency[element.satConversionRate] ?? 0) +
-              element.pricePerItem * element.quantity;
+          (perCurrency[element.satConversionRate] ?? 0) + element.pricePerItem * element.quantity;
     }
     perCurrency.forEach((rate, value) {
       totalSat += rate * value;
@@ -349,10 +344,7 @@ class SaleSummary {
         currencies = json["currencies"].toString().split(",").toList();
 
   List<String> fiatCurrencies() {
-    return currencies
-        .map((e) => e.toUpperCase())
-        .where((e) => e != "BTC" && e != "SAT")
-        .toList();
+    return currencies.map((e) => e.toUpperCase()).where((e) => e != "BTC" && e != "SAT").toList();
   }
 }
 

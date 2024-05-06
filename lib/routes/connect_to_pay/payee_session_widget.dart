@@ -83,8 +83,7 @@ class PayeeSessionWidget extends StatelessWidget {
                               refreshedLSP.cheapestOpeningFeeParams,
                             ),
                             () {
-                              _currentSession.approvePaymentSink
-                                  .add(refreshedLSP.raw);
+                              _currentSession.approvePaymentSink.add(refreshedLSP.raw);
                               return;
                             },
                           );
@@ -106,8 +105,7 @@ class PayeeSessionWidget extends StatelessWidget {
                   padding: const EdgeInsets.fromLTRB(25.0, 25.0, 25.0, 21.0),
                   child: PeersConnection(sessionState),
                 ),
-                payerAmount == null ||
-                        _account.maxInboundLiquidity >= payerAmount
+                payerAmount == null || _account.maxInboundLiquidity >= payerAmount
                     ? const SizedBox()
                     : WarningBox(
                         contentPadding: const EdgeInsets.all(8),

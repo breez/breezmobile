@@ -70,9 +70,7 @@ class CalendarDialogState extends State<CalendarDialog> {
           child: Text(
             texts.pos_transactions_range_dialog_clear,
             style: theme.cancelButtonStyle.copyWith(
-              color: theme.themeId == "BLUE"
-                  ? Colors.red
-                  : themeData.colorScheme.error,
+              color: theme.themeId == "BLUE" ? Colors.red : themeData.colorScheme.error,
             ),
           ),
         ),
@@ -142,9 +140,8 @@ class CalendarDialogState extends State<CalendarDialog> {
       },
     );
     if (selectedDate != null) {
-      Duration difference = isStartBtn
-          ? selectedDate.difference(_endDate)
-          : selectedDate.difference(_startDate);
+      Duration difference =
+          isStartBtn ? selectedDate.difference(_endDate) : selectedDate.difference(_startDate);
       if (difference.inDays < 0) {
         setState(() {
           isStartBtn ? _startDate = selectedDate : _endDate = selectedDate;
@@ -164,9 +161,7 @@ class CalendarDialogState extends State<CalendarDialog> {
   }
 
   void _applyControllers() {
-    if (_startDate != null &&
-        _endDate != null &&
-        _endDate.isBefore(_startDate)) {
+    if (_startDate != null && _endDate != null && _endDate.isBefore(_startDate)) {
       final temp = _endDate;
       _endDate = _startDate;
       _startDate = temp;
