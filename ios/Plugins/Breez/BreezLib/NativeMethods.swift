@@ -97,6 +97,7 @@ fileprivate let calls : [String:BindingExecutor] = [
     "checkLSPClosedChannelMismatch": SingleArgBindingExecutor(f: BindingsCheckLSPClosedChannelMismatch),    
     "resetClosedChannelChainInfo": SingleArgBindingExecutor(f: BindingsResetClosedChannelChainInfo),
     "setNonBlockingUnconfirmedSwaps": EmptyArgsBindingExecutor(f: BindingsSetNonBlockingUnconfirmedSwaps),
+    "closeChannels": SingleArgBindingExecutor(f: BindingsCloseChannels),
 
     //jobs
     //    FOUNDATION_EXPORT id<BindingsJobController> BindingsNewClosedChannelsJob(NSString* workingDir, NSError** error);
