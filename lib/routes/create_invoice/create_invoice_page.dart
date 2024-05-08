@@ -477,25 +477,24 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
     );
 
     if (connected && showMinFeeMessage) {
-      return texts.invoice_ln_address_warning_with_min_fee_account_connected(
+      return texts.invoice_lightning_warning_with_min_fee_account_connected(
         setUpFee,
         minFeeFormatted,
         liquidity,
       );
     } else if (connected && !showMinFeeMessage) {
-      return texts.invoice_ln_address_warning_without_min_fee_account_connected(
+      return texts.invoice_lightning_warning_without_min_fee_account_connected(
         setUpFee,
         liquidity,
       );
     } else if (!connected && showMinFeeMessage) {
-      return texts
-          .invoice_ln_address_warning_with_min_fee_account_not_connected(
+      return texts.invoice_lightning_warning_with_min_fee_account_not_connected(
         setUpFee,
         minFeeFormatted,
       );
     } else {
       return texts
-          .invoice_ln_address_warning_without_min_fee_account_not_connected(
+          .invoice_lightning_warning_without_min_fee_account_not_connected(
         setUpFee,
       );
     }
