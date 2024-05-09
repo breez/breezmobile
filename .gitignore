@@ -27,3 +27,4 @@ coverage/
 untranslated_messages.txt
 ios/Flutter/Flutter.podspec
 .envrc
+.flutter-version
