@@ -48,21 +48,22 @@ class AccountPageState extends State<AccountPage>
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
       //a listener that rebuilds our widget tree when payment filter changes
       _accountBloc.paymentFilterStream.listen((event) {
-        widget.scrollController.position
-            .restoreOffset(widget.scrollController.offset + 1);
-        Future.delayed(
-          const Duration(milliseconds: 150),
-          () => {setState(() {})},
-        );
+        if (widget.scrollController.position.hasContentDimensions) {
+          widget.scrollController.position.restoreOffset(widget.scrollController.offset + 1);
+          Future.delayed(
+            const Duration(milliseconds: 150),
+            () => {setState(() {})},
+          );
+        }
       });
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   @override

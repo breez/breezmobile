@@ -13,11 +13,14 @@ class CircularButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: TextButton(
-            // ignore: missing_required_param
-            style: TextButton.styleFrom(padding: const EdgeInsets.all(24)),
-            child: child));
+      customBorder: const CircleBorder(),
+      onTap: onTap,
+      // ignore: missing_required_param
+      child: TextButton(
+        // ignore: missing_required_param
+        style: TextButton.styleFrom(padding: const EdgeInsets.all(24)),
+        child: child,
+      ),
+    );
   }
 }

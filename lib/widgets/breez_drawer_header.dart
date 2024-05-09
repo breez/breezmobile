@@ -1,3 +1,5 @@
+// ignore_for_file: overridden_fields
+
 import 'package:flutter/material.dart';
 
 const double _kBreezDrawerHeaderHeight = 160.0 + 1.0; // bottom edge

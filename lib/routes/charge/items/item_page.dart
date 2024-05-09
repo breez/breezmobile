@@ -52,6 +52,7 @@ class ItemPageState extends State<ItemPage> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       final texts = context.texts();
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
@@ -99,7 +100,6 @@ class ItemPageState extends State<ItemPage> {
       _nameController.addListener(() => setState(() {}));
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   @override

@@ -110,8 +110,8 @@ class CreateInvoicePageState extends State<CreateInvoicePage> {
 
   @override
   void initState() {
-    _doneAction = KeyboardDoneAction([_amountFocusNode]);
     super.initState();
+    _doneAction = KeyboardDoneAction([_amountFocusNode]);
   }
 
   @override

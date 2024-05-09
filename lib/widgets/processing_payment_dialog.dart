@@ -52,12 +52,8 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
   bool _isInit = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       Future.value(true).then((_) {
         _payAncClose();
@@ -93,7 +89,6 @@ class ProcessingPaymentDialogState extends State<ProcessingPaymentDialog>
       });
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   _closeDialog() {

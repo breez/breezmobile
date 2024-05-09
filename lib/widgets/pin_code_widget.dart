@@ -1,3 +1,5 @@
+// ignore_for_file: missing_required_param
+
 import 'dart:math';
 
 import 'package:breez/bloc/user_profile/breez_user_model.dart';
