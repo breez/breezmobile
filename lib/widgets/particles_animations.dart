@@ -23,10 +23,10 @@ class ParticlesState extends State<Particles> {
 
   @override
   void initState() {
+    super.initState();
     List.generate(widget.numberOfParticles, (index) {
       particles.add(ParticleModel(random));
     });
-    super.initState();
   }
 
   @override

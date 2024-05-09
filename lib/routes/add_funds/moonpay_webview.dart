@@ -32,6 +32,7 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       _addFundsBloc = BlocProvider.of<AddFundsBloc>(context);
       _addFundsBloc.addFundRequestSink.add(AddFundsInfo(false, false));
@@ -49,7 +50,6 @@ class MoonpayWebViewState extends State<MoonpayWebView> {
 
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   @override

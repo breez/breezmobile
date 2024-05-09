@@ -16,6 +16,7 @@ import 'shared_preferences_mock.dart';
 class InjectorMock extends Mock implements ServiceInjector {
   BreezLibMock breezLibMock = BreezLibMock();
 
+  @override
   BreezBridge get breezBridge => breezLibMock;
 
   SharedPreferencesMock sharedPreferencesMock = SharedPreferencesMock();

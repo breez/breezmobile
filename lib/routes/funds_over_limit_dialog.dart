@@ -21,10 +21,6 @@ class SwapRefundDialog extends StatefulWidget {
 
 class SwapRefundDialogState extends State<SwapRefundDialog> {
   Future _fetchFuture;
-  @override
-  void initState() {
-    super.initState();
-  }
 
   @override
   void didChangeDependencies() {

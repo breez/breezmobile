@@ -28,10 +28,13 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
   @override
   void initState() {
     super.initState();
-    _settingsSubscription = widget._accountBloc.accountSettingsStream
-        .listen((settings) => setState(() {
-              _settings = settings;
-            }));
+    _settingsSubscription = widget._accountBloc.accountSettingsStream.listen(
+      (settings) {
+        setState(() {
+          _settings = settings;
+        });
+      },
+    );
   }
 
   @override

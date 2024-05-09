@@ -83,8 +83,8 @@ class LNURLFetchInvoicePageState extends State<LNURLFetchInvoicePage> {
 
   @override
   void initState() {
-    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
     super.initState();
+    _doneAction = KeyboardDoneAction(<FocusNode>[_amountFocusNode]);
   }
 
   @override

@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 class DeviceMock extends Mock implements Device {
   final StreamController<NotificationType> _eventsController = StreamController.broadcast();
 
+  @override
   Stream<NotificationType> get eventStream => _eventsController.stream;
 
   void dispose() {

@@ -55,14 +55,14 @@ class SendOnchainState extends State<SendOnchain> {
 
   @override
   void didChangeDependencies() {
-    _updateFee();
     super.didChangeDependencies();
+    _updateFee();
   }
 
   @override
   void didUpdateWidget(Widget oldWidget) {
-    _updateFee();
     super.didUpdateWidget(oldWidget);
+    _updateFee();
   }
 
   void _updateFee() {
