@@ -21,6 +21,7 @@ final _log = Logger("BreezBridge");
 
 // This is the bridge to the native breez library. Protobuf messages are used as the interface and to generate the classes use the command below:
 // protoc --dart_out=grpc:lib/services/breezlib/data/ -Ilib/services/breezlib/protobuf/ lib/services/breezlib/protobuf/messages.proto
+// dart format -l 110 lib/services/breezlib/data/
 // You may need to activate protoc_plugin. See [here](https://pub.dev/packages/protoc_plugin#how-to-build).
 //
 // Due to Flutter SDK restrictions, we need to install a strict version of protoc_plugin
@@ -925,7 +926,7 @@ class BreezBridge {
       'setBackupTorConfig',
       {'argument': torConfig?.writeToBuffer()},
     ).then((_) {
-      _log.info("breez bridge - set backup torconfig");
+      _log.info("breez bridge - set backup TorConfig");
     });
   }
 

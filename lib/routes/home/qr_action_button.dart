@@ -163,6 +163,7 @@ class _QrActionButtonState extends State<QrActionButton> {
                   }
 
                   _log.finest("Scanned string is unrecognized");
+                  // ignore: use_build_context_synchronously
                   showFlushbar(
                     context,
                     message: texts.qr_action_button_error_code_not_processed,

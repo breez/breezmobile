@@ -13,11 +13,6 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
   bool _showReminderText = false;
 
   @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final texts = context.texts();
     final themeData = Theme.of(context);

@@ -60,6 +60,7 @@ class SaleViewState extends State<SaleView> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (_currentSaleSubscription == null) {
       if (!widget.readOnly) {
         final posCatalogBloc = AppBlocsProvider.of<PosCatalogBloc>(context);
@@ -83,7 +84,6 @@ class SaleViewState extends State<SaleView> {
         _noteController.text = widget.readOnlySale.note;
       }
     }
-    super.didChangeDependencies();
   }
 
   @override

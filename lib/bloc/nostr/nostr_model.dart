@@ -4,7 +4,7 @@ class Event {
   String pubKey;
   String content;
   List<List<String>> tags;
-  int created_at;
+  int createdAt;
   String sig;
 
   Event({
@@ -13,7 +13,7 @@ class Event {
     this.pubKey,
     this.content,
     this.tags,
-    this.created_at,
+    this.createdAt,
     this.sig,
   });
 }

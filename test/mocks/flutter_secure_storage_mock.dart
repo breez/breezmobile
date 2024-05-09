@@ -2,6 +2,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mockito/mockito.dart';
 
 class FlutterSecureStorageMock extends Mock implements FlutterSecureStorage {
+  @override
   Future<String> read({
     String key,
     IOSOptions iOptions,
@@ -13,6 +14,7 @@ class FlutterSecureStorageMock extends Mock implements FlutterSecureStorage {
   }) =>
       Future<String>.value("${key}_value");
 
+  @override
   Future<void> write({
     String key,
     String value,

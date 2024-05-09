@@ -373,7 +373,9 @@ class AccountModel {
     }
 
     if (swapStatus.error?.isNotEmpty == true) {
-      return texts.status_failed_to_add_funds(extractExceptionMessage(swapStatus.error));
+      return texts.status_failed_to_add_funds(
+        extractExceptionMessage(swapStatus.error),
+      );
     }
 
     return null;
