@@ -70,10 +70,10 @@ class VerifyBackupPhrasePageState extends State<VerifyBackupPhrasePage> {
 
   @override
   void initState() {
+    super.initState();
     _mnemonicsList = widget._mnemonics.split(" ");
     _hasError = false;
     _selectIndexes();
-    super.initState();
   }
 
   Widget _buildBackupBtn(

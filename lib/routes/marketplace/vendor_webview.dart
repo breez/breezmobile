@@ -42,6 +42,7 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       _invoiceBloc = AppBlocsProvider.of<InvoiceBloc>(context);
       _weblnHandlers = WebLNHandlers(context, widget.accountBloc, _invoiceBloc);
@@ -58,7 +59,6 @@ class VendorWebViewPageState extends State<VendorWebViewPage> {
     if (_webViewController.platform is AndroidWebViewController) {
       AndroidWebViewController.enableDebugging(true);
     }
-    super.didChangeDependencies();
   }
 
   @override

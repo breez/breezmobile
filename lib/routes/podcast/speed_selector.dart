@@ -29,11 +29,10 @@ class SpeedSelectorWidgetState extends State<SpeedSelectorWidget> {
 
   @override
   void initState() {
+    super.initState();
     var settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
 
     speed = settingsBloc.currentSettings.playbackSpeed;
-
-    super.initState();
   }
 
   @override
@@ -107,13 +106,12 @@ class SpeedSliderState extends State<SpeedSlider> {
 
   @override
   void initState() {
+    super.initState();
     final settingsBloc = Provider.of<SettingsBloc>(context, listen: false);
 
     speed = settingsBloc.currentSettings.playbackSpeed;
     trimSilence = settingsBloc.currentSettings.trimSilence;
     volumeBoost = settingsBloc.currentSettings.volumeBoost;
-
-    super.initState();
   }
 
   @override

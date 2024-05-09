@@ -86,11 +86,6 @@ class DevViewState extends State<DevView> {
 
   bool _showDefaultCommands = true;
 
-  @override
-  void initState() {
-    super.initState();
-  }
-
   void _sendCommand(String command) {
     FocusScope.of(context).requestFocus(FocusNode());
     _lastCommand = command;

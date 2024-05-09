@@ -103,59 +103,61 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    _hiddenRoutes.add("/get_refund");
-    widget.accountBloc.accountStream.listen((acc) {
-      setState(() {
-        if (acc != null &&
-            acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
-          _hiddenRoutes.remove("/get_refund");
-        } else {
-          _hiddenRoutes.add("/get_refund");
-        }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _hiddenRoutes.add("/get_refund");
+      widget.accountBloc.accountStream.listen((acc) {
+        setState(() {
+          if (acc != null &&
+              acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
+            _hiddenRoutes.remove("/get_refund");
+          } else {
+            _hiddenRoutes.add("/get_refund");
+          }
+        });
       });
-    });
 
-    widget.accountBloc.accountStream.listen((acc) {
-      var activeAccountRoutes = [
-        "/connect_to_pay",
-        "/pay_invoice",
-        "/create_invoice"
-      ];
-      Function addOrRemove =
-          acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
-      setState(() {
-        for (var r in activeAccountRoutes) {
-          addOrRemove(r);
-        }
+      widget.accountBloc.accountStream.listen((acc) {
+        var activeAccountRoutes = [
+          "/connect_to_pay",
+          "/pay_invoice",
+          "/create_invoice"
+        ];
+        Function addOrRemove =
+            acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
+        setState(() {
+          for (var r in activeAccountRoutes) {
+            addOrRemove(r);
+          }
+        });
       });
-    });
 
-    AudioService.notificationClicked.where((event) => event == true).listen(
-        (event) async {
-      final navigator = Navigator.of(context);
-      final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
-      final audioBloc = Provider.of<AudioBloc>(context, listen: false);
-      final userModel = await userBloc.userStream.first;
-      final nowPlaying = await audioBloc.nowPlaying.first.timeout(
-        const Duration(seconds: 1),
-      );
-      if (nowPlaying != null &&
-          !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
-        navigator.push(
-          MaterialPageRoute<void>(
-            builder: (context) => withPodcastTheme(userModel, NowPlaying()),
-            fullscreenDialog: false,
-          ),
+      AudioService.notificationClicked.where((event) => event == true).listen(
+          (event) async {
+        final navigator = Navigator.of(context);
+        final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
+        final audioBloc = Provider.of<AudioBloc>(context, listen: false);
+        final userModel = await userBloc.userStream.first;
+        final nowPlaying = await audioBloc.nowPlaying.first.timeout(
+          const Duration(seconds: 1),
         );
-      }
-    }, onDone: () {
-      if (kDebugMode) {
-        print("done");
-      }
-    }, onError: (e) {
-      if (kDebugMode) {
-        print("error $e");
-      }
+        if (nowPlaying != null &&
+            !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+          navigator.push(
+            MaterialPageRoute<void>(
+              builder: (context) => withPodcastTheme(userModel, NowPlaying()),
+              fullscreenDialog: false,
+            ),
+          );
+        }
+      }, onDone: () {
+        if (kDebugMode) {
+          print("done");
+        }
+      }, onError: (e) {
+        if (kDebugMode) {
+          print("error $e");
+        }
+      });
     });
   }
 

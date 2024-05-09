@@ -42,6 +42,7 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
 
   @override
   Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
     final podcastHistoryBloc = AppBlocsProvider.of<PodcastHistoryBloc>(context);
     PodcastHistoryTimeRange timeRange =
         await podcastHistoryBloc.getPodcastHistoryTimeRageFromLocalDb();
@@ -50,8 +51,6 @@ class PodcastHistoryPageState extends State<PodcastHistoryPage> {
       startDate: timeRange.startDate,
       endDate: timeRange.endDate,
     );
-
-    super.didChangeDependencies();
   }
 
   @override

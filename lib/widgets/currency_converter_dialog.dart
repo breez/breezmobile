@@ -69,6 +69,7 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       final themeData = Theme.of(context);
       final texts = context.texts();
@@ -104,7 +105,6 @@ class CurrencyConverterDialogState extends State<CurrencyConverterDialog>
         });
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   @override

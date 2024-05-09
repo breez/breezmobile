@@ -33,11 +33,11 @@ class PosTransactionsPageState extends State<PosTransactionsPage> {
 
   @override
   void didChangeDependencies() {
+    super.didChangeDependencies();
     if (!_isInit) {
       _accountBloc = AppBlocsProvider.of<AccountBloc>(context);
       _isInit = true;
     }
-    super.didChangeDependencies();
   }
 
   @override

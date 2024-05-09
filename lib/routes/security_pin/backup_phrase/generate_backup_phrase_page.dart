@@ -28,8 +28,8 @@ class GenerateBackupPhrasePageState extends State<GenerateBackupPhrasePage> {
 
   @override
   void initState() {
-    _mnemonicsList = widget.mnemonics.split(" ");
     super.initState();
+    _mnemonicsList = widget.mnemonics.split(" ");
   }
 
   @override

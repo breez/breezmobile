@@ -11,6 +11,7 @@ final _log = Logger("BreezServer");
 
 //proto command:
 //protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
+//dart format -l 110 lib/services/breez_server/generated/
 class BreezServer {
   static final defaultCallOptions = CallOptions(
     timeout: const Duration(seconds: 10),
@@ -29,12 +30,14 @@ class BreezServer {
     return response.fullUrl;
   }
 
-  Future<String> registerDevice(String id, String nodeid) async {
+  Future<String> registerDevice(String id, String nodeId) async {
     await _ensureValidChannel();
     var invoicerClient = InvoicerClient(_channel, options: defaultCallOptions);
-    var response = await invoicerClient.registerDevice(RegisterRequest()
-      ..deviceID = id
-      ..lightningID = nodeid);
+    var response = await invoicerClient.registerDevice(
+      RegisterRequest()
+        ..deviceID = id
+        ..lightningID = nodeId,
+    );
     _log.info('registerDevice response: $response');
     return response.breezID;
   }
@@ -121,14 +124,13 @@ class BreezServer {
   Future<ClientChannel> _createChannel() async {
     String configString = await rootBundle.loadString('conf/breez.conf');
     Config config = Config.fromString(configString);
-    var hostdetails =
-        config.get("Application Options", "breezserver").split(':');
-    if (hostdetails.length < 2) {
-      hostdetails.add("443");
+    var hostDetails = config.get("Application Options", "breezserver").split(':');
+    if (hostDetails.length < 2) {
+      hostDetails.add("443");
     }
     return ClientChannel(
-      hostdetails[0],
-      port: int.parse(hostdetails[1]),
+      hostDetails[0],
+      port: int.parse(hostDetails[1]),
       options: const ChannelOptions(credentials: ChannelCredentials.secure()),
     );
   }
