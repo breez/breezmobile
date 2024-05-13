@@ -37,8 +37,8 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: c30de552580d8e64233c4372a7e438b0550de64e
-      resolved-ref: c30de552580d8e64233c4372a7e438b0550de64e
+      ref: "7ae0038eb14e1ebaa1eb8a26ae144a795e0b787d"
+      resolved-ref: "7ae0038eb14e1ebaa1eb8a26ae144a795e0b787d"
       url: "https://github.com/breez/anytime_podcast_player.git"
     source: git
     version: "1.2.1+74-breez"
@@ -2094,10 +2094,10 @@ packages:
     dependency: "direct main"
     description:
       name: webdav_client
-      sha256: b3f5afee27e7db5635817ddd79d57f56d43fdc6dad4c6bc93b0703261f96064c
+      sha256: "682fffc50b61dc0e8f46717171db03bf9caaa17347be41c0c91e297553bf86b2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.2.1"
+    version: "1.2.2"
   webfeed:
     dependency: transitive
     description:
