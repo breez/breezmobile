@@ -156,6 +156,7 @@ class POSInvoiceState extends State<POSInvoice> with TickerProviderStateMixin {
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: themeData.appBarTheme.systemOverlayStyle.copyWith(
         systemNavigationBarColor: themeData.colorScheme.background,
+        systemNavigationBarIconBrightness: Brightness.dark,
       ),
       child: Scaffold(
         body: StreamBuilder<Sale>(
