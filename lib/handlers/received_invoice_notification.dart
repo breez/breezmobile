@@ -91,6 +91,7 @@ class InvoiceNotificationsHandler {
     if (error is PaymentRequestError) {
       showFlushbar(_context, message: error.message);
     }
+    _handlingRequest = false;
   }
 
   _setLoading(bool visible) {
