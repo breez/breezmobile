@@ -35,54 +35,62 @@ class InvoiceNotificationsHandler {
   _listenPaymentRequests() {
     // show payment request dialog for decoded requests
     _receivedInvoicesStream.where((payreq) => payreq != null && !_handlingRequest).listen((payreq) async {
-      final navigator = Navigator.of(_context);
-      var account = await _accountBloc.accountStream.firstWhere((a) => !a.initial, orElse: () => null);
-      if (account == null) {
-        return;
-      }
-      if (!payreq.loaded) {
-        _setLoading(true);
-        return;
-      }
-      _setLoading(false);
-      _handlingRequest = true;
+      try {
+        final navigator = Navigator.of(_context);
+        var account = await _accountBloc.accountStream.firstWhere((a) => !a.initial, orElse: () => null);
+        if (account == null) {
+          return;
+        }
+        if (!payreq.loaded) {
+          _setLoading(true);
+          return;
+        }
+        _setLoading(false);
+        _handlingRequest = true;
 
-      // Close the drawer before showing payment request dialog
-      if (scaffoldController.currentState.isDrawerOpen) {
-        navigator.pop();
-      }
+        // Close the drawer before showing payment request dialog
+        if (scaffoldController.currentState.isDrawerOpen) {
+          navigator.pop();
+        }
 
-      await _userProfileBloc.userStream.firstWhere((u) => u != null).then(
-        (user) async {
-          await protectAdminAction(
-            _context,
-            user,
-            () {
-              return showDialog(
-                useRootNavigator: false,
-                context: _context,
-                barrierDismissible: false,
-                builder: (_) => paymentRequest.PaymentRequestDialog(
-                  _context,
-                  _accountBloc,
-                  payreq,
-                  firstPaymentItemKey,
-                  scrollController,
-                  () {
-                    _handlingRequest = false;
-                  },
-                ),
-              );
-            },
-          );
-        },
-      );
+        await _userProfileBloc.userStream.firstWhere((u) => u != null).then(
+          (user) async {
+            await protectAdminAction(
+              _context,
+              user,
+              () {
+                return showDialog(
+                  useRootNavigator: false,
+                  context: _context,
+                  barrierDismissible: false,
+                  builder: (_) => paymentRequest.PaymentRequestDialog(
+                    _context,
+                    _accountBloc,
+                    payreq,
+                    firstPaymentItemKey,
+                    scrollController,
+                    () {
+                      _handlingRequest = false;
+                    },
+                  ),
+                );
+              },
+            );
+          },
+        );
+      } catch (error) {
+        _onError(error);
+      }
     }).onError((error) {
-      _setLoading(false);
-      if (error is PaymentRequestError) {
-        showFlushbar(_context, message: error.message);
-      }
+      _onError(error);
     });
+  }
+
+  void _onError(error) {
+    _setLoading(false);
+    if (error is PaymentRequestError) {
+      showFlushbar(_context, message: error.message);
+    }
   }
 
   _setLoading(bool visible) {
