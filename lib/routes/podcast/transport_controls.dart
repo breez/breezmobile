@@ -199,46 +199,49 @@ class _PlayButton extends StatelessWidget {
 
     // in case we are buffering show progress indicator.
     final translations = L.of(context);
-    if (buffering) {
-      return Tooltip(
+
+    return Stack(
+      alignment: AlignmentDirectional.center,
+      children: [
+        if (buffering)
+          SpinKitRing(
+            lineWidth: 2.0,
+            color: themeData.colorScheme.secondary,
+            size: 84,
+          ),
+        if (!buffering)
+          const SizedBox(
+            height: 84,
+            width: 84,
+          ),
+        Tooltip(
           message: playing ? translations.pause_button_label : translations.play_button_label,
           child: TextButton(
             style: TextButton.styleFrom(
-              shape: const CircleBorder(),
+              shape: CircleBorder(
+                side: BorderSide(color: themeData.highlightColor, width: 0.0),
+              ),
+              backgroundColor: themeData.primaryColor,
+              padding: const EdgeInsets.all(8.0),
             ),
-            onPressed: null,
-            child: SpinKitRing(
-              lineWidth: 2.0,
-              color: themeData.colorScheme.secondary,
-              size: 60,
+            onPressed: buffering
+                ? null
+                : () {
+                    if (playing) {
+                      onPause();
+                    } else {
+                      onPlay();
+                    }
+                  },
+            child: AnimatedIcon(
+              size: 60.0,
+              icon: AnimatedIcons.play_pause,
+              color: Colors.white,
+              progress: playPauseController,
             ),
-          ));
-    }
-
-    return Tooltip(
-      message: playing ? translations.pause_button_label : translations.play_button_label,
-      child: TextButton(
-        style: TextButton.styleFrom(
-          shape: CircleBorder(
-            side: BorderSide(color: themeData.highlightColor, width: 0.0),
           ),
-          backgroundColor: themeData.primaryColor,
-          padding: const EdgeInsets.all(8.0),
         ),
-        onPressed: () {
-          if (playing) {
-            onPause();
-          } else {
-            onPlay();
-          }
-        },
-        child: AnimatedIcon(
-          size: 60.0,
-          icon: AnimatedIcons.play_pause,
-          color: Colors.white,
-          progress: playPauseController,
-        ),
-      ),
+      ],
     );
   }
 }

@@ -94,14 +94,14 @@ dependencies:
   url_launcher: <=6.1.11 # Requires Flutter 3.10
   uuid: <=4.2.2  # Requires Flutter 3.10
   validators: ^3.0.0
-  webdav_client: ^1.2.1
+  webdav_client: ^1.2.2
   webview_flutter: <=4.4.2 # Requires Flutter 3.10
   webview_flutter_android: <=3.12.1 # Requires Flutter 3.10
 
   anytime:
     git:
       url: https://github.com/breez/anytime_podcast_player.git
-      ref: c30de552580d8e64233c4372a7e438b0550de64e
+      ref: 7ae0038eb14e1ebaa1eb8a26ae144a795e0b787d
   flutter_downloader:
     git:
       url: https://github.com/breez/flutter_downloader.git
