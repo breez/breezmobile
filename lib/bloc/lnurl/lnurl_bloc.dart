@@ -55,16 +55,7 @@ class LNUrlBloc with AsyncActionsHandler {
         injector.nfc.receivedLnLinks(),
         injector.lightningLinks.linksNotifications,
         _lnurlInputController.stream,
-        injector.device.clipboardStream
-            .distinct()
-            .skip(1) // Skip previous session clipboard
-            .where((l) {
-          var result = true;
-          if (isLightningAddress(l)) {
-            result = isLightningAddressURI(l);
-          }
-          return result;
-        })
+        injector.device.clipboardStream.distinct().skip(1) // Skip previous session clipboard
       ]).where((l) => l != null && (isLNURL(l) || isLightningAddress(l))).asyncMap((l) {
         var v = parseLightningAddress(l);
         v ??= l;
