@@ -172,7 +172,8 @@ class _CoopCloseChannelsDialogState extends State<CoopCloseChannelsDialog> {
       accountBloc.userActionsSink.add(closeChannelAction);
       await closeChannelAction.future.then((result) {
         final closedChannels = result as List<CloseChannelResult>;
-        if (closedChannels.any((c) => !c.isSkipped || !c.failErr.isNotEmpty)) {
+        // Check if there are any channels that are skipped or failed to close
+        if (closedChannels.every((c) => !c.isSkipped && !c.failErr.isNotEmpty)) {
           _isCompleted();
           _log.info(
             "Closed channels successfully.\n"
