@@ -193,9 +193,13 @@ class _CoopCloseChannelsDialogState extends State<CoopCloseChannelsDialog> {
               _log.severe("Fail Error: ${channel.failErr}");
             }
           }
+          return;
         }
       }).catchError((err) {
         throw err;
+      }).timeout(const Duration(minutes: 2), onTimeout: () {
+        _isCompleted(hasError: true);
+        _log.severe("Closing channels cooperatively timeout exceeded.");
       });
     } catch (e) {
       _isCompleted(hasError: true);
