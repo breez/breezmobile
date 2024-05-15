@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:breez/theme_data.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final themeData = blueTheme;
 
     return Theme(
       data: themeData.copyWith(
@@ -63,7 +64,7 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
 
   List<Widget> _getContent(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final themeData = blueTheme;
 
     return [
       Padding(

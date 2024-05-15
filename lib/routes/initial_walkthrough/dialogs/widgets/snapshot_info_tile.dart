@@ -6,6 +6,7 @@ import 'package:breez/bloc/backup/backup_bloc.dart';
 import 'package:breez/bloc/backup/backup_model.dart';
 import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/services/breezlib/data/messages.pbgrpc.dart';
+import 'package:breez/theme_data.dart';
 import 'package:breez/utils/date.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
@@ -32,7 +33,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final themeData = blueTheme;
 
     final isSelected = (widget.selectedSnapshot?.nodeID == widget.snapshotInfo.nodeID);
 
@@ -48,7 +49,7 @@ class _SnapshotInfoTileState extends State<SnapshotInfoTile> {
       trailing: isSelected
           ? Icon(
               Icons.check,
-              color: themeData.primaryColor,
+              color: themeData.primaryColorDark,
             )
           : const Icon(Icons.check),
       title: Text(
