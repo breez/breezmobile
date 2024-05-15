@@ -9,6 +9,8 @@ import 'package:breez/bloc/blocs_provider.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/restore_pin_code.dart';
 import 'package:breez/routes/initial_walkthrough/dialogs/widgets/snapshot_info_tile.dart';
 import 'package:breez/routes/initial_walkthrough/mnemonics/enter_mnemonics.dart';
+import 'package:breez/routes/podcast/theme.dart';
+import 'package:breez/theme_data.dart';
 import 'package:breez/widgets/error_dialog.dart';
 import 'package:breez/widgets/flushbar.dart';
 import 'package:breez/widgets/route.dart';
@@ -44,69 +46,72 @@ class RestoreDialogState extends State<RestoreDialog> {
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final themeData = blueTheme;
 
-    return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
-      title: Text(
-        texts.restore_dialog_title,
-        style: themeData.dialogTheme.titleTextStyle,
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          if (widget.backupSettings?.backupProvider != null) ...[
-            Text(
-              texts.restore_dialog_multiple_accounts(
-                widget.backupSettings.backupProvider.displayName,
+    return Theme(
+      data: themeData,
+      child: AlertDialog(
+        titlePadding: const EdgeInsets.fromLTRB(24.0, 22.0, 0.0, 16.0),
+        title: Text(
+          texts.restore_dialog_title,
+          style: themeData.dialogTheme.titleTextStyle,
+        ),
+        contentPadding: const EdgeInsets.fromLTRB(24.0, 8.0, 24.0, 24.0),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (widget.backupSettings?.backupProvider != null) ...[
+              Text(
+                texts.restore_dialog_multiple_accounts(
+                  widget.backupSettings.backupProvider.displayName,
+                ),
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
+                  fontSize: 16,
+                ),
+              )
+            ],
+            Padding(
+              padding: const EdgeInsets.only(top: 16.0),
+              child: SizedBox(
+                width: 150.0,
+                height: min(widget.snapshots.length * 50.0, 200.0),
+                child: ListView.builder(
+                  shrinkWrap: false,
+                  itemCount: widget.snapshots.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return SnapshotInfoTile(
+                      selectedSnapshot: _selectedSnapshot,
+                      snapshotInfo: widget.snapshots[index],
+                      onSnapshotSelected: (snapshot) {
+                        setState(() {
+                          _selectedSnapshot = snapshot;
+                        });
+                      },
+                    );
+                  },
+                ),
               ),
-              style: themeData.primaryTextTheme.displaySmall.copyWith(
-                fontSize: 16,
-              ),
-            )
+            ),
           ],
-          Padding(
-            padding: const EdgeInsets.only(top: 16.0),
-            child: SizedBox(
-              width: 150.0,
-              height: min(widget.snapshots.length * 50.0, 200.0),
-              child: ListView.builder(
-                shrinkWrap: false,
-                itemCount: widget.snapshots.length,
-                itemBuilder: (BuildContext context, int index) {
-                  return SnapshotInfoTile(
-                    selectedSnapshot: _selectedSnapshot,
-                    snapshotInfo: widget.snapshots[index],
-                    onSnapshotSelected: (snapshot) {
-                      setState(() {
-                        _selectedSnapshot = snapshot;
-                      });
-                    },
-                  );
-                },
-              ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context, null),
+            child: Text(
+              texts.restore_dialog_action_cancel,
+              style: themeData.primaryTextTheme.labelLarge,
+            ),
+          ),
+          TextButton(
+            onPressed: () => _restoreSnapshot(),
+            child: Text(
+              texts.restore_dialog_action_ok,
+              style: themeData.primaryTextTheme.labelLarge,
             ),
           ),
         ],
       ),
-      actions: [
-        TextButton(
-          onPressed: () => Navigator.pop(context, null),
-          child: Text(
-            texts.restore_dialog_action_cancel,
-            style: themeData.primaryTextTheme.labelLarge,
-          ),
-        ),
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: themeData.primaryColor,
-          ),
-          onPressed: () => _restoreSnapshot(),
-          child: Text(texts.restore_dialog_action_ok),
-        ),
-      ],
     );
   }
 
@@ -136,7 +141,7 @@ class RestoreDialogState extends State<RestoreDialog> {
     final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
 
     final texts = context.texts();
-    final themeData = Theme.of(context);
+    final themeData = blueTheme;
 
     String mnemonic = await _getMnemonic();
     if (mnemonic != null) {
@@ -167,9 +172,13 @@ class RestoreDialogState extends State<RestoreDialog> {
   Future<String> _getMnemonic() async {
     return Navigator.of(context).push(
       FadeInRoute<String>(
-        builder: (_) => EnterMnemonicsPage(
-          is24Word: _selectedSnapshot.encryptionType == "Mnemonics",
-          initialWords: _initialWords,
+        builder: (context) => withBreezTheme(
+          context,
+          EnterMnemonicsPage(
+            is24Word: _selectedSnapshot.encryptionType == "Mnemonics",
+            initialWords: _initialWords,
+          ),
+          isRestoreFlow: true,
         ),
       ),
     );
@@ -187,9 +196,11 @@ class RestoreDialogState extends State<RestoreDialog> {
   Future<String> _getPIN() async {
     return await Navigator.of(context).push(
       FadeInRoute(
-        builder: (BuildContext context) {
-          return const RestorePinCode();
-        },
+        builder: (context) => withBreezTheme(
+          context,
+          const RestorePinCode(),
+          isRestoreFlow: true,
+        ),
       ),
     );
   }

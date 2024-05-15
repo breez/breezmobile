@@ -13,6 +13,7 @@ class ActionButton extends StatelessWidget {
   final bool fill;
   final Variant variant;
   final VoidCallback onPressed;
+  final bool isRestoreFlow;
 
   const ActionButton({
     Key key,
@@ -23,85 +24,67 @@ class ActionButton extends StatelessWidget {
     this.fill = false,
     this.variant = Variant.primary,
     this.onPressed,
+    this.isRestoreFlow = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final themeData = Theme.of(context);
+    final themeData = isRestoreFlow ? theme.blueTheme : Theme.of(context);
 
-    final button = ElevatedButton(
-      onPressed: enabled ? (onPressed ?? () {}) : null,
-      style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
-          _backgroundColor(themeData),
-        ),
-        padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
-          text != null ? const EdgeInsets.symmetric(horizontal: 16.0) : const EdgeInsets.all(0.0),
-        ),
-        minimumSize: MaterialStateProperty.all<Size>(
-          const Size(40, 40),
-        ),
-        shape: MaterialStateProperty.all<OutlinedBorder>(
-          variant == Variant.primary || variant == Variant.fab
-              ? RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                )
-              : RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8.0),
-                  side: BorderSide(
-                    color: _foregroundColor(themeData),
-                    width: 2.0,
+    final button = Theme(
+      data: themeData,
+      child: ElevatedButton(
+        onPressed: enabled ? (onPressed ?? () {}) : null,
+        style: ButtonStyle(
+          backgroundColor: themeData.elevatedButtonTheme.style.backgroundColor,
+          padding: MaterialStateProperty.all<EdgeInsetsGeometry>(
+            text != null ? const EdgeInsets.symmetric(horizontal: 16.0) : const EdgeInsets.all(0.0),
+          ),
+          minimumSize: MaterialStateProperty.all<Size>(
+            const Size(40, 40),
+          ),
+          shape: MaterialStateProperty.all<OutlinedBorder>(
+            variant == Variant.primary || variant == Variant.fab
+                ? RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                  )
+                : RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8.0),
+                    side: BorderSide(
+                      color: _foregroundColor(themeData),
+                      width: 2.0,
+                    ),
                   ),
-                ),
+          ),
         ),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          if (leadingIcon != null)
-            Icon(
-              leadingIcon,
-              color: _foregroundColor(themeData),
-            ),
-          if (leadingIcon != null && text != null) const SizedBox(width: 8.0),
-          if (text != null)
-            Text(
-              text,
-              style: themeData.textTheme.labelLarge.copyWith(
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            if (leadingIcon != null)
+              Icon(
+                leadingIcon,
                 color: _foregroundColor(themeData),
               ),
-            ),
-          if (trailingIcon != null && text != null) const SizedBox(width: 8.0),
-          if (trailingIcon != null)
-            Icon(
-              trailingIcon,
-              color: _foregroundColor(themeData),
-            ),
-        ],
+            if (leadingIcon != null && text != null) const SizedBox(width: 8.0),
+            if (text != null)
+              Text(
+                text,
+                style: themeData.textTheme.labelLarge.copyWith(
+                  color: _foregroundColor(themeData),
+                ),
+              ),
+            if (trailingIcon != null && text != null) const SizedBox(width: 8.0),
+            if (trailingIcon != null)
+              Icon(
+                trailingIcon,
+                color: _foregroundColor(themeData),
+              ),
+          ],
+        ),
       ),
     );
 
-    return fill
-        ? button
-        : Center(
-            child: button,
-          );
-  }
-
-  Color _backgroundColor(ThemeData themeData) {
-    switch (variant) {
-      case Variant.primary:
-        return enabled
-            ? themeData.primaryColorDark
-            : themeData.primaryColorDark.withOpacity(_kDisabledOpacity);
-      case Variant.secondary:
-        return enabled
-            ? themeData.colorScheme.onSurface
-            : themeData.colorScheme.onSurface.withOpacity(_kDisabledOpacity);
-      case Variant.fab:
-        return enabled ? theme.buttonColor : theme.buttonColor.withOpacity(_kDisabledOpacity);
-    }
-    throw Exception('Unknown variant: $variant');
+    return fill ? button : Center(child: button);
   }
 
   Color _foregroundColor(ThemeData themeData) {
