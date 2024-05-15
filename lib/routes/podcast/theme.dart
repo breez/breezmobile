@@ -5,7 +5,7 @@ import 'package:breez/bloc/user_profile/user_profile_bloc.dart';
 import 'package:breez/theme_data.dart' as theme;
 import 'package:flutter/material.dart';
 
-Widget withBreezTheme(BuildContext context, Widget child) {
+Widget withBreezTheme(BuildContext context, Widget child, {bool isRestoreFlow = false}) {
   UserProfileBloc userProfileBloc = AppBlocsProvider.of<UserProfileBloc>(context);
   return StreamBuilder<BreezUserModel>(
     stream: userProfileBloc.userStream,
@@ -14,7 +14,7 @@ Widget withBreezTheme(BuildContext context, Widget child) {
       if (user == null) {
         return const SizedBox();
       }
-      var currentTheme = theme.themeMap[user.themeId];
+      var currentTheme = isRestoreFlow ? theme.blueTheme : theme.themeMap[user.themeId];
       return Theme(data: currentTheme, child: child);
     },
   );

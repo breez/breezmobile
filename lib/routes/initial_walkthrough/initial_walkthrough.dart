@@ -94,7 +94,6 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage> with Si
   @override
   Widget build(BuildContext context) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
 
     return AnnotatedRegion<SystemUiOverlayStyle>(
       value: blueTheme.appBarTheme.systemOverlayStyle,
@@ -153,13 +152,12 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage> with Si
                         child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
                             padding: const EdgeInsets.fromLTRB(16, 4, 16, 4),
-                            backgroundColor: themeData.primaryColor,
                             elevation: 0.0,
                             shape: const StadiumBorder(),
                           ),
                           child: Text(
                             texts.initial_walk_through_lets_breeze,
-                            style: themeData.textTheme.labelLarge,
+                            style: blueTheme.textTheme.labelLarge,
                           ),
                           onPressed: () => _letsBreez(),
                         ),
@@ -246,13 +244,13 @@ class _InitialWalkthroughPageState extends State<InitialWalkthroughPage> with Si
 
   void _handleError(dynamic exception) {
     final texts = context.texts();
-    final themeData = Theme.of(context);
+
     promptError(
       context,
       texts.security_and_backup_internal_error,
       Text(
         extractExceptionMessage(exception, texts: texts),
-        style: themeData.dialogTheme.contentTextStyle,
+        style: blueTheme.dialogTheme.contentTextStyle,
       ),
     );
   }
