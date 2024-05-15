@@ -105,8 +105,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       _hiddenRoutes.add("/get_refund");
       widget.accountBloc.accountStream.listen((acc) {
         setState(() {
-          if (acc != null &&
-              acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
+          if (acc != null && acc.swapFundsStatus.maturedRefundableAddresses.isNotEmpty) {
             _hiddenRoutes.remove("/get_refund");
           } else {
             _hiddenRoutes.add("/get_refund");
@@ -115,13 +114,8 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
       });
 
       widget.accountBloc.accountStream.listen((acc) {
-        var activeAccountRoutes = [
-          "/connect_to_pay",
-          "/pay_invoice",
-          "/create_invoice"
-        ];
-        Function addOrRemove =
-            acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
+        var activeAccountRoutes = ["/connect_to_pay", "/pay_invoice", "/create_invoice"];
+        Function addOrRemove = acc.connected ? _hiddenRoutes.remove : _hiddenRoutes.add;
         setState(() {
           for (var r in activeAccountRoutes) {
             addOrRemove(r);
@@ -129,8 +123,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         });
       });
 
-      AudioService.notificationClicked.where((event) => event == true).listen(
-          (event) async {
+      AudioService.notificationClicked.where((event) => event == true).listen((event) async {
         final navigator = Navigator.of(context);
         final userBloc = AppBlocsProvider.of<UserProfileBloc>(context);
         final audioBloc = Provider.of<AudioBloc>(context, listen: false);
@@ -138,8 +131,7 @@ class HomeState extends State<Home> with WidgetsBindingObserver {
         final nowPlaying = await audioBloc.nowPlaying.first.timeout(
           const Duration(seconds: 1),
         );
-        if (nowPlaying != null &&
-            !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
+        if (nowPlaying != null && !breezPodcast.NowPlayingTransport.nowPlayingVisible) {
           navigator.push(
             MaterialPageRoute<void>(
               builder: (context) => withPodcastTheme(userModel, NowPlaying()),
