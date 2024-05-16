@@ -18,7 +18,10 @@ dependencies:
     git:
       url: https://github.com/breez/Breez-Translations.git
       ref: 106e187b7290b4bb0ffe5d2e20e4110c893aaf63
-  clipboard_watcher: <=0.2.0 # Requires Flutter 3.10
+  clipboard_watcher:
+    git:
+      url: https://github.com/breez/clipboard_watcher.git
+      ref: f2faa4e2c93db77b244cd34e4c8027fd9eca362d
   collection: <=1.17.0 # flutter_test
   confetti: ^0.7.0
   connectivity_plus: <=4.0.2  # anytime
