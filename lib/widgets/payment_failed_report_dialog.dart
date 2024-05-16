@@ -21,7 +21,7 @@ class PaymentFailedReportDialog extends StatefulWidget {
 }
 
 class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
-  bool _doneAsk;
+  bool _dontAsk;
   AccountSettings _settings;
   StreamSubscription<AccountSettings> _settingsSubscription;
 
@@ -74,29 +74,28 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(top: 16.0),
-                    child: Row(
-                      children: [
-                        Theme(
-                          data: themeData.copyWith(
-                            unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+                    child: GestureDetector(
+                      onTap: () => _setDontAsk(),
+                      child: Row(
+                        children: [
+                          Theme(
+                            data: themeData.copyWith(
+                              unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+                            ),
+                            child: Checkbox(
+                              activeColor: themeData.canvasColor,
+                              value: _dontAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT,
+                              onChanged: (_) => _setDontAsk(),
+                            ),
                           ),
-                          child: Checkbox(
-                            activeColor: themeData.canvasColor,
-                            value: _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT,
-                            onChanged: (v) {
-                              setState(() {
-                                _doneAsk = v;
-                              });
-                            },
+                          Text(
+                            texts.payment_failed_report_dialog_do_not_ask_again,
+                            style: themeData.primaryTextTheme.displaySmall.copyWith(
+                              fontSize: 16,
+                            ),
                           ),
-                        ),
-                        Text(
-                          texts.payment_failed_report_dialog_do_not_ask_again,
-                          style: themeData.primaryTextTheme.displaySmall.copyWith(
-                            fontSize: 16,
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ],
@@ -127,8 +126,14 @@ class PaymentFailedReportDialogState extends State<PaymentFailedReportDialog> {
     );
   }
 
+  void _setDontAsk() {
+    setState(() {
+      _dontAsk = !_dontAsk;
+    });
+  }
+
   void onSubmit(bool yesNo) {
-    var dontAsk = _doneAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT;
+    var dontAsk = _dontAsk ?? _settings.failedPaymentBehavior != BugReportBehavior.PROMPT;
     if (dontAsk) {
       widget._accountBloc.accountSettingsSink.add(_settings.copyWith(
           failedPaymentBehavior: yesNo ? BugReportBehavior.SEND_REPORT : BugReportBehavior.IGNORE));

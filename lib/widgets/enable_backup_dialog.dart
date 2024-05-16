@@ -124,7 +124,6 @@ class _DoNotPromptAgainCheckbox extends StatefulWidget {
 class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
   @override
   Widget build(BuildContext context) {
-    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
     final texts = context.texts();
     final themeData = Theme.of(context);
     final contentTextStyle = themeData.primaryTextTheme.displaySmall.copyWith(
@@ -133,36 +132,42 @@ class _DoNotPromptAgainCheckboxState extends State<_DoNotPromptAgainCheckbox> {
 
     return Padding(
       padding: const EdgeInsets.only(top: 16.0),
-      child: Row(
-        children: <Widget>[
-          Theme(
-            data: themeData.copyWith(
-              unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+      child: GestureDetector(
+        onTap: () => _setDoNotPromptAgain(),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Theme(
+              data: themeData.copyWith(
+                unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+              ),
+              child: Checkbox(
+                activeColor: Colors.white,
+                checkColor: themeData.canvasColor,
+                value: !widget.backupSettings.promptOnError,
+                onChanged: (_) => _setDoNotPromptAgain(),
+              ),
             ),
-            child: Checkbox(
-              activeColor: Colors.white,
-              checkColor: themeData.canvasColor,
-              value: !widget.backupSettings.promptOnError,
-              onChanged: (v) {
-                backupBloc.backupSettingsSink.add(
-                  widget.backupSettings.copyWith(
-                    promptOnError: !v,
-                  ),
-                );
-              },
-            ),
-          ),
-          Expanded(
-            child: AutoSizeText(
+            AutoSizeText(
               texts.backup_dialog_do_not_prompt_again,
               style: contentTextStyle,
               maxLines: 1,
               minFontSize: MinFontSize(context).minFontSize,
               stepGranularity: 0.1,
               group: widget.autoSizeGroup,
-            ),
-          )
-        ],
+            )
+          ],
+        ),
+      ),
+    );
+  }
+
+  void _setDoNotPromptAgain() {
+    final backupBloc = AppBlocsProvider.of<BackupBloc>(context);
+    backupBloc.backupSettingsSink.add(
+      widget.backupSettings.copyWith(
+        promptOnError: !widget.backupSettings.promptOnError,
       ),
     );
   }

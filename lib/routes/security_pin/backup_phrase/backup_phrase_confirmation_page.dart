@@ -81,30 +81,37 @@ class BackupPhraseGeneratorConfirmationPageState extends State<BackupPhraseGener
     final texts = context.texts();
     return Expanded(
       flex: 1,
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Theme(
-            data: themeData.copyWith(
-              unselectedWidgetColor: Colors.white,
+      child: GestureDetector(
+        onTap: () => _setIsUnderstood(),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Theme(
+              data: themeData.copyWith(
+                unselectedWidgetColor: Colors.white,
+              ),
+              child: Checkbox(
+                activeColor: Colors.white,
+                checkColor: themeData.canvasColor,
+                value: _isUnderstood,
+                onChanged: (_) => _setIsUnderstood(),
+              ),
             ),
-            child: Checkbox(
-              activeColor: Colors.white,
-              checkColor: themeData.canvasColor,
-              value: _isUnderstood,
-              onChanged: (value) => setState(() {
-                _isUnderstood = value;
-              }),
+            Text(
+              texts.backup_phrase_action_confirm,
+              style: theme.backupPhraseConfirmationTextStyle,
             ),
-          ),
-          Text(
-            texts.backup_phrase_action_confirm,
-            style: theme.backupPhraseConfirmationTextStyle,
-          ),
-        ],
+          ],
+        ),
       ),
     );
+  }
+
+  void _setIsUnderstood() {
+    setState(() {
+      _isUnderstood = !_isUnderstood;
+    });
   }
 
   Widget _buildNextBtn(BuildContext context, bool isUnderstood) {
