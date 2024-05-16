@@ -45,12 +45,14 @@ void main() async {
     final repository = SembastRepository();
     await Firebase.initializeApp();
     _configureEasyLoading();
-    SharedPreferences.getInstance().then((preferences) async {
-      await runMigration(preferences);
-      AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
-      runApp(AppBlocsProvider(
-          appBlocs: blocs,
-          child: AnytimePodcastApp(
+    SharedPreferences.getInstance().then(
+      (preferences) async {
+        await runMigration(preferences);
+        AppBlocs blocs = AppBlocs(repository.backupDatabaseListener);
+        runApp(
+          AppBlocsProvider(
+            appBlocs: blocs,
+            child: AnytimePodcastApp(
               mobileService,
               repository,
               Provider<PodcastPaymentsBloc>(
@@ -65,17 +67,26 @@ void main() async {
                 ),
                 dispose: (_, value) => value.dispose(),
                 child: PlayerControlsBuilder(
-                    builder: playerBuilder,
-                    child: PlaceholderBuilder(
-                        builder: placeholderBuilder,
-                        errorBuilder: errorPlaceholderBuilder,
-                        child: SharePodcastButtonBuilder(
-                            builder: sharePodcastButtonBuilder,
-                            child: ShareEpisodeButtonBuilder(
-                                builder: shareEpisodeButtonBuilder,
-                                child: UserApp(repository.reloadDatabaseSink))))),
-              ))));
-    });
+                  builder: playerBuilder,
+                  child: PlaceholderBuilder(
+                    builder: placeholderBuilder,
+                    errorBuilder: errorPlaceholderBuilder,
+                    podcastImageBuilder: podcastImagePlaceholderBuilder,
+                    child: SharePodcastButtonBuilder(
+                      builder: sharePodcastButtonBuilder,
+                      child: ShareEpisodeButtonBuilder(
+                        builder: shareEpisodeButtonBuilder,
+                        child: UserApp(repository.reloadDatabaseSink),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }, (error, stackTrace) async {
     BreezBridge breezBridge = ServiceInjector().breezBridge;
     if (error is! FlutterErrorDetails) {
