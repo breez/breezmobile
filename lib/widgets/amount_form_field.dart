@@ -73,7 +73,7 @@ class AmountFormField extends TextFormField {
           enabled: enabled,
           controller: controller,
           inputFormatters: accountModel.currency != Currency.SAT
-              ? [FilteringTextInputFormatter.allow(RegExp(r'\d+\.?\d*'))]
+              ? [FilteringTextInputFormatter.allow(RegExp(r'\d+\.?\d{0,8}'))]
               : [SatAmountFormFieldFormatter()],
           onFieldSubmitted: onFieldSubmitted,
           onSaved: onSaved,
