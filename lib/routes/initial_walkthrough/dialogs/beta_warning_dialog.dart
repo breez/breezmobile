@@ -78,29 +78,28 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 16.0, bottom: 0.0),
-        child: Row(
-          children: [
-            Theme(
-              data: themeData.copyWith(
-                unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+        child: GestureDetector(
+          onTap: () => _setIsUnderstood(),
+          child: Row(
+            children: [
+              Theme(
+                data: themeData.copyWith(
+                  unselectedWidgetColor: themeData.textTheme.labelLarge.color,
+                ),
+                child: Checkbox(
+                  activeColor: themeData.canvasColor,
+                  value: _isUnderstood,
+                  onChanged: (_) => _setIsUnderstood(),
+                ),
               ),
-              child: Checkbox(
-                activeColor: themeData.canvasColor,
-                value: _isUnderstood,
-                onChanged: (value) {
-                  setState(() {
-                    _isUnderstood = value;
-                  });
-                },
+              Text(
+                texts.beta_warning_understand,
+                style: themeData.primaryTextTheme.displaySmall.copyWith(
+                  fontSize: 16,
+                ),
               ),
-            ),
-            Text(
-              texts.beta_warning_understand,
-              style: themeData.primaryTextTheme.displaySmall.copyWith(
-                fontSize: 16,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
       Visibility(
@@ -121,5 +120,11 @@ class BetaWarningDialogState extends State<BetaWarningDialog> {
         ),
       ),
     ];
+  }
+
+  void _setIsUnderstood() {
+    setState(() {
+      _isUnderstood = !_isUnderstood;
+    });
   }
 }
