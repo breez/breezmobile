@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:anytime/ui/anytime_podcast_app.dart';
 import 'package:breez/theme_data.dart';
 import 'package:breez_translations/breez_translations_locales.dart';
 import 'package:flutter/material.dart';
