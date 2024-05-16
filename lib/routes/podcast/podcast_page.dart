@@ -264,6 +264,14 @@ WidgetBuilder placeholderBuilder() {
   return builder;
 }
 
+WidgetBuilder podcastImagePlaceholderBuilder() {
+  builder(BuildContext context) => Container(
+        color: Colors.transparent,
+        constraints: const BoxConstraints.expand(),
+      );
+  return builder;
+}
+
 WidgetBuilder errorPlaceholderBuilder() {
   builder(BuildContext context) => Placeholder(
         color: Theme.of(context).colorScheme.error,
