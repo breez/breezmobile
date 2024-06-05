@@ -78,6 +78,7 @@ To learn more about it, please read [Introducing Breez](https://doc.breez.techno
 - [x] NFC checkout
 - [x] Tor support (Android)
 - [x] Neutrino sync optimizations
+- [x] Co-operative Close Channels
 - [ ] Async payments
 
 ## System Requirements
