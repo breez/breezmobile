@@ -9,9 +9,15 @@ import 'package:logging/logging.dart';
 
 final _log = Logger("BreezServer");
 
-//proto command:
-//protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
-//dart format -l 110 lib/services/breez_server/generated/
+// This is the bridge to the breez server. Protobuf messages are used as the interface and to generate the classes use the command below:
+// protoc --dart_out=grpc:lib/services/breez_server/generated/ -Ilib/services/breez_server/protobuf/ lib/services/breez_server/protobuf/breez.proto
+// dart format -l 110 lib/services/breez_server/generated/
+// You may need to activate protoc_plugin. See [here](https://pub.dev/packages/protoc_plugin#how-to-build).
+//
+// Due to Flutter SDK restrictions, we need to install a strict version of protoc_plugin
+// as any version above 20.0.1 requires Flutter 3.10.
+//
+// dart pub global activate protoc_plugin 20.0.1
 class BreezServer {
   static final defaultCallOptions = CallOptions(
     timeout: const Duration(seconds: 10),
