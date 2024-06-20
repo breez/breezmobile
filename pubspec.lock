@@ -190,8 +190,7 @@ packages:
     dependency: "direct main"
     description:
       path: "."
-      ref: "106e187b7290b4bb0ffe5d2e20e4110c893aaf63"
-      resolved-ref: "106e187b7290b4bb0ffe5d2e20e4110c893aaf63"
+      ref: a564088448149e9c28b4a2eb82fa0a3536698d24
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
@@ -576,10 +575,10 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core_platform_interface
-      sha256: c437ae5d17e6b5cc7981cf6fd458a5db4d12979905f9aafd1fea930428a9fe63
+      sha256: "1003a5a03a61fc9a22ef49f37cbcb9e46c86313a7b2e7029b9390cf8c6fc32cb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.0.0"
+    version: "5.1.0"
   firebase_core_web:
     dependency: transitive
     description:
@@ -803,10 +802,10 @@ packages:
     dependency: transitive
     description:
       name: flutter_secure_storage_macos
-      sha256: b768a7dab26d6186b68e2831b3104f8968154f0f4fdbf66e7c2dd7bdf299daaf
+      sha256: "1693ab11121a5f925bbea0be725abfcfbbcf36c1e29e571f84a0c0f436147a81"
       url: "https://pub.dev"
     source: hosted
-    version: "3.1.1"
+    version: "3.1.2"
   flutter_secure_storage_platform_interface:
     dependency: transitive
     description:
@@ -1006,10 +1005,10 @@ packages:
     dependency: "direct main"
     description:
       name: image
-      sha256: "4c68bfd5ae83e700b5204c1e74451e7bf3cf750e6843c6e158289cf56bda018e"
+      sha256: "2237616a36c0d69aef7549ab439b833fb7f9fb9fc861af2cc9ac3eedddd69ca8"
       url: "https://pub.dev"
     source: hosted
-    version: "4.1.7"
+    version: "4.2.0"
   image_cropper:
     dependency: "direct main"
     description:
@@ -1158,10 +1157,10 @@ packages:
     dependency: transitive
     description:
       name: just_audio_platform_interface
-      sha256: c3dee0014248c97c91fe6299edb73dc4d6c6930a2f4f713579cd692d9e47f4a1
+      sha256: "0243828cce503c8366cc2090cefb2b3c871aa8ed2f520670d76fd47aa1ab2790"
       url: "https://pub.dev"
     source: hosted
-    version: "4.2.2"
+    version: "4.3.0"
   just_audio_web:
     dependency: transitive
     description:
@@ -1296,10 +1295,10 @@ packages:
     dependency: "direct main"
     description:
       name: nfc_manager
-      sha256: "25b3ed2a3806619e9a44416964b29db178f94bd22651941fd99cbc15687f08c5"
+      sha256: f5be75e90f8f2bff3ee49fbd7ef65bdd4a86ee679c2412e71ab2846a8cff8c59
       url: "https://pub.dev"
     source: hosted
-    version: "3.4.0"
+    version: "3.5.0"
   nm:
     dependency: transitive
     description:

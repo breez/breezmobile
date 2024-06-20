@@ -46,7 +46,7 @@ ProfileAnimal profileAnimalFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
   final localizedNames = _animalsFromName[texts.locale];
 
-  if (localizedNames.containsKey(key)) {
+  if (localizedNames != null && localizedNames.containsKey(key)) {
     return localizedNames[key];
   }
 
@@ -182,6 +182,7 @@ extension ProfileAnimalExtension on ProfileAnimal {
 
 Map<String, Map<String, ProfileAnimal>> _animalsFromName = {
   "bg": _buildAnimalsFromName(BreezTranslationsBg()),
+  "cz": _buildAnimalsFromName(BreezTranslationsCs()),
   "cs": _buildAnimalsFromName(BreezTranslationsCs()),
   "de": _buildAnimalsFromName(BreezTranslationsDe()),
   "el": _buildAnimalsFromName(BreezTranslationsEl()),
