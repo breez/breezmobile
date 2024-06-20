@@ -30,7 +30,7 @@ dependencies:
   csv: ^6.0.0
   device_info_plus: <=9.1.2 # anytime
   dio: ^5.4.3+1
-  drag_and_drop_lists: ^0.3.3
+  drag_and_drop_lists: <0.4.0 # drag_and_drop_lists >= 0.4.0 is incompatible with Flutter 3.7.12
   duration: ^3.0.13
   email_validator: ^3.0.0
   extended_image: <=7.0.2 # Requires Flutter 3.10
