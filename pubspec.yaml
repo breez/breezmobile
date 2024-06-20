@@ -136,7 +136,7 @@ dev_dependencies:
     sdk: flutter
   build_runner: <=2.3.3 # Requires Flutter 3.10
   json_serializable: <=6.6.2 # Requires Flutter 3.10
-  mockito: <=5.4.0 #
+  mockito: <=5.4.0 # mockito >=5.4.1 <5.4.3 depends on matcher ^0.12.15 and mockito >=5.4.3 requires SDK version >=3.1.0 <4.0.0
   sqflite_common_ffi: <=2.2.5 # Requires Flutter 3.10
   test: any
   flutter_lints: <=2.0.3 # Requires Flutter 3.10
