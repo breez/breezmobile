@@ -32,12 +32,12 @@ dependencies:
   dio: ^5.4.3+1
   drag_and_drop_lists: ^0.3.3
   duration: ^3.0.13
-  email_validator: ^2.1.17
+  email_validator: ^3.0.0
   extended_image: <=7.0.2 # Requires Flutter 3.10
   ffmpeg_kit_flutter_https_gpl: ^6.0.3
   file_picker: <=5.3.1 # Requires Flutter 3.10
   firebase_core: <=2.24.2 # Requires Flutter 3.10
-  firebase_core_platform_interface: ^5.0.0
+  firebase_core_platform_interface: ^5.1.0
   firebase_database: <=10.4.0  # Requires Flutter 3.10
   firebase_dynamic_links: <=5.4.8 # Requires Flutter 3.10
   firebase_messaging: <=14.7.10 # Requires Flutter 3.10
@@ -52,7 +52,7 @@ dependencies:
   grpc: <=3.1.0 # Requires Flutter 3.10
   hex: ^0.2.0
   http: <=0.13.6 # Requires Flutter 3.10
-  image: ^4.1.7
+  image: ^4.2.0
   image_cropper: <=4.0.1 # Requires Flutter 3.10
   image_picker: <=1.0.4  # Requires Flutter 3.10
   ini: ^2.1.0
@@ -65,7 +65,7 @@ dependencies:
     git:
       url: https://github.com/breez/md5_file_checksum.git
   mobile_scanner: <=3.5.7 # Requires Flutter 3.10
-  nfc_manager: ^3.4.0
+  nfc_manager: ^3.5.0
   nostr_tools: <=1.0.7 # Requires Flutter 3.10(depends on http ^1.1.0)
   package_info_plus: <=4.2.0 # Requires Flutter 3.10
   path: <=1.8.2 # flutter_test(^1.8.2) anytime(^1.8.3)
