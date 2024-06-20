@@ -2,8 +2,8 @@ import 'package:breez_translations/generated/breez_translations.dart';
 import 'package:breez_translations/generated/breez_translations_bg.dart';
 import 'package:breez_translations/generated/breez_translations_cs.dart';
 import 'package:breez_translations/generated/breez_translations_de.dart';
-import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:breez_translations/generated/breez_translations_el.dart';
+import 'package:breez_translations/generated/breez_translations_en.dart';
 import 'package:breez_translations/generated/breez_translations_es.dart';
 import 'package:breez_translations/generated/breez_translations_fi.dart';
 import 'package:breez_translations/generated/breez_translations_fr.dart';
@@ -45,7 +45,7 @@ ProfileColor profileColorFromName(String name, BreezTranslations texts) {
   final key = name.toLowerCase();
   final localizedNames = _colorsFromName[texts.locale];
 
-  if (localizedNames.containsKey(key)) {
+  if (localizedNames != null && localizedNames.containsKey(key)) {
     return localizedNames[key];
   }
 
@@ -177,6 +177,7 @@ extension ProfileColorExtension on ProfileColor {
 
 Map<String, Map<String, ProfileColor>> _colorsFromName = {
   "bg": _buildColorsFromName(BreezTranslationsBg()),
+  "cz": _buildColorsFromName(BreezTranslationsCs()),
   "cs": _buildColorsFromName(BreezTranslationsCs()),
   "de": _buildColorsFromName(BreezTranslationsDe()),
   "el": _buildColorsFromName(BreezTranslationsEl()),

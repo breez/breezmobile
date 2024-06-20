@@ -85,6 +85,7 @@ class _PinIntervalTileState extends State<PinIntervalTile> {
     const enLocale = EnglishDurationLocale();
     final locales = {
       "bg": enLocale, // TODO add BulgarianDurationLocale
+      "cz": const CzechDurationLocale(),
       "cs": const CzechDurationLocale(),
       "de": const GermanDurationLocale(),
       "el": enLocale, // TODO add GreekDurationLocale
