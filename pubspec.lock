@@ -191,6 +191,7 @@ packages:
     description:
       path: "."
       ref: a564088448149e9c28b4a2eb82fa0a3536698d24
+      resolved-ref: a564088448149e9c28b4a2eb82fa0a3536698d24
       url: "https://github.com/breez/Breez-Translations.git"
     source: git
     version: "1.0.0"
@@ -447,10 +448,10 @@ packages:
     dependency: "direct main"
     description:
       name: drag_and_drop_lists
-      sha256: "9a14595f9880be7953f23578aef88c15cc9b367eeb39dbc1f1bd6af52f70872b"
+      sha256: "83fab4a9d4d99d9c683858ac5e1975028d87aa796bf68bfd654b19154004b6bb"
       url: "https://pub.dev"
     source: hosted
-    version: "0.3.3"
+    version: "0.4.1"
   duration:
     dependency: "direct main"
     description:
@@ -463,10 +464,10 @@ packages:
     dependency: "direct main"
     description:
       name: email_validator
-      sha256: e9a90f27ab2b915a27d7f9c2a7ddda5dd752d6942616ee83529b686fc086221b
+      sha256: b19aa5d92fdd76fbc65112060c94d45ba855105a28bb6e462de7ff03b12fa1fb
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.17"
+    version: "3.0.0"
   extended_image:
     dependency: "direct main"
     description:
