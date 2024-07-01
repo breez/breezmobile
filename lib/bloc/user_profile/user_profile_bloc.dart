@@ -249,7 +249,17 @@ class UserProfileBloc {
   }
 
   Future _updatePinCode(UpdatePinCode action) async {
-    await _secureStorage.write(key: 'pinCode', value: action.newPin);
+    try {
+      await _secureStorage.write(key: 'pinCode', value: action.newPin);
+    } catch (e) {
+      //  This is a temporary workaround for flutter_secure_storage issues
+      //  on apps published in Google Play for Android devices
+      if (e.toString().contains("java.lang.NullPointerException") && Platform.isAndroid) {
+        _publishUser(_currentUser);
+        action.resolve(null);
+        return;
+      }
+    }
     _publishUser(_currentUser);
     action.resolve(null);
   }
