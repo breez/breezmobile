@@ -111,7 +111,13 @@ class BackupBloc with AsyncActionsHandler {
     FlutterSecureStorage secureStorage,
   }) {
     _initAppDataPathAndDir();
-    _secureStorage = secureStorage ?? const FlutterSecureStorage();
+    _secureStorage = secureStorage ??
+        const FlutterSecureStorage(
+          // Related issue: https://github.com/mogol/flutter_secure_storage/issues/487#issuecomment-1346244368
+          aOptions: AndroidOptions(
+            encryptedSharedPreferences: true,
+          ),
+        );
     ServiceInjector injector = serviceInjector ?? ServiceInjector();
     _breezLib = injector.breezBridge;
     _tasksService = injector.backgroundTaskService;

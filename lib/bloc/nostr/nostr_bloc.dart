@@ -20,7 +20,12 @@ class NostrBloc with AsyncActionsHandler {
   NostrBloc() {
     ServiceInjector injector = ServiceInjector();
     _breezLib = injector.breezBridge;
-    _secureStorage = const FlutterSecureStorage();
+    _secureStorage = const FlutterSecureStorage(
+      // Related issue: https://github.com/mogol/flutter_secure_storage/issues/487#issuecomment-1346244368
+      aOptions: AndroidOptions(
+        encryptedSharedPreferences: true,
+      ),
+    );
 
     _initNostr();
 

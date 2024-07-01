@@ -33,7 +33,12 @@ class UserProfileBloc {
   static const PROFILE_DATA_FOLDER_PATH = "profile";
   static const String USER_DETAILS_PREFERENCES_KEY = "BreezUserModel.userID";
 
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(
+    // Related issue: https://github.com/mogol/flutter_secure_storage/issues/487#issuecomment-1346244368
+    aOptions: AndroidOptions(
+      encryptedSharedPreferences: true,
+    ),
+  );
   BreezServer _breezServer;
   Notifications _notifications;
   Device _deviceService;
