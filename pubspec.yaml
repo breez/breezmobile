@@ -71,7 +71,7 @@ dependencies:
   path: <=1.8.2 # flutter_test(^1.8.2) anytime(^1.8.3)
   path_provider: <=2.1.1 # Requires Flutter 3.10
   path_provider_platform_interface: <=2.1.1 # Requires Flutter 3.10
-  pdf: ^3.10.8
+  pdf: ^3.11.0
   plugin_platform_interface: <=2.1.6 # Requires Flutter 3.10
   printing: <=5.10.4 # Requires Flutter 3.10
   protobuf: <=2.1.0 # Requires Flutter 3.10
@@ -83,7 +83,7 @@ dependencies:
     git:
       url: https://github.com/theyakka/qr.flutter.git
       ref: 1fc6e38c198a76a6fd60b7bd3b4c190cd6c9330b
-  rxdart: ^0.27.7
+  rxdart: ^0.27.7 # anytime
   screenshot: <=1.3.0 # Requires Flutter 3.10
   share_plus: <=7.2.2 # anytime
   shared_preferences: <=2.2.2 # Requires Flutter 3.10
