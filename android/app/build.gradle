@@ -31,7 +31,7 @@ android {
     defaultConfig {
         applicationId "com.breez.client"
         minSdkVersion 24
-        targetSdkVersion 33
+        targetSdkVersion 34
         multiDexEnabled true
         versionCode 1
         versionName "0.17.6-beta"
