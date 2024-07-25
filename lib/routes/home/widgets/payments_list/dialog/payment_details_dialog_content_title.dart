@@ -13,10 +13,10 @@ class PaymentDetailsDialogContentTitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final themeData = Theme.of(context);
-    final title = paymentInfo.dialogTitle?.replaceAll("\n", " ")?.trim();
+    final dialogTitle = paymentInfo.dialogTitle?.replaceAll("\n", " ")?.trim();
     final description = paymentInfo.description?.trim();
-
-    if (title == null || title.isEmpty) {
+    final hasNoDescription = description == null || description.isEmpty || dialogTitle == description;
+    if (dialogTitle == null || dialogTitle.isEmpty) {
       return Container();
     }
 
@@ -24,10 +24,10 @@ class PaymentDetailsDialogContentTitle extends StatelessWidget {
       padding: EdgeInsets.only(
         left: 16.0,
         right: 16.0,
-        bottom: (description == null || description.isEmpty) ? 16 : 8,
+        bottom: (hasNoDescription) ? 16 : 8,
       ),
       child: AutoSizeText(
-        title,
+        dialogTitle,
         style: themeData.primaryTextTheme.headlineSmall,
         textAlign: TextAlign.center,
         overflow: TextOverflow.ellipsis,
