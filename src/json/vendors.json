@@ -37,7 +37,7 @@
     "endpointURI": "https://lightsats.com/api/auth/lnurl/generate-secret"
   },
   "Sms4Sats": {
-    "url": "http://sms4sats.com/"
+    "url": "https://sms4sats.com/"
   },
   "ln.pizza": {
     "url": "https://ln.pizza/?breez_wallet"
