@@ -17,7 +17,7 @@
   "FixedFloat": {
     "url": "https://widget.fixedfloat.com/?from=BTCLN&to=LTC&cciesRcvNot=BTCLN"
   },
-  "tbc" : {
+  "TBC" : {
     "displayName": "The Bitcoin Company",
     "url": "https://app.thebitcoincompany.com",
     "endpointURI": "https://api.thebitcoincompany.com/auth/auth-lnurl?flatResponse=true",
