@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.os.Build;
 import android.os.IBinder;
 import android.util.Log;
 import java.util.concurrent.Executor;
@@ -151,7 +152,11 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
 
 
         Context context = binding.getApplicationContext();
-        context.registerReceiver(receiver, new IntentFilter(TorService.ACTION_STATUS));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            context.registerReceiver(receiver, new IntentFilter(TorService.ACTION_STATUS), Context.RECEIVER_NOT_EXPORTED);
+        } else {
+            context.registerReceiver(receiver, new IntentFilter(TorService.ACTION_STATUS));
+        }
 
         // Ref. https://developer.android.com/guide/components/services
         // Your service can work both ways—it can be started (to run indefinitely) and also allow binding. 
