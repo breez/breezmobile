@@ -49,12 +49,10 @@ PODS:
   - DKPhotoGallery/Resource (0.0.19):
     - SDWebImage
     - SwiftyGif
-  - ffmpeg-kit-ios-https-gpl (6.0)
-  - ffmpeg_kit_flutter_https_gpl (6.0.3):
-    - ffmpeg_kit_flutter_https_gpl/https-gpl (= 6.0.3)
+  - ffmpeg_kit_flutter (6.0.3):
+    - ffmpeg_kit_flutter/precompiled-gpl (= 6.0.3)
     - Flutter
-  - ffmpeg_kit_flutter_https_gpl/https-gpl (6.0.3):
-    - ffmpeg-kit-ios-https-gpl (= 6.0)
+  - ffmpeg_kit_flutter/precompiled-gpl (6.0.3):
     - Flutter
   - file_picker (0.0.1):
     - DKImagePickerController/PhotoGallery
@@ -121,7 +119,7 @@ PODS:
     - Flutter
   - flutter_secure_storage (6.0.0):
     - Flutter
-  - flutter_web_browser (0.17.1):
+  - flutter_web_browser (0.17.3):
     - Flutter
   - FMDB (2.7.11):
     - FMDB/standard (= 2.7.11)
@@ -265,7 +263,7 @@ DEPENDENCIES:
   - clipboard_watcher (from `.symlinks/plugins/clipboard_watcher/ios`)
   - connectivity_plus (from `.symlinks/plugins/connectivity_plus/ios`)
   - device_info_plus (from `.symlinks/plugins/device_info_plus/ios`)
-  - ffmpeg_kit_flutter_https_gpl (from `.symlinks/plugins/ffmpeg_kit_flutter_https_gpl/ios`)
+  - ffmpeg_kit_flutter (from `.symlinks/plugins/ffmpeg_kit_flutter/ios`)
   - file_picker (from `.symlinks/plugins/file_picker/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - firebase_database (from `.symlinks/plugins/firebase_database/ios`)
@@ -303,7 +301,6 @@ SPEC REPOS:
     - AppAuth
     - DKImagePickerController
     - DKPhotoGallery
-    - ffmpeg-kit-ios-https-gpl
     - Firebase
     - FirebaseAppCheckInterop
     - FirebaseCore
@@ -347,8 +344,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/connectivity_plus/ios"
   device_info_plus:
     :path: ".symlinks/plugins/device_info_plus/ios"
-  ffmpeg_kit_flutter_https_gpl:
-    :path: ".symlinks/plugins/ffmpeg_kit_flutter_https_gpl/ios"
+  ffmpeg_kit_flutter:
+    :path: ".symlinks/plugins/ffmpeg_kit_flutter/ios"
   file_picker:
     :path: ".symlinks/plugins/file_picker/ios"
   firebase_core:
@@ -411,7 +408,7 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/webview_flutter_wkwebview/ios"
 
 SPEC CHECKSUMS:
-  app_settings: 017320c6a680cdc94c799949d95b84cb69389ebc
+  app_settings: 58017cd26b604ae98c3e65acbdd8ba173703cc82
   AppAuth: 501c04eda8a8d11f179dbe8637b7a91bb7e5d2fa
   audio_service: f509d65da41b9521a61f1c404dd58651f265a567
   audio_session: 088d2483ebd1dc43f51d253d4a1c517d9a2e7207
@@ -420,8 +417,7 @@ SPEC CHECKSUMS:
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
   DKImagePickerController: 946cec48c7873164274ecc4624d19e3da4c1ef3c
   DKPhotoGallery: b3834fecb755ee09a593d7c9e389d8b5d6deed60
-  ffmpeg-kit-ios-https-gpl: 0caef23dca1bdb18fe6f2e1cd43d02d5978c4c2e
-  ffmpeg_kit_flutter_https_gpl: 066ec3b6a89759f1ffb84860e75534c3d3a1b172
+  ffmpeg_kit_flutter: c6616e369c242ba42d45ce2b6cef2c47181b711b
   file_picker: ce3938a0df3cc1ef404671531facef740d03f920
   Firebase: 414ad272f8d02dfbf12662a9d43f4bba9bec2a06
   firebase_core: 0af4a2b24f62071f9bf283691c0ee41556dcb3f5
@@ -440,7 +436,7 @@ SPEC CHECKSUMS:
   flutter_downloader: b7301ae057deadd4b1650dc7c05375f10ff12c39
   flutter_keyboard_visibility: 0339d06371254c3eb25eeb90ba8d17dca8f9c069
   flutter_secure_storage: 23fc622d89d073675f2eaa109381aefbcf5a49be
-  flutter_web_browser: 7bccaafbb0c5b8862afe7bcd158f15557109f61f
+  flutter_web_browser: 8073248fb4e9df961549f1f7b04392bdf7225d74
   FMDB: 57486c1117fd8e0e6b947b2f54c3f42bf8e57a4e
   GoogleDataTransport: 6c09b596d841063d76d4288cc2d2f42cc36e1e2a
   GoogleMLKit: 2bd0dc6253c4d4f227aad460f69215a504b2980e
@@ -474,7 +470,7 @@ SPEC CHECKSUMS:
   share_plus: c3fef564749587fc939ef86ffb283ceac0baf9f5
   shared_preferences_foundation: 5b919d13b803cadd15ed2dc053125c68730e5126
   sqflite: 31f7eba61e3074736dff8807a9b41581e4f7f15a
-  store_checker: 359c5051d9ec30ff0a8fa39eb5ec9df021bb745d
+  store_checker: a7be624ac44a4ba88e7917e71afe8433f197161e
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Tor: fad2cec0e7ef5f889fecdaf69e5edd6df0438326
@@ -484,4 +480,4 @@ SPEC CHECKSUMS:
 
 PODFILE CHECKSUM: ef7fa92d8242f8f58d9aa60a4928be7b473f69a9
 
-COCOAPODS: 1.15.2
+COCOAPODS: 1.16.2
