@@ -40,32 +40,32 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Run a multi-line script
         run: |
-          curl -o golang https://dl.google.com/go/go1.19.2.darwin-amd64.tar.gz
-          mkdir go1.19.2
-          tar -C $(pwd)/go1.19.2 -xzf golang
-          export PATH=$(pwd)/go1.19.2/go/bin:$PATH
-          export GOROOT=$(pwd)/go1.19.2/go
+          curl -o golang https://dl.google.com/go/go1.23.8.darwin-amd64.tar.gz
+          mkdir go1.23.8
+          tar -C $(pwd)/go1.23.8 -xzf golang
+          export PATH=$(pwd)/go1.23.8/go/bin:$PATH
+          export GOROOT=$(pwd)/go1.23.8/go
           go version
-          brew update          
+          brew update
           git clone https://github.com/breez/breez.git  gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
           pushd gopath/src/github.com/breez/breez
           export GOPRIVATE=github.com/btcsuite/btcd
           export GOPATH=$TMP_GOPATH
           echo "gopath= $GOPATH"
-          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20231127183840-76ac6878050a
-          echo "gomobile was installed!"          
-          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20231127183840-76ac6878050a
-          echo "gobind was installed!"           
+          go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20250408133729-978277e7eaf7
+          echo "gomobile was installed!"
+          go install golang.org/x/mobile/cmd/gobind@v0.0.0-20250408133729-978277e7eaf7
+          echo "gobind was installed!"
           echo $(ls $GOPATH/bin)
-          export PATH=$GOPATH/bin:$PATH          
-          mkdir -p build/ios          
+          export PATH=$GOPATH/bin:$PATH
+          mkdir -p build/ios
           PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
-          popd          
+          popd
           git clone --branch 3.7.12 https://github.com/flutter/flutter.git
           cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.xcframework
           rm -rf $GITHUB_WORKSPACE/conf
-          git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config          
+          git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
           echo "ls conf ***"
           ls $GITHUB_WORKSPACE/conf
