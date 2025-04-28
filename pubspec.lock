@@ -46,10 +46,10 @@ packages:
     dependency: "direct main"
     description:
       name: app_settings
-      sha256: "476df1d85cec143c3d27dd1c7451629a59c0c5ccf70a0adcbfa92a0a2d928705"
+      sha256: "09bc7fe0313a507087bec1a3baf555f0576e816a760cbb31813a88890a09d9e5"
       url: "https://pub.dev"
     source: hosted
-    version: "5.2.0"
+    version: "5.1.1"
   archive:
     dependency: "direct main"
     description:
@@ -78,10 +78,10 @@ packages:
     dependency: "direct main"
     description:
       name: audio_service
-      sha256: f6c8191bef6b843da34675dd0731ad11d06094c36b691ffcf3148a4feb2e585f
+      sha256: "4547c312a94f9cb2c48b60823fb190767cbd63454a83c73049384d5d3cba4650"
       url: "https://pub.dev"
     source: hosted
-    version: "0.18.16"
+    version: "0.18.13"
   audio_service_platform_interface:
     dependency: transitive
     description:
@@ -440,18 +440,18 @@ packages:
     dependency: "direct main"
     description:
       name: dio
-      sha256: "253a18bbd4851fecba42f7343a1df3a9a4c1d31a2c1b37e221086b4fa8c8dbc9"
+      sha256: e17f6b3097b8c51b72c74c9f071a605c47bcc8893839bd66732457a5ebe73714
       url: "https://pub.dev"
     source: hosted
-    version: "5.8.0+1"
+    version: "5.5.0+1"
   dio_web_adapter:
     dependency: transitive
     description:
       name: dio_web_adapter
-      sha256: "0a2e95fc6bdeb623bb623fc41e90e6924e9a3bbd65089f9221f83c185366b479"
+      sha256: "36c5b2d79eb17cdae41e974b7a8284fec631651d2a6f39a8a2ff22327e90aeac"
       url: "https://pub.dev"
     source: hosted
-    version: "1.1.1"
+    version: "1.0.1"
   drag_and_drop_lists:
     dependency: "direct main"
     description:
@@ -464,10 +464,10 @@ packages:
     dependency: "direct main"
     description:
       name: duration
-      sha256: "8b9020df63d2894f29fe250b60ca5b7f9e943d4a3cf766c2b161efeb617a0ea3"
+      sha256: "0548a12d235dab185c677ef660995f23fdc06a02a2b984aa23805f6a03d82815"
       url: "https://pub.dev"
     source: hosted
-    version: "3.0.15"
+    version: "3.0.13"
   email_validator:
     dependency: "direct main"
     description:
@@ -874,10 +874,10 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_web_browser
-      sha256: "15809b5a7b0cd9a6acf2ff5d8b975a08596923ea15efa759e607993a399de8e3"
+      sha256: a5564b736253f745e147b8c4eff86de436324d081974cc1f16bff881134a400f
       url: "https://pub.dev"
     source: hosted
-    version: "0.17.3"
+    version: "0.17.1"
   flutter_web_plugins:
     dependency: transitive
     description: flutter
@@ -1425,10 +1425,10 @@ packages:
     dependency: "direct main"
     description:
       name: pdf
-      sha256: "28eacad99bffcce2e05bba24e50153890ad0255294f4dd78a17075a2ba5c8416"
+      sha256: "81d5522bddc1ef5c28e8f0ee40b71708761753c163e0c93a40df56fd515ea0f0"
       url: "https://pub.dev"
     source: hosted
-    version: "3.11.3"
+    version: "3.11.0"
   pdf_widget_wrapper:
     dependency: transitive
     description:
@@ -1554,10 +1554,10 @@ packages:
     dependency: "direct main"
     description:
       name: provider
-      sha256: "489024f942069c2920c844ee18bb3d467c69e48955a4f32d1677f71be103e310"
+      sha256: c8a055ee5ce3fd98d6fc872478b03823ffdb448699c6ebdbbc71d59b596fd48c
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.4"
+    version: "6.1.2"
   pub_semver:
     dependency: transitive
     description:
@@ -1840,10 +1840,10 @@ packages:
     dependency: "direct main"
     description:
       name: store_checker
-      sha256: f191b6f1035caff62137c365cba21ad1a3c82c0369b522639052cd29fb48720f
+      sha256: c9c1a93f11fa756fea23a2a08d7e54e84626a8d3c759cf49fc694a3a5afdc705
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.0"
+    version: "1.4.0"
   stream_channel:
     dependency: transitive
     description:
@@ -1928,10 +1928,10 @@ packages:
     dependency: "direct main"
     description:
       name: tutorial_coach_mark
-      sha256: "9cdb721165d1cfb6e9b1910a1af1b3570fa6caa5059cf1506fcbd00bf7102abf"
+      sha256: "1f1fd234790afb929dec7391a4d90aa54ffe8c8e4d278d9283df8e3f5ac5d63e"
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.0"
+    version: "1.2.11"
   typed_data:
     dependency: transitive
     description:
