@@ -508,23 +508,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
-  ffmpeg_kit_flutter:
-    dependency: "direct main"
-    description:
-      path: "flutter/flutter"
-      ref: HEAD
-      resolved-ref: "1d1e923037e11870afd08d2eb6ac68e9b9d72a69"
-      url: "https://github.com/uybera/ffmpeg-kit"
-    source: git
-    version: "6.0.3"
-  ffmpeg_kit_flutter_platform_interface:
-    dependency: transitive
-    description:
-      name: ffmpeg_kit_flutter_platform_interface
-      sha256: addf046ae44e190ad0101b2fde2ad909a3cd08a2a109f6106d2f7048b7abedee
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.2.1"
   file:
     dependency: transitive
     description:

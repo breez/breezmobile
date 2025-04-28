@@ -8,7 +8,6 @@ import 'package:anytime/bloc/podcast/audio_bloc.dart';
 import 'package:anytime/l10n/L.dart';
 import 'package:anytime/services/audio/audio_player_service.dart';
 import 'package:anytime/ui/widgets/sleep_selector.dart';
-import 'package:breez/routes/podcast/podcast_clip/podcast_clip.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -83,7 +82,6 @@ class PlayerTransportControlsState extends State<PlayerTransportControls>
 
         return Column(
           children: [
-            const PodcastClipWidget(),
             Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.center,

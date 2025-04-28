@@ -5,7 +5,6 @@ import 'package:breez/bloc/fastbitcoins/fastbitcoins_bloc.dart';
 import 'package:breez/bloc/lnurl/lnurl_bloc.dart';
 import 'package:breez/bloc/marketplace/marketplace_bloc.dart';
 import 'package:breez/bloc/payment_options/payment_options_bloc.dart';
-import 'package:breez/bloc/podcast_clip/podcast_clip_bloc.dart';
 import 'package:breez/bloc/podcast_history/podcast_history_bloc.dart';
 import 'package:breez/bloc/pos_catalog/bloc.dart';
 import 'package:breez/bloc/pos_catalog/sqlite/repository.dart';
@@ -36,7 +35,6 @@ class AppBlocs {
 
   final Map<Type, Object> _blocsByType;
   final PodcastHistoryBloc podCastHistoryBloc;
-  final PodcastClipBloc podCastClipBloc;
 
   static T _registerBloc<T>(T bloc, Map<Type, Object> blocs) {
     blocs[bloc.runtimeType] = bloc;
@@ -92,45 +90,41 @@ class AppBlocs {
       PodcastHistoryBloc(),
       blocsByType,
     );
-    PodcastClipBloc podCastClipBloc = _registerBloc(
-      PodcastClipBloc(),
-      blocsByType,
-    );
 
     return AppBlocs._(
-        userProfileBloc,
-        accountBloc,
-        torBloc,
-        invoicesBloc,
-        connectPayBloc,
-        backupBloc,
-        marketplaceBloc,
-        fastbitcoinsBloc,
-        lspBloc,
-        reverseSwapBloc,
-        lnurlBloc,
-        posCatalogBloc,
-        paymentOptionsBloc,
-        blocsByType,
-        podCastHistoryBloc,
-        podCastClipBloc);
+      userProfileBloc,
+      accountBloc,
+      torBloc,
+      invoicesBloc,
+      connectPayBloc,
+      backupBloc,
+      marketplaceBloc,
+      fastbitcoinsBloc,
+      lspBloc,
+      reverseSwapBloc,
+      lnurlBloc,
+      posCatalogBloc,
+      paymentOptionsBloc,
+      blocsByType,
+      podCastHistoryBloc,
+    );
   }
 
   AppBlocs._(
-      this.userProfileBloc,
-      this.accountBloc,
-      this.torBloc,
-      this.invoicesBloc,
-      this.connectPayBloc,
-      this.backupBloc,
-      this.marketplaceBloc,
-      this.fastbitcoinsBloc,
-      this.lspBloc,
-      this.reverseSwapBloc,
-      this.lnurlBloc,
-      this.posCatalogBloc,
-      this.paymentOptionsBloc,
-      this._blocsByType,
-      this.podCastHistoryBloc,
-      this.podCastClipBloc);
+    this.userProfileBloc,
+    this.accountBloc,
+    this.torBloc,
+    this.invoicesBloc,
+    this.connectPayBloc,
+    this.backupBloc,
+    this.marketplaceBloc,
+    this.fastbitcoinsBloc,
+    this.lspBloc,
+    this.reverseSwapBloc,
+    this.lnurlBloc,
+    this.posCatalogBloc,
+    this.paymentOptionsBloc,
+    this._blocsByType,
+    this.podCastHistoryBloc,
+  );
 }

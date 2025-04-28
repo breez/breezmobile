@@ -36,10 +36,6 @@ dependencies:
   duration: <=3.0.13 # Pin
   email_validator: ^3.0.0
   extended_image: <=7.0.2 # Requires Flutter 3.10
-  ffmpeg_kit_flutter:
-    git:
-      url: https://github.com/uybera/ffmpeg-kit
-      path: flutter/flutter
   file_picker: <=5.3.1 # Requires Flutter 3.10
   firebase_core: <=2.24.2 # Requires Flutter 3.10
   firebase_core_platform_interface: ^5.1.0
