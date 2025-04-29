@@ -56,28 +56,27 @@ jobs:
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
         run: ./.github/scripts/add-key.sh
 
-      - name: 🏗️ Clone Breez SDK repository
-        run: |
-          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
-          export TMP_GOPATH=$(pwd)/gopath
-          echo "GOPATH=$TMP_GOPATH" >> $GITHUB_ENV
+      - name: 🏗️ Check-out Breez SDK repository
+        uses: actions/checkout@v4
+        with:
+          repository: breez/breez
+          path: breez
 
       - name: 📦 Install Breez SDK dependencies
         run: |
           go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20250408133729-978277e7eaf7
           go install golang.org/x/mobile/cmd/gobind@v0.0.0-20250408133729-978277e7eaf7
-          echo "PATH=$PATH:$GOPATH/bin" >> $GITHUB_ENV
 
       - name: 🔨 Build Breez SDK bindings
         run: |
-          cd gopath/src/github.com/breez/breez
+          cd breez
           export GOPRIVATE=github.com/btcsuite/btcd
           mkdir -p build/ios
           gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
 
       - name: ⚙️ Setup configuration
         run: |
-          cp -r $GITHUB_WORKSPACE/gopath/src/github.com/breez/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.xcframework
+          cp -r $GITHUB_WORKSPACE/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.xcframework
           rm -rf $GITHUB_WORKSPACE/conf
           git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
