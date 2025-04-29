@@ -214,6 +214,7 @@
 				97C146EC1CF9000F007C117D /* Resources */,
 				3B06AD1E1E4923F5004D2608 /* Thin Binary */,
 				B8DC45DC7B6A71936FEF125E /* [CP] Embed Pods Frameworks */,
+				E87684232DC108F700393174 /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -465,6 +466,23 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Runner/Pods-Runner-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
+		};
+		E87684232DC108F700393174 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "if [ -f \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tor.framework/Tor\" ]; then\n  xcrun bitcode_strip -r \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tor.framework/Tor\" -o \"${BUILT_PRODUCTS_DIR}/${FRAMEWORKS_FOLDER_PATH}/Tor.framework/Tor\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
