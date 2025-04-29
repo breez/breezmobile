@@ -1,26 +1,16 @@
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the action will run. 
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
-    branches: [ master,anytime_integration_new ]
+    branches: [ master, anytime_integration_new ]
   pull_request:
-    branches: [ master,anytime_integration_new ]
-
-  # Allows you to run this workflow manually from the Actions tab
+    branches: [ master, anytime_integration_new ]
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   build:
-    # The type of runner that the job will run on
     runs-on: macOS-15
-
-    # Steps represent a sequence of tasks that will be executed as part of the job
+    
     steps:
       - name: Disk Cleanup
         run: |
@@ -38,61 +28,68 @@ jobs:
           df -hI
           echo "::endgroup::"
 
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - name: 🏗️ Check-out breezmobile repository
+        uses: actions/checkout@v4
 
-      - name: Install SSH key
+      - name: 🏗️ Setup Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23.8'
+
+      - name: 🏗️ Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.7.12'
+          channel: 'stable'
+          cache: true
+
+      - name: 🔒 Install SSH Key
         uses: shimataro/ssh-key-action@v2
         with:
           key: ${{ secrets.SSH_KEY }}
-          known_hosts: ${{ secrets.KNOWN_HOSTS }}       
+          known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: add key
+      - name: 🔐 Add Keys
         env:
           CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
           PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
         run: ./.github/scripts/add-key.sh
 
-      # Runs a set of commands using the runners shell
-      - name: Run a multi-line script
+      - name: 🏗️ Clone Breez SDK repository
         run: |
-          curl -o golang https://dl.google.com/go/go1.23.8.darwin-amd64.tar.gz
-          mkdir go1.23.8
-          tar -C $(pwd)/go1.23.8 -xzf golang
-          export PATH=$(pwd)/go1.23.8/go/bin:$PATH
-          export GOROOT=$(pwd)/go1.23.8/go
-          go version
-          brew update
-          git clone https://github.com/breez/breez.git  gopath/src/github.com/breez/breez
+          git clone https://github.com/breez/breez.git gopath/src/github.com/breez/breez
           export TMP_GOPATH=$(pwd)/gopath
-          pushd gopath/src/github.com/breez/breez
-          export GOPRIVATE=github.com/btcsuite/btcd
-          export GOPATH=$TMP_GOPATH
-          echo "gopath= $GOPATH"
+          echo "GOPATH=$TMP_GOPATH" >> $GITHUB_ENV
+
+      - name: 📦 Install Breez SDK dependencies
+        run: |
           go install golang.org/x/mobile/cmd/gomobile@v0.0.0-20250408133729-978277e7eaf7
-          echo "gomobile was installed!"
           go install golang.org/x/mobile/cmd/gobind@v0.0.0-20250408133729-978277e7eaf7
-          echo "gobind was installed!"
-          echo $(ls $GOPATH/bin)
-          export PATH=$GOPATH/bin:$PATH
+          echo "PATH=$PATH:$GOPATH/bin" >> $GITHUB_ENV
+
+      - name: 🔨 Build Breez SDK bindings
+        run: |
+          cd gopath/src/github.com/breez/breez
+          export GOPRIVATE=github.com/btcsuite/btcd
           mkdir -p build/ios
-          PATH=$PATH:$GOPATH/bin gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
-          popd
-          git clone --branch 3.7.12 https://github.com/flutter/flutter.git
-          cp -r $GOPATH/src/github.com/breez/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.xcframework
+          gomobile bind -iosversion=12.4 -target=ios -tags="ios experimental signrpc walletrpc chainrpc invoicesrpc routerrpc backuprpc peerrpc submarineswaprpc breezbackuprpc" -o build/ios/bindings.xcframework -ldflags="-s -w" github.com/breez/breez/bindings
+
+      - name: ⚙️ Setup configuration
+        run: |
+          cp -r $GITHUB_WORKSPACE/gopath/src/github.com/breez/breez/build/ios/bindings.xcframework $GITHUB_WORKSPACE/ios/bindings.xcframework
           rm -rf $GITHUB_WORKSPACE/conf
           git clone builderfiles@packages.breez.technology:configuration -b production $GITHUB_WORKSPACE/temp_config
           cp -r $GITHUB_WORKSPACE/temp_config/conf $GITHUB_WORKSPACE/conf
-          echo "ls conf ***"
-          ls $GITHUB_WORKSPACE/conf
-          cat $GITHUB_WORKSPACE/conf/breez.conf
           sftp builderfiles@packages.breez.technology:config/conf/GoogleService-Info.plist $GITHUB_WORKSPACE/ios/Runner/GoogleService-Info.plist
-          ./flutter/bin/flutter clean
-          ./flutter/bin/flutter build ios --no-codesign --no-tree-shake-icons
 
-      - name: deploy
+      - name: 🚀 Build app
+        run: |
+          flutter clean
+          flutter build ios --no-codesign --no-tree-shake-icons
+
+      - name: 📱 Publish to TestFlight
         env:
           GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
           APP_USERNAME: ${{ secrets.APP_USERNAME }}
-          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}          
+          APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
         run: ./.github/scripts/sign.sh
