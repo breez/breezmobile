@@ -5,7 +5,7 @@
 	<key>destination</key>
 	<string>export</string>
 	<key>method</key>
-	<string>app-store</string>
+	<string>app-store-connect</string>
 	<key>provisioningProfiles</key>
 	<dict>
 		<key>technology.breez.client</key>
@@ -19,5 +19,7 @@
 	<string>F7R2LZH3W5</string>
 	<key>uploadSymbols</key>
 	<true/>
+	<key>compileBitcode</key>
+	<false/>
 </dict>
 </plist>

@@ -20,4 +20,4 @@ altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
 ipa="$PWD/build/Runner.app/breez.ipa"
 export uploadCommand="put $ipa"
 #sftp builderfiles@packages.breez.technology:config/conf <<< $uploadCommand
-"$altool" --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD
+"$altool" --verbose --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD
