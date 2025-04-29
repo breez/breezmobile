@@ -19,5 +19,7 @@
 	<string>F7R2LZH3W5</string>
 	<key>uploadSymbols</key>
 	<true/>
+	<key>compileBitcode</key>
+	<false/>
 </dict>
 </plist>
