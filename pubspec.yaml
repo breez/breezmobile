@@ -46,7 +46,7 @@ dependencies:
   flutter_easyloading: ^3.0.5
   flutter_secure_storage: <=8.1.0 # anytime
   flutter_spinkit: ^5.2.1
-  flutter_svg: <=2.0.9  #  # Requires Flutter 3.10 - http 1.0.0
+  flutter_svg: <=2.0.9  # Requires Flutter 3.10 - http 1.0.0
   flutter_web_browser: <=0.17.1 # Pin
   git_info: ^1.1.2
   google_api_availability: ^5.0.0
