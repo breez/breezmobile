@@ -245,7 +245,11 @@ PODS:
     - Flutter
   - SwiftyGif (5.4.5)
   - TOCropViewController (2.6.1)
-  - Tor (405.8.1)
+  - Tor (408.14.1):
+    - Tor/CTor (= 408.14.1)
+  - Tor/Core (408.14.1)
+  - Tor/CTor (408.14.1):
+    - Tor/Core
   - uni_links (0.0.1):
     - Flutter
   - url_launcher_ios (0.0.1):
@@ -287,7 +291,7 @@ DEPENDENCIES:
   - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/ios`)
   - sqflite (from `.symlinks/plugins/sqflite/ios`)
   - store_checker (from `.symlinks/plugins/store_checker/ios`)
-  - Tor (from `https://raw.githubusercontent.com/iCepa/Tor.framework/v405.8.1/Tor.podspec`)
+  - Tor (from `https://raw.githubusercontent.com/iCepa/Tor.framework/v408.14.1/Tor.podspec`)
   - uni_links (from `.symlinks/plugins/uni_links/ios`)
   - url_launcher_ios (from `.symlinks/plugins/url_launcher_ios/ios`)
   - webview_flutter_wkwebview (from `.symlinks/plugins/webview_flutter_wkwebview/ios`)
@@ -393,7 +397,7 @@ EXTERNAL SOURCES:
   store_checker:
     :path: ".symlinks/plugins/store_checker/ios"
   Tor:
-    :podspec: https://raw.githubusercontent.com/iCepa/Tor.framework/v405.8.1/Tor.podspec
+    :podspec: https://raw.githubusercontent.com/iCepa/Tor.framework/v408.14.1/Tor.podspec
   uni_links:
     :path: ".symlinks/plugins/uni_links/ios"
   url_launcher_ios:
@@ -466,11 +470,11 @@ SPEC CHECKSUMS:
   store_checker: 359c5051d9ec30ff0a8fa39eb5ec9df021bb745d
   SwiftyGif: 706c60cf65fa2bc5ee0313beece843c8eb8194d4
   TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
-  Tor: fad2cec0e7ef5f889fecdaf69e5edd6df0438326
+  Tor: e37a153222ca73ca10a7fe80d1a543b8cc009da8
   uni_links: d97da20c7701486ba192624d99bffaaffcfc298a
   url_launcher_ios: 68d46cc9766d0c41dbdc884310529557e3cd7a86
   webview_flutter_wkwebview: 2e2d318f21a5e036e2c3f26171342e95908bd60a
 
-PODFILE CHECKSUM: ef7fa92d8242f8f58d9aa60a4928be7b473f69a9
+PODFILE CHECKSUM: c37093e3fd7ed6531a5f60007c7da5f63d4704e6
 
 COCOAPODS: 1.16.2
