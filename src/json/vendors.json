@@ -36,6 +36,9 @@
     "url": "https://lightsats.com",
     "endpointURI": "https://lightsats.com/api/auth/lnurl/generate-secret"
   },
+  "Satsback": {
+    "url": "https://satsback.com/lnurl/login"
+  },
   "Sms4Sats": {
     "url": "https://sms4sats.com/"
   },

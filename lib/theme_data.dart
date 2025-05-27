@@ -362,6 +362,10 @@ final VendorTheme lightsats = VendorTheme(
   iconBgColor: Colors.black,
   iconFgColor: Colors.white,
 );
+final VendorTheme satsback = VendorTheme(
+  iconBgColor: Colors.black,
+  iconFgColor: const Color(0xFF00f388),
+);
 final VendorTheme tbc = VendorTheme(
   iconFgColor: const Color(0xFFffffff),
   iconBgColor: const Color(0xFF000000),
@@ -387,6 +391,7 @@ final Map<String, VendorTheme> vendorTheme = {
   "fold": fold,
   "wavlake": wavlake,
   "lightsats": lightsats,
+  "satsback": satsback,
   "snort": snort,
   "tbc": tbc,
   "azteco": azteco,
