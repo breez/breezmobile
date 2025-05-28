@@ -37,7 +37,9 @@
     "endpointURI": "https://lightsats.com/api/auth/lnurl/generate-secret"
   },
   "Satsback": {
-    "url": "https://satsback.com/lnurl/login"
+    "displayName": "Satsback.com",
+    "url": "https://satsback.com/lnurl/login?provider=breez",
+    "endpointURI": "https://satsback.com/api/lnurl/auth"
   },
   "Sms4Sats": {
     "url": "https://sms4sats.com/"
