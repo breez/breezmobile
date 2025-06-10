@@ -39,7 +39,8 @@
   "Satsback": {
     "displayName": "Satsback.com",
     "url": "https://satsback.com/lnurl/login?provider=breez",
-    "endpointURI": "https://satsback.com/lnurl/auth"
+    "endpointURI": "https://satsback.com/lnurl/auth",
+    "responseID": "lnurl"
   },
   "Sms4Sats": {
     "url": "https://sms4sats.com/"
