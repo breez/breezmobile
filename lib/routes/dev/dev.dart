@@ -86,32 +86,42 @@ class DevViewState extends State<DevView> {
 
   bool _showDefaultCommands = true;
 
-  void _sendCommand(String command) {
-    FocusScope.of(context).requestFocus(FocusNode());
+  Future<void> _sendCommand(String command) async {
+    if (command.trim().isEmpty) return;
+
+    _log.info('Send command: $command');
+
+    // Dismiss keyboard
+    if (mounted) {
+      FocusScope.of(context).unfocus();
+    }
+
     _lastCommand = command;
-    widget._breezBridge.sendCommand(command).then(
-      (reply) {
-        setState(() {
-          _showDefaultCommands = false;
-          _cliTextStyle = theme.smallTextStyle;
-          _cliText = reply;
-          _richCliText = <TextSpan>[
-            TextSpan(text: _cliText),
-          ];
-        });
-      },
-    ).catchError(
-      (error) {
-        setState(() {
-          _showDefaultCommands = false;
-          _cliText = error;
-          _cliTextStyle = theme.warningStyle;
-          _richCliText = <TextSpan>[
-            TextSpan(text: _cliText),
-          ];
-        });
-      },
-    );
+
+    try {
+      final reply = await widget._breezBridge.sendCommand(command);
+      _log.info('Reply: $reply');
+
+      if (!mounted) return;
+
+      setState(() {
+        _showDefaultCommands = false;
+        _cliTextStyle = theme.smallTextStyle;
+        _cliText = reply;
+        _richCliText = [TextSpan(text: reply)];
+      });
+    } catch (error) {
+      _log.warning('Error executing command: $error');
+
+      if (!mounted) return;
+
+      setState(() {
+        _showDefaultCommands = false;
+        _cliTextStyle = theme.warningStyle;
+        _cliText = error.toString();
+        _richCliText = [TextSpan(text: error.toString())];
+      });
+    }
   }
 
   Widget _renderBody() {
