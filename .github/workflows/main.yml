@@ -10,7 +10,11 @@ on:
 jobs:
   build:
     runs-on: macOS-15
-    
+    env:
+      P12_BASE64: ${{ secrets.P12_BASE64 }}
+      P12_PASSWORD: ${{ secrets.P12_PASSWORD }}
+      PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
+
     steps:
       - name: Disk Cleanup
         run: |
@@ -50,11 +54,31 @@ jobs:
           key: ${{ secrets.SSH_KEY }}
           known_hosts: ${{ secrets.KNOWN_HOSTS }}
 
-      - name: 🔐 Add Keys
-        env:
-          CER_KEY_PASS: ${{ secrets.CER_KEY_PASS }}
-          PROVISIONING_PROFILE_BASE64: ${{ secrets.PROVISIONING_PROFILE_BASE64 }}
-        run: ./.github/scripts/add-key.sh
+      - name: 🔐 Install Keychain keys
+        run: |
+          KEYCHAIN_PATH=$RUNNER_TEMP/ios-build.keychain
+          security create-keychain -p ci $KEYCHAIN_PATH
+          security default-keychain -s $KEYCHAIN_PATH
+          security unlock-keychain -p ci $KEYCHAIN_PATH
+          security set-keychain-settings -t 6400 -l $KEYCHAIN_PATH
+
+          P12_KEY_PATH=$RUNNER_TEMP/key.p12
+          echo -n "$P12_BASE64" | base64 --decode -o $P12_KEY_PATH
+          security import $P12_KEY_PATH -k $KEYCHAIN_PATH -P "$P12_PASSWORD" -T /usr/bin/codesign -T /usr/bin/security
+
+          security set-key-partition-list -S apple-tool:,apple: -s -k ci $KEYCHAIN_PATH > /dev/null
+          
+          rm -f $P12_KEY_PATH
+
+      - name: 📝 Install Provisioning Profile
+        run: |
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          echo -n "$PROVISIONING_PROFILE_BASE64" | base64 --decode > $PP_PATH
+          
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles/
+          
+          rm -f $PP_PATH
 
       - name: 🏗️ Check-out Breez SDK repository
         uses: actions/checkout@v4
@@ -87,9 +111,36 @@ jobs:
           flutter clean
           flutter build ios --no-codesign --no-tree-shake-icons
 
+      - name: 🔨 Build archive
+        working-directory: ios
+        run: |
+          buildNumber=$(($GITHUB_RUN_NUMBER + 4000)).1
+          GOOGLE_SIGN_IN_URL=$(/usr/libexec/PlistBuddy -c "Print :REVERSED_CLIENT_ID" Runner/GoogleService-Info.plist)
+          /usr/libexec/PlistBuddy -c "Set :CFBundleURLTypes:0:CFBundleURLSchemes:0 $GOOGLE_SIGN_IN_URL" Runner/Info.plist
+          /usr/libexec/PlistBuddy -c "Set :CFBundleVersion $buildNumber" Runner/Info.plist
+          xcodebuild \
+            -workspace Runner.xcworkspace \
+            -scheme Runner \
+            -sdk iphoneos \
+            -configuration Release \
+            -archivePath $PWD/build/Runner.xcarchive \
+            archive
+
+      - name: 📤 Export archive
+        working-directory: ios
+        run: |
+          xcodebuild \
+            -exportArchive \
+            -archivePath $PWD/build/Runner.xcarchive \
+            -exportOptionsPlist ExportOptions.plist \
+            -exportPath $PWD/build/Runner.app
+
       - name: 📱 Publish to TestFlight
         env:
-          GOOGLE_SIGN_IN_URL: ${{ secrets.GOOGLE_SIGN_IN_URL }}
           APP_USERNAME: ${{ secrets.APP_USERNAME }}
           APP_PASSWORD: ${{ secrets.APP_PASSWORD }}
-        run: ./.github/scripts/sign.sh
+        working-directory: ios
+        run: |
+          altool="$(dirname "$(xcode-select -p)")/Developer/usr/bin/altool"
+          ipa="$PWD/build/Runner.app/breez.ipa"
+          "$altool" --upload-app --type ios --file "$ipa" --username $APP_USERNAME --password $APP_PASSWORD
