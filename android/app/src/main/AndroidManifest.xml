@@ -202,6 +202,10 @@
             </intent-filter>
         </receiver>
 
+        <service
+            android:name="org.torproject.jni.TorService"
+            android:exported="false" />
+
     </application>
     <!-- Android 11 has introduced package visibility changes,
     when targeting API level 30 or above

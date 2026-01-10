@@ -159,9 +159,8 @@ public class Tor implements FlutterPlugin, MethodCallHandler {
         }
 
         // Ref. https://developer.android.com/guide/components/services
-        // Your service can work both ways—it can be started (to run indefinitely) and also allow binding. 
+        // One component (activity, fragment, or service) can bind to a service that has been started with startService().
         //
-        // TODO(nochiel) SECURITY: Declare this service as private in the manifest.
         // TODO(nochiel) handle when to call stopService.
         // The defaults that tor-android uses. 
         // torConfig.put("HTTP", "8118");
