@@ -78,7 +78,7 @@ class BoostMessageDialogState extends State<BoostMessageDialog> {
             keyboardType: TextInputType.multiline,
             textInputAction: TextInputAction.next,
             maxLines: null,
-            maxLength: 128,
+            maxLength: 1024,
             maxLengthEnforcement: MaxLengthEnforcement.enforced,
             style: theme.dialogTheme.contentTextStyle.copyWith(
               height: 1.0,
