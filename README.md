@@ -1,5 +1,14 @@
 # Breez Mobile Client
 
+## Maintenance Mode
+
+⚠️ **This project is in maintenance mode.**
+
+The repository is still maintained, but **only critical bug fixes and security issues** will be addressed.  
+**No new features, enhancements, or non-critical updates are planned.**
+
+ℹ️ For new integrations and active development, please refer to the **Breez SDK**.
+
 <p align='center'>
   <img src='https://breez.technology/balance-illustration.webp' height='300' alt='screenshot' />
   <img src='https://breez.technology/pos-illustration.webp' height='300' alt='screenshot' />
